@@ -1,6 +1,5 @@
 package funcmath.object;
 
-import java.security.SecureRandom;
 import java.util.Objects;
 
 public class FNatural implements MathObject {

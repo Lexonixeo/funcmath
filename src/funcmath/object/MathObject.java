@@ -1,6 +1,8 @@
 package funcmath.object;
 
-public interface MathObject {
+import java.io.Serializable;
+
+public interface MathObject extends Serializable {
     Object get();
     MathObject sum(MathObject a, MathObject b);
     MathObject sub(MathObject a, MathObject b);
@@ -16,4 +18,5 @@ public interface MathObject {
     MathObject not(MathObject a);
     MathObject and(MathObject a, MathObject b);
     MathObject or(MathObject a, MathObject b);
+
 }
