@@ -1,0 +1,155 @@
+package funcmath.object;
+
+import java.security.SecureRandom;
+import java.util.Objects;
+
+public class FInteger implements MathObject {
+    protected int number;
+
+    public FInteger(int number) {
+        this.number = number;
+    }
+
+    public FInteger(MathObject number) {
+        this.number = (Integer) number.get();
+    }
+
+    public FInteger(String s) {
+        this.number = Integer.parseInt(s);
+    }
+
+    @Override
+    public Integer get() {
+        return this.number;
+    }
+
+    @Override
+    public FInteger sum(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        return new FInteger(an.get() + bn.get());
+    }
+
+    @Override
+    public FInteger sub(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        return new FInteger(an.get() - bn.get());
+    }
+
+    @Override
+    public FInteger mul(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        return new FInteger(an.get() * bn.get());
+    }
+
+    @Override
+    public FInteger div(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        if (bn.get() == 0) return new FInteger(
+                an.get() == 0 ? 0 : (an.get() > 0 ? Integer.MAX_VALUE : Integer.MIN_VALUE)
+        );
+        else return new FInteger((an.get() - this.mod(a, b).get()) / bn.get());
+    }
+
+    @Override
+    public FInteger mod(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        if (bn.get() == 0) return new FInteger(0);
+        else return new FInteger((an.get() % Math.abs(bn.get()) + Math.abs(bn.get())) % Math.abs(bn.get()));
+    }
+
+    @Override
+    public FInteger pow(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        if (bn.get() == 0) return new FInteger(1);
+        else if (bn.get() % 2 == 0) {
+            FInteger cn = this.div(bn, new FInteger(2));
+            FInteger dn = this.pow(an, cn);
+            return this.mul(dn, dn);
+        } else {
+            FInteger cn = this.div(bn, new FInteger(2));
+            FInteger dn = this.pow(an, cn);
+            return this.mul(this.mul(dn, dn), an);
+        }
+    }
+
+    @Override
+    public FInteger abs(MathObject a) {
+        FInteger an = new FInteger(a);
+        return new FInteger(Math.abs(an.get()));
+    }
+
+    @Override
+    public FInteger gcd(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        if (an.get() < bn.get()) return this.gcd(bn, an);
+        else if (bn.get() == 0) return an;
+        else return this.gcd(bn, this.mod(an, bn));
+    }
+
+    @Override
+    public FInteger lcm(MathObject a, MathObject b) {
+        // div mul a b gcd a b
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        return this.div(this.mul(an, bn), this.gcd(an, bn));
+    }
+
+    @Override
+    public FInteger rand(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        SecureRandom random = new SecureRandom();
+        return new FInteger(
+                random.nextInt(Math.abs(bn.get() - an.get()) + 1) + Math.min(an.get(), bn.get())
+        );
+    }
+
+    @Override
+    public FInteger xor(MathObject a, MathObject b) {
+        // and or a b not and a b
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        return new FInteger(an.get() ^ bn.get());
+    }
+
+    @Override
+    public FInteger not(MathObject a) {
+        FInteger an = new FInteger(a);
+        return new FInteger(~an.get());
+    }
+
+    @Override
+    public FInteger and(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        return new FInteger(an.get() & bn.get());
+    }
+
+    @Override
+    public FInteger or(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        return new FInteger(an.get() | bn.get());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj.getClass() == FInteger.class && Objects.equals(((FInteger) obj).get(), this.get());
+    }
+
+    @Override
+    public String toString() {
+        return this.get().toString();
+    }
+
+    public static FInteger getInstance() {
+        return new FInteger(0);
+    }
+}
