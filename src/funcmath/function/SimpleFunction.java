@@ -30,7 +30,7 @@ public class SimpleFunction {
     }
 
     public Object use(MathObject... args) {
-        if (numberOfArgs != args.length) throw new IllegalArgumentException();
+        if (numberOfArgs != args.length) throw new IllegalArgumentException("Не совпадает число аргументов функции: должно быть " + numberOfArgs + ", есть: " + args.length);
 
         MathObject[] newArgs = new MathObject[args.length + 1];
         System.arraycopy(args, 0, newArgs, 1, args.length);
@@ -43,6 +43,11 @@ public class SimpleFunction {
             throw new RuntimeException(e);
         }
         return ans;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 
     // когда добавлю описания функциям, добавить toString()

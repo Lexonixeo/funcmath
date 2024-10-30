@@ -17,54 +17,50 @@ public class FRational implements MathObject {
         }
         this.numerator = new FInteger(numerator);
         this.denominator = new FNatural(denominator);
-        update();
-    }
 
-    public FRational(int number) {
-        this.numerator = new FInteger(number);
-        this.denominator = new FNatural(1);
-    }
-
-    public FRational(Integer[] fraction) {
-        int numerator = fraction[0];
-        int denominator = fraction[1];
-        FRational t = new FRational(numerator, denominator);
-        this.numerator = t.getNumerator();
-        this.denominator = t.getDenominator();
+        FInteger gcd = (new FInteger(0)).gcd(this.numerator, this.denominator);
+        this.numerator = (new FInteger(0)).div(this.numerator, gcd);
+        this.denominator = (new FNatural(0)).div(this.denominator, gcd);
     }
 
     public FRational(MathObject number) {
-        if (number.getClass() == FRational.class) {
-            FRational t = new FRational((Integer[]) number.get());
-            this.numerator = t.getNumerator();
-            this.denominator = t.getDenominator();
-        } else if (number.getClass() == FInteger.class || number.getClass() == FNatural.class) {
-            this.numerator = new FInteger(number);
-            this.denominator = new FNatural(1);
-        }
+        FRational num = number.getRational();
+        this.numerator = new FInteger(num.get()[0]);
+        this.denominator = new FNatural(num.get()[1]);
     }
 
     public FRational(String s) {
         // to do...
     }
 
-    protected FInteger getNumerator() {
-        return this.numerator;
-    }
-
-    protected FNatural getDenominator() {
-        return this.denominator;
-    }
-
-    private void update() {
-        FInteger gcd = FInteger.getInstance().gcd(this.numerator, this.denominator);
-        this.numerator = FInteger.getInstance().div(this.numerator, gcd);
-        this.denominator = FNatural.getInstance().div(this.denominator, gcd);
-    }
-
     @Override
     public Integer[] get() {
         return new Integer[]{this.numerator.get(), this.denominator.get()};
+    }
+
+    @Override
+    public FNatural getNatural() {
+        return this.getInteger().getNatural();
+    }
+
+    @Override
+    public FInteger getInteger() {
+        return (new FInteger(0)).div(this.numerator, this.denominator);
+    }
+
+    @Override
+    public FRational getRational() {
+        return this;
+    }
+
+    @Override
+    public FReal getReal() {
+        return (new FReal(0)).div(this.numerator, this.denominator);
+    }
+
+    @Override
+    public FComplex getComplex() {
+        return new FComplex(this.getReal().get(), 0);
     }
 
     @Override
@@ -166,9 +162,5 @@ public class FRational implements MathObject {
     @Override
     public String toString() {
         return this.numerator + "/" + this.denominator;
-    }
-
-    public static FRational getInstance() {
-        return new FRational(1, 1);
     }
 }

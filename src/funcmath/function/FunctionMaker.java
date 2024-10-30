@@ -1,10 +1,10 @@
 package funcmath.function;
 
 import funcmath.Helper;
-import funcmath.object.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class FunctionMaker {
@@ -18,14 +18,16 @@ public class FunctionMaker {
         ArrayList<String> definition = Helper.wordsFromString(scanner.nextLine());
         System.out.print("Введите область опредения функции: ");
         String resultClassName = scanner.nextLine();
-        MathObject resultClass = switch (resultClassName) {
-            case "integer" -> FInteger.getInstance();
-            case "natural" -> FNatural.getInstance();
-            case "rational" -> FRational.getInstance();
-            default -> throw new IllegalArgumentException();
-        };
 
-        Function function = new Function(name, definition, resultClass, description);
+        String[] values = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"};
+        ArrayList<String> aValues = new ArrayList<>(List.of(values));
+        for (int i = 0; i < definition.size(); i++) {
+            if (aValues.contains(definition.get(i))) {
+                definition.set(i, "x" + (definition.get(i).charAt(0) - 'a'));
+            }
+        }
+
+        Function function = new Function(name, definition, resultClassName, description);
         HashMap<Integer, Function> functions;
         try {
             functions = (HashMap<Integer, Function>) Helper.read("data\\functions.dat");
@@ -33,7 +35,7 @@ public class FunctionMaker {
             functions = new HashMap<>();
         }
         functions.put(function.hashCode(), function);
-        Helper.write(function, "data\\functions.dat");
+        Helper.write(functions, "data\\functions.dat");
         System.out.println("Ваша функция теперь имеет ID: " + function.hashCode());
     }
 }

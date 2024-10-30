@@ -71,11 +71,7 @@ public class SimpleFunctions {
         return resultClass.or(a, b);
     }
 
-    public static MathObject[] list2(MathObject ignoredResultClass, MathObject a, MathObject b) {
-        return new MathObject[]{a, b};
-    }
-
-    public static MathObject[] list3(MathObject ignoredResultClass, MathObject a, MathObject b, MathObject c) {
-        return new MathObject[]{a, b, c};
+    public static MathObject[] ignore(MathObject ignoredResultClass, MathObject ignoredA) {
+        return new MathObject[]{};
     }
 }

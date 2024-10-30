@@ -11,7 +11,7 @@ public class FInteger implements MathObject {
     }
 
     public FInteger(MathObject number) {
-        this.number = (Integer) number.get();
+        this.number = number.getInteger().get();
     }
 
     public FInteger(String s) {
@@ -21,6 +21,30 @@ public class FInteger implements MathObject {
     @Override
     public Integer get() {
         return this.number;
+    }
+
+    @Override
+    public FNatural getNatural() {
+        return new FNatural(this.number);
+    }
+
+    @Override
+    public FInteger getInteger() {
+        return this;
+    }
+
+    @Override
+    public FRational getRational() {
+        return new FRational(this.number, 1);
+    }
+
+    public FReal getReal() {
+        return new FReal(this.number);
+    }
+
+    @Override
+    public FComplex getComplex() {
+        return new FComplex(this.number, 0);
     }
 
     @Override
@@ -147,9 +171,5 @@ public class FInteger implements MathObject {
     @Override
     public String toString() {
         return this.get().toString();
-    }
-
-    public static FInteger getInstance() {
-        return new FInteger(0);
     }
 }

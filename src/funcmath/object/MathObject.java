@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 public interface MathObject extends Serializable {
     Object get();
+    FNatural getNatural();
+    FInteger getInteger();
+    FRational getRational();
+    FReal getReal();
+    FComplex getComplex();
     MathObject sum(MathObject a, MathObject b);
     MathObject sub(MathObject a, MathObject b);
     MathObject mul(MathObject a, MathObject b);
@@ -18,5 +23,17 @@ public interface MathObject extends Serializable {
     MathObject not(MathObject a);
     MathObject and(MathObject a, MathObject b);
     MathObject or(MathObject a, MathObject b);
+    // MathObject conj(MathObject a);
+    // MathObject arg(MathObject a);
 
+    static MathObject parseMathObject(String s, String resultClassName) {
+        return switch (resultClassName) {
+            case "integer" -> new FInteger(s);
+            case "natural" -> new FNatural(s);
+            case "rational" -> new FRational(s);
+            case "real" -> new FReal(s);
+            case "complex" -> new FComplex(s);
+            default -> throw new IllegalArgumentException("Не существует такой области определения");
+        };
+    }
 }
