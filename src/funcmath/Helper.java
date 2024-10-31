@@ -67,4 +67,27 @@ public class Helper {
         words.add(builder.toString());
         return words;
     }
+
+    public static ArrayList<Integer> numbersFromWords(ArrayList<String> words) {
+        ArrayList<Integer> numbers = new ArrayList<>();
+        for (String word : words) {
+            numbers.add(Integer.parseInt(word));
+        }
+        return numbers;
+    }
+
+    public static int filesCount(String pathname) {
+        return new File(pathname).listFiles().length;
+    }
+
+    public static void clear() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+            else {
+                System.out.print("\033\143");
+            }
+        } catch (IOException | InterruptedException ignored) {}
+    }
 }

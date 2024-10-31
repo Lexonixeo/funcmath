@@ -16,8 +16,12 @@ public class FComplex implements MathObject {
 
     public FComplex(MathObject number) {
         FComplex complex = number.getComplex();
-        this.real = complex.getReal();
-        this.imaginary = complex.getImaginary();
+        this.real = new FReal(complex.get()[0]);
+        this.imaginary = new FReal(complex.get()[1]);
+    }
+
+    private void update() {
+
     }
 
     @Override
@@ -51,7 +55,7 @@ public class FComplex implements MathObject {
 
     @Override
     public FComplex getComplex() {
-        return null;
+        return this;
     }
 
     @Override
@@ -85,11 +89,13 @@ public class FComplex implements MathObject {
     }
 
     @Override
-    public FComplex abs(MathObject a) {
-        return new FComplex(
-                Math.sqrt(this.real.get() * this.real.get() + this.imaginary.get() * this.imaginary.get()),
-                0
-        );
+    public MathObject root(MathObject a, MathObject b) {
+        return null;
+    }
+
+    @Override
+    public MathObject log(MathObject a, MathObject b) {
+        return null;
     }
 
     @Override
@@ -125,6 +131,26 @@ public class FComplex implements MathObject {
     @Override
     public MathObject or(MathObject a, MathObject b) {
         return null;
+    }
+
+    @Override
+    public FComplex abs(MathObject a) {
+        return new FComplex(
+                Math.sqrt(this.real.get() * this.real.get() + this.imaginary.get() * this.imaginary.get()),
+                0
+        );
+    }
+
+    @Override
+    public FComplex conj(MathObject a) {
+        FComplex an = new FComplex(a);
+        return new FComplex(an.get()[0], -an.get()[1]);
+    }
+
+    @Override
+    public FComplex arg(MathObject a) {
+        FComplex an = new FComplex(a);
+        return new FComplex(Math.atan2(an.get()[1], an.get()[0]), 0);
     }
 
     @Override

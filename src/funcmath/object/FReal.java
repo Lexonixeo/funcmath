@@ -91,9 +91,13 @@ public class FReal implements MathObject {
     }
 
     @Override
-    public FReal abs(MathObject a) {
-        FReal an = new FReal(a);
-        return new FReal(Math.abs(an.get()));
+    public MathObject root(MathObject a, MathObject b) {
+        return null;
+    }
+
+    @Override
+    public MathObject log(MathObject a, MathObject b) {
+        return null;
     }
 
     @Override
@@ -115,6 +119,12 @@ public class FReal implements MathObject {
     }
 
     @Override
+    public FReal abs(MathObject a) {
+        FReal an = new FReal(a);
+        return new FReal(Math.abs(an.get()));
+    }
+
+    @Override
     public MathObject xor(MathObject a, MathObject b) {
         return null;
     }
@@ -131,6 +141,16 @@ public class FReal implements MathObject {
 
     @Override
     public MathObject or(MathObject a, MathObject b) {
+        return null;
+    }
+
+    @Override
+    public MathObject conj(MathObject a) {
+        return null;
+    }
+
+    @Override
+    public MathObject arg(MathObject a) {
         return null;
     }
 

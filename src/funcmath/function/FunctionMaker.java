@@ -18,6 +18,8 @@ public class FunctionMaker {
         ArrayList<String> definition = Helper.wordsFromString(scanner.nextLine());
         System.out.print("Введите область опредения функции: ");
         String resultClassName = scanner.nextLine();
+        System.out.print("Введите кол-во использований функции (-1 если бесконечно): ");
+        int uses = scanner.nextInt();
 
         String[] values = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"};
         ArrayList<String> aValues = new ArrayList<>(List.of(values));
@@ -27,7 +29,7 @@ public class FunctionMaker {
             }
         }
 
-        Function function = new Function(name, definition, resultClassName, description);
+        Function function = new Function(name, definition, resultClassName, description, uses);
         HashMap<Integer, Function> functions;
         try {
             functions = (HashMap<Integer, Function>) Helper.read("data\\functions.dat");

@@ -39,8 +39,12 @@ public class SimpleFunctions {
         return resultClass.pow(a, b);
     }
 
-    public static MathObject abs(MathObject resultClass, MathObject a) {
-        return resultClass.abs(a);
+    public static MathObject root(MathObject resultClass, MathObject a, MathObject b) {
+        return resultClass.root(a, b);
+    }
+
+    public static MathObject log(MathObject resultClass, MathObject a, MathObject b) {
+        return resultClass.log(a, b);
     }
 
     public static MathObject gcd(MathObject resultClass, MathObject a, MathObject b) {
@@ -53,6 +57,10 @@ public class SimpleFunctions {
 
     public static MathObject rand(MathObject resultClass, MathObject a, MathObject b) {
         return resultClass.rand(a, b);
+    }
+
+    public static MathObject abs(MathObject resultClass, MathObject a) {
+        return resultClass.abs(a);
     }
 
     public static MathObject xor(MathObject resultClass, MathObject a, MathObject b) {
@@ -69,6 +77,14 @@ public class SimpleFunctions {
 
     public static MathObject or(MathObject resultClass, MathObject a, MathObject b) {
         return resultClass.or(a, b);
+    }
+
+    public static MathObject conj(MathObject resultClass, MathObject a) {
+        return resultClass.conj(a);
+    }
+
+    public static MathObject arg(MathObject resultClass, MathObject a) {
+        return resultClass.arg(a);
     }
 
     public static MathObject[] ignore(MathObject ignoredResultClass, MathObject ignoredA) {

@@ -114,9 +114,13 @@ public class FRational implements MathObject {
     }
 
     @Override
-    public MathObject abs(MathObject a) {
-        FRational an = new FRational(a);
-        return new FRational(Math.abs(an.get()[0]), an.get()[1]);
+    public MathObject root(MathObject a, MathObject b) {
+        return null;
+    }
+
+    @Override
+    public MathObject log(MathObject a, MathObject b) {
+        return null;
     }
 
     @Override
@@ -132,6 +136,12 @@ public class FRational implements MathObject {
     @Override
     public MathObject rand(MathObject a, MathObject b) {
         return null;
+    }
+
+    @Override
+    public FRational abs(MathObject a) {
+        FRational an = new FRational(a);
+        return new FRational(Math.abs(an.get()[0]), an.get()[1]);
     }
 
     @Override
@@ -151,6 +161,16 @@ public class FRational implements MathObject {
 
     @Override
     public MathObject or(MathObject a, MathObject b) {
+        return null;
+    }
+
+    @Override
+    public MathObject conj(MathObject a) {
+        return null;
+    }
+
+    @Override
+    public MathObject arg(MathObject a) {
         return null;
     }
 

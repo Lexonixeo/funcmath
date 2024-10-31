@@ -6,7 +6,8 @@ public class FNatural implements MathObject {
     protected int number;
 
     public FNatural(int number) {
-        if (number < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+        // if (number < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+        if (number < 0) number = 0;
         this.number = number;
     }
 
@@ -16,7 +17,8 @@ public class FNatural implements MathObject {
 
     public FNatural(String s) {
         int number = Integer.parseInt(s);
-        if (number < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+        // if (number < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+        if (number < 0) number = 0;
         this.number = number;
     }
 
@@ -77,12 +79,28 @@ public class FNatural implements MathObject {
 
     @Override
     public FNatural pow(MathObject a, MathObject b) {
-        return (new FInteger(0)).pow(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (bn.get() == 0) return new FNatural(1);
+        else if (bn.get() % 2 == 0) {
+            FNatural cn = this.div(bn, new FNatural(2));
+            FNatural dn = this.pow(an, cn);
+            return this.mul(dn, dn);
+        } else {
+            FNatural cn = this.div(bn, new FNatural(2));
+            FNatural dn = this.pow(an, cn);
+            return this.mul(this.mul(dn, dn), an);
+        }
     }
 
     @Override
-    public FNatural abs(MathObject a) {
-        return (new FInteger(0)).abs(new FNatural(a)).getNatural();
+    public MathObject root(MathObject a, MathObject b) {
+        return null;
+    }
+
+    @Override
+    public MathObject log(MathObject a, MathObject b) {
+        return null;
     }
 
     @Override
@@ -98,6 +116,11 @@ public class FNatural implements MathObject {
     @Override
     public FNatural rand(MathObject a, MathObject b) {
         return (new FInteger(0)).rand(new FNatural(a), new FNatural(b)).getNatural();
+    }
+
+    @Override
+    public FNatural abs(MathObject a) {
+        return (new FInteger(0)).abs(new FNatural(a)).getNatural();
     }
 
     @Override
@@ -118,6 +141,16 @@ public class FNatural implements MathObject {
     @Override
     public FNatural or(MathObject a, MathObject b) {
         return (new FInteger(0)).or(new FNatural(a), new FNatural(b)).getNatural();
+    }
+
+    @Override
+    public MathObject conj(MathObject a) {
+        return null;
+    }
+
+    @Override
+    public MathObject arg(MathObject a) {
+        return null;
     }
 
     @Override

@@ -15,16 +15,30 @@ public interface MathObject extends Serializable {
     MathObject div(MathObject a, MathObject b);
     MathObject mod(MathObject a, MathObject b);
     MathObject pow(MathObject a, MathObject b);
-    MathObject abs(MathObject a);
+    MathObject root(MathObject a, MathObject b);
+    MathObject log(MathObject a, MathObject b);
     MathObject gcd(MathObject a, MathObject b);
     MathObject lcm(MathObject a, MathObject b);
     MathObject rand(MathObject a, MathObject b);
+    MathObject abs(MathObject a);
     MathObject xor(MathObject a, MathObject b);
     MathObject not(MathObject a);
     MathObject and(MathObject a, MathObject b);
     MathObject or(MathObject a, MathObject b);
-    // MathObject conj(MathObject a);
-    // MathObject arg(MathObject a);
+    MathObject conj(MathObject a);
+    MathObject arg(MathObject a);
+
+    static MathObject parseMathObject(String s) {
+        String ss = s.substring(0, s.length() - 1);
+        return switch (s.charAt(s.length() - 1)) {
+            case 'z' -> new FInteger(ss);
+            case 'n' -> new FNatural(ss);
+            case 'q' -> new FRational(ss);
+            case 'r' -> new FReal(ss);
+            case 'c' -> new FComplex(ss);
+            default -> throw new IllegalArgumentException("Не существует такого числа");
+        };
+    }
 
     static MathObject parseMathObject(String s, String resultClassName) {
         return switch (resultClassName) {

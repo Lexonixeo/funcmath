@@ -11,6 +11,7 @@ public class Function implements Serializable {
     String description;
     ArrayList<String> definition; // должен содержать x0, x1, x2...
     int numberOfArgs;
+    int uses;
     String resultClassName;
 
     // хранить функции в hashmap?
@@ -29,57 +30,15 @@ public class Function implements Serializable {
         this.definition = f.definition;
         this.numberOfArgs = f.numberOfArgs;
         this.resultClassName = f.resultClassName;
-    }
-
-    public Function(int hashCode, String name) {
-        HashMap<Integer, Function> functions;
-        try {
-            functions = (HashMap<Integer, Function>) Helper.read("data\\functions.dat");
-        } catch (RuntimeException e) {
-            functions = new HashMap<>();
-        }
-        if (!functions.containsKey(hashCode)) throw new NullPointerException("В functions.dat отсуствует функция: " + hashCode);
-        Function f = functions.get(hashCode);
-        this.name = name;
-        this.definition = f.definition;
-        this.numberOfArgs = f.numberOfArgs;
-        this.resultClassName = f.resultClassName;
-
-        String[] values = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"};
-        StringBuilder sb = new StringBuilder();
-        sb.append(name);
-        sb.append("(");
-        for (int i = 0; i < numberOfArgs; i++) {
-            sb.append(values[i]);
-            if (i != numberOfArgs - 1) {
-                sb.append(", ");
-            }
-        }
-        sb.append(") = неизвестная функция");
-        this.description = sb.toString();
-    }
-
-    public Function(int hashCode, String name, String description) {
-        HashMap<Integer, Function> functions;
-        try {
-            functions = (HashMap<Integer, Function>) Helper.read("data\\functions.dat");
-        } catch (RuntimeException e) {
-            functions = new HashMap<>();
-        }
-        if (!functions.containsKey(hashCode)) throw new NullPointerException("В functions.dat отсуствует функция: " + hashCode);
-        Function f = functions.get(hashCode);
-        this.name = name;
-        this.description = description;
-        this.definition = f.definition;
-        this.numberOfArgs = f.numberOfArgs;
-        this.resultClassName = f.resultClassName;
+        this.uses = f.uses;
     }
 
     /*
     public Function(String name) {
         this.name = name;
-        // this.description = ...
-        // this.definition = ...
+        this.description = ...
+        this.definition = ...
+        this.uses = -1;
 
         this.numberOfArgs = 0;
         ArrayList<String> sfNames = SimpleFunctions.names;
@@ -91,38 +50,12 @@ public class Function implements Serializable {
     }
     */
 
-    public Function(String name, ArrayList<String> definition, String resultClassName) {
+    public Function(String name, ArrayList<String> definition, String resultClassName, String description, int uses) {
         this.name = name;
         this.definition = definition;
         this.resultClassName = resultClassName;
-
-        this.numberOfArgs = 0;
-        ArrayList<String> sfNames = SimpleFunctions.names;
-        for (String word : definition) {
-            if (!sfNames.contains(word) && word.charAt(0) == 'x') {
-                this.numberOfArgs = Math.max(this.numberOfArgs, Integer.parseInt(word.substring(1)) + 1);
-            }
-        }
-
-        String[] values = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"};
-        StringBuilder sb = new StringBuilder();
-        sb.append(name);
-        sb.append("(");
-        for (int i = 0; i < numberOfArgs; i++) {
-            sb.append(values[i]);
-            if (i != numberOfArgs - 1) {
-                sb.append(", ");
-            }
-        }
-        sb.append(") = неизвестная функция");
-        this.description = sb.toString();
-    }
-
-    public Function(String name, ArrayList<String> definition, String resultClassName, String description) {
-        this.name = name;
         this.description = description;
-        this.definition = definition;
-        this.resultClassName = resultClassName;
+        this.uses = uses;
 
         this.numberOfArgs = 0;
         ArrayList<String> sfNames = SimpleFunctions.names;
@@ -137,8 +70,23 @@ public class Function implements Serializable {
         return numberOfArgs;
     }
 
-    public ArrayList<MathObject> use(MathObject... x) {
-        if (x.length != numberOfArgs) throw new IllegalArgumentException("Не совпадает число аргументов функции: должно быть " + numberOfArgs + ", есть: " + x.length);
+    public int getUses() {
+        return uses;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getResultClassName() {
+        return resultClassName;
+    }
+
+    public ArrayList<MathObject> use(int mode, MathObject... x) {
+        if (mode == 0 && this.uses == 0) throw new RuntimeException("У функции закончилось число использований.");
+        if (x.length != numberOfArgs) throw new IllegalArgumentException(
+                "Не совпадает число аргументов функции: должно быть " + numberOfArgs + ", есть: " + x.length
+        );
 
         MathObject resultClass = switch (resultClassName) {
             case "integer" -> new FInteger(0);
@@ -146,7 +94,7 @@ public class Function implements Serializable {
             case "rational" -> new FRational(0, 1);
             case "real" -> new FReal(0);
             case "complex" -> new FComplex(0, 0);
-            default -> throw new IllegalArgumentException();
+            default -> throw new IllegalArgumentException("Не существует такой области определения");
         };
         ArrayList<String> sfNames = SimpleFunctions.names;
         Stack<SimpleFunction> sfStack = new Stack<>();
@@ -189,12 +137,13 @@ public class Function implements Serializable {
             }
         }
 
+        if (mode == 0) this.uses--;
         return nums.peek();
     }
 
     @Override
     public String toString() {
-        return this.description;
+        return "(" + (this.uses < 0 ? "inf" : this.uses) + ") " + this.description;
     }
 
     @Override
@@ -202,11 +151,20 @@ public class Function implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Function function = (Function) o;
-        return Objects.equals(name, function.name) && Objects.equals(description, function.description) && Objects.equals(definition, function.definition) && Objects.equals(resultClassName, function.resultClassName);
+        return numberOfArgs == function.numberOfArgs && uses == function.uses && Objects.equals(name, function.name) && Objects.equals(description, function.description) && Objects.equals(definition, function.definition) && Objects.equals(resultClassName, function.resultClassName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, definition, resultClassName);
+        return Objects.hash(name, description, definition, numberOfArgs, uses, resultClassName);
+    }
+
+    public static void main(String[] args) {
+        FNatural a = new FNatural(240);
+        FNatural b = new FNatural(14);
+        FNatural c = new FNatural(62);
+        Function f = new Function(587453148);
+        System.out.println(f.definition);
+        System.out.println(f.use(0, a, b, c));
     }
 }

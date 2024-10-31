@@ -90,6 +90,8 @@ public class FInteger implements MathObject {
     public FInteger pow(MathObject a, MathObject b) {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
+        if (bn.get() < 0 && an.get() == 0) return new FInteger(Integer.MAX_VALUE);
+        if (bn.get() < 0) return new FInteger((an.get() > 0 || bn.get() % 2 == 0 ? 0 : -1));
         if (bn.get() == 0) return new FInteger(1);
         else if (bn.get() % 2 == 0) {
             FInteger cn = this.div(bn, new FInteger(2));
@@ -103,9 +105,13 @@ public class FInteger implements MathObject {
     }
 
     @Override
-    public FInteger abs(MathObject a) {
-        FInteger an = new FInteger(a);
-        return new FInteger(Math.abs(an.get()));
+    public MathObject root(MathObject a, MathObject b) {
+        return null;
+    }
+
+    @Override
+    public MathObject log(MathObject a, MathObject b) {
+        return null;
     }
 
     @Override
@@ -136,6 +142,12 @@ public class FInteger implements MathObject {
     }
 
     @Override
+    public FInteger abs(MathObject a) {
+        FInteger an = new FInteger(a);
+        return new FInteger(Math.abs(an.get()));
+    }
+
+    @Override
     public FInteger xor(MathObject a, MathObject b) {
         // and or a b not and a b
         FInteger an = new FInteger(a);
@@ -161,6 +173,16 @@ public class FInteger implements MathObject {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
         return new FInteger(an.get() | bn.get());
+    }
+
+    @Override
+    public MathObject conj(MathObject a) {
+        return null;
+    }
+
+    @Override
+    public MathObject arg(MathObject a) {
+        return null;
     }
 
     @Override
