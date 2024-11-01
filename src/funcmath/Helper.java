@@ -90,4 +90,17 @@ public class Helper {
             }
         } catch (IOException | InterruptedException ignored) {}
     }
+
+    public static <T extends Serializable> T deepClone(T o) {
+        try {
+            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(byteOut);
+            out.writeObject(o);
+            out.flush();
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray()));
+            return (T) o.getClass().cast(in.readObject());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

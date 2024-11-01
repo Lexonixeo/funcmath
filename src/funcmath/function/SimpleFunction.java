@@ -49,6 +49,4 @@ public class SimpleFunction {
     public String toString() {
         return this.name;
     }
-
-    // когда добавлю описания функциям, добавить toString()
 }

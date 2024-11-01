@@ -36,12 +36,12 @@ public class Level {
         ArrayList<Object> generated = (ArrayList<Object>) Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat");
 
         originalNumbers = (ArrayList<MathObject>) generated.get(0);
-        numbers = (ArrayList<MathObject>) originalNumbers.clone();
-        numbersStack.push((ArrayList<MathObject>) numbers.clone());
+        numbers = Helper.deepClone(originalNumbers);
+        numbersStack.push(Helper.deepClone(numbers));
 
         originalFunctions = (HashMap<String, Function>) generated.get(1);
-        functions = (HashMap<String, Function>) originalFunctions.clone();
-        functionsStack.push((HashMap<String, Function>) functions.clone());
+        functions = Helper.deepClone(originalFunctions);
+        functionsStack.push(Helper.deepClone(functions));
 
         ans = (MathObject) generated.get(2);
         hints = (ArrayList<String>) generated.get(3);
@@ -51,9 +51,6 @@ public class Level {
 
     private void playCutscene() {
         Scanner scanner = new Scanner(System.in);
-        Helper.clear();
-        System.out.println("Нажмите Enter, чтобы продолжить... ");
-        scanner.nextLine();
         Helper.clear();
         for (String phrase : cutscene) {
             System.out.print(phrase + " ");
@@ -68,7 +65,7 @@ public class Level {
     }
 
     private boolean numsCheck(ArrayList<MathObject> args) {
-        ArrayList<MathObject> nums = (ArrayList<MathObject>) numbers.clone();
+        ArrayList<MathObject> nums = Helper.deepClone(numbers);
         for (MathObject arg : args) {
             if (nums.contains(arg)) nums.remove(arg);
             else return false;
@@ -138,13 +135,13 @@ public class Level {
     }
 
     private void restart() {
-        numbers = (ArrayList<MathObject>) originalNumbers.clone();
+        numbers = Helper.deepClone(originalNumbers);
         numbersStack.clear();
-        numbersStack.push((ArrayList<MathObject>) numbers.clone());
+        numbersStack.push(Helper.deepClone(numbers));
 
-        functions = (HashMap<String, Function>) originalFunctions.clone();
+        functions = Helper.deepClone(originalFunctions);
         functionsStack.clear();
-        functionsStack.push((HashMap<String, Function>) functions.clone());
+        functionsStack.push(Helper.deepClone(functions));
 
         Helper.clear();
         this.start();
@@ -232,8 +229,8 @@ public class Level {
         System.out.println();
 
         if (mode == 0) {
-            numbersStack.push((ArrayList<MathObject>) numbers.clone());
-            functionsStack.push((HashMap<String, Function>) functions.clone());
+            numbersStack.push(Helper.deepClone(numbers));
+            functionsStack.push(Helper.deepClone(functions));
         }
     }
 
@@ -254,12 +251,12 @@ public class Level {
         functionsStack.pop();
         if (numbersStack.empty()) {
             System.out.println("= Нет хода назад!");
-            numbersStack.push((ArrayList<MathObject>) numbers.clone());
-            functionsStack.push((HashMap<String, Function>) functions.clone());
+            numbersStack.push(Helper.deepClone(numbers));
+            functionsStack.push(Helper.deepClone(functions));
             return;
         }
-        numbers = (ArrayList<MathObject>) numbersStack.peek().clone();
-        functions = (HashMap<String, Function>) functionsStack.peek().clone();
+        numbers = Helper.deepClone(numbersStack.peek());
+        functions = Helper.deepClone(functionsStack.peek());
         nums();
     }
 

@@ -9,12 +9,10 @@ import java.util.*;
 public class Function implements Serializable {
     String name;
     String description;
-    ArrayList<String> definition; // должен содержать x0, x1, x2...
+    ArrayList<String> definition;
     int numberOfArgs;
     int uses;
     String resultClassName;
-
-    // хранить функции в hashmap?
 
     public Function(int hashCode) {
         HashMap<Integer, Function> functions;
@@ -34,6 +32,7 @@ public class Function implements Serializable {
     }
 
     /*
+    здесь будет простейшая функция
     public Function(String name) {
         this.name = name;
         this.description = ...
@@ -70,10 +69,6 @@ public class Function implements Serializable {
         return numberOfArgs;
     }
 
-    public int getUses() {
-        return uses;
-    }
-
     public String getName() {
         return name;
     }
@@ -102,7 +97,6 @@ public class Function implements Serializable {
         nums.push(new ArrayList<>()); // конечный
 
         for (String word : definition) {
-            // Считаем, что в определении переменные это x0, x1, ...
             if (sfNames.contains(word)) {
                 sfStack.push(new SimpleFunction(word, resultClass));
                 nums.push(new ArrayList<>());
@@ -130,7 +124,6 @@ public class Function implements Serializable {
                     try {
                         nums.peek().add((MathObject) ans);
                     } catch (RuntimeException e) {
-                        // Считаем, что функция вида list будет только в начале
                         nums.peek().addAll(List.of((MathObject[]) ans));
                     }
                 }
@@ -157,14 +150,5 @@ public class Function implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(name, description, definition, numberOfArgs, uses, resultClassName);
-    }
-
-    public static void main(String[] args) {
-        FNatural a = new FNatural(240);
-        FNatural b = new FNatural(14);
-        FNatural c = new FNatural(62);
-        Function f = new Function(587453148);
-        System.out.println(f.definition);
-        System.out.println(f.use(0, a, b, c));
     }
 }
