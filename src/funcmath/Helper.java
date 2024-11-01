@@ -111,4 +111,10 @@ public class Helper {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean isFileExists(String pathname) {
+        return (new File(pathname)).exists();
+    }
+
+    // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ
 }

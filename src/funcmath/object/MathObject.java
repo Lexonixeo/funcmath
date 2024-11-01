@@ -50,4 +50,17 @@ public interface MathObject extends Serializable {
             default -> throw new IllegalArgumentException("Не существует такой области определения");
         };
     }
+
+    /*
+    В будущем добавить:
+    FGauss
+    FVector
+    FMatrix
+    FTensor
+    FTriangle и т.д.
+    FString
+    FColor
+    FMinecraftItem
+    FWord - это то, из-за чего я придумал эту игру :)
+     */
 }
