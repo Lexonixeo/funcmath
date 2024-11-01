@@ -1,5 +1,8 @@
 package funcmath.object;
 
+import funcmath.Helper;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FComplex implements MathObject {
@@ -11,17 +14,20 @@ public class FComplex implements MathObject {
     }
 
     public FComplex(String s) {
-        // ...
+        ArrayList<Double> numbers = Helper.doublesFromWords(Helper.wordsFromString(
+                s.replace('i', ' ')
+                        .replace('+', ' ')
+                        .replaceAll("-", " -"))
+        );
+        FComplex complex = new FComplex(numbers.get(0), numbers.get(1));
+        this.real = new FReal(complex.get()[0]);
+        this.imaginary = new FReal(complex.get()[1]);
     }
 
     public FComplex(MathObject number) {
         FComplex complex = number.getComplex();
         this.real = new FReal(complex.get()[0]);
         this.imaginary = new FReal(complex.get()[1]);
-    }
-
-    private void update() {
-
     }
 
     @Override

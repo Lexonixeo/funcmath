@@ -68,10 +68,18 @@ public class Helper {
         return words;
     }
 
-    public static ArrayList<Integer> numbersFromWords(ArrayList<String> words) {
+    public static ArrayList<Integer> integersFromWords(ArrayList<String> words) {
         ArrayList<Integer> numbers = new ArrayList<>();
         for (String word : words) {
             numbers.add(Integer.parseInt(word));
+        }
+        return numbers;
+    }
+
+    public static ArrayList<Double> doublesFromWords(ArrayList<String> words) {
+        ArrayList<Double> numbers = new ArrayList<>();
+        for (String word : words) {
+            numbers.add(Double.parseDouble(word));
         }
         return numbers;
     }

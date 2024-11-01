@@ -1,5 +1,8 @@
 package funcmath.object;
 
+import funcmath.Helper;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FRational implements MathObject {
@@ -30,7 +33,10 @@ public class FRational implements MathObject {
     }
 
     public FRational(String s) {
-        // to do...
+        ArrayList<Integer> numbers = Helper.integersFromWords(Helper.wordsFromString(s.replace('/', ' ')));
+        FRational num = new FRational(numbers.get(0), numbers.get(1));
+        this.numerator = new FInteger(num.get()[0]);
+        this.denominator = new FNatural(num.get()[1]);
     }
 
     @Override

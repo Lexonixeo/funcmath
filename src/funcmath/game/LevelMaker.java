@@ -25,7 +25,7 @@ public class LevelMaker {
         System.out.println("Обратите внимание: названия функций не должны повторяться!");
         System.out.println("Обратите внимание: область определения функций должна быть одинакова!");
         System.out.print("Введите ID функций: ");
-        ArrayList<Integer> ids = Helper.numbersFromWords(Helper.wordsFromString(scanner.nextLine()));
+        ArrayList<Integer> ids = Helper.integersFromWords(Helper.wordsFromString(scanner.nextLine()));
         String resultClassName = "";
 
         for (int id : ids) {
