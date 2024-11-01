@@ -121,8 +121,6 @@ public class FunctionMaker {
         Helper.write(functions, "data\\functions.dat");
         System.out.println("Ваша функция теперь имеет ID: " + function.hashCode());
 
-        System.out.println(function);
-
         return false;
     }
 
