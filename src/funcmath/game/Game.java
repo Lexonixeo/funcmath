@@ -209,11 +209,8 @@ public class Game {
 
     public static Game login() {
         HashMap<Integer, String> players;
-        try {
-            players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
-        } catch (Exception e) {
-            players = new HashMap<>();
-        }
+        if (!Helper.isFileExists("data\\players\\players.dat")) players = new HashMap<>();
+        else players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         System.out.print("Введите ваш логин: ");
         String name = scanner.nextLine();
