@@ -116,5 +116,21 @@ public class Helper {
         return (new File(pathname)).exists();
     }
 
+    public static ArrayList<String> getFileNames(String pathname) {
+        ArrayList<String> answer = new ArrayList<>();
+        File folder = new File(pathname);
+        File[] listOfFiles = folder.listFiles();
+        if (listOfFiles == null) {
+            return answer;
+        }
+
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                answer.add(file.getName().substring(5, file.getName().length() - 4));
+            }
+        }
+        return answer;
+    }
+
     // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ
 }

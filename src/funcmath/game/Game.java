@@ -1,7 +1,9 @@
 package funcmath.game;
 
 import funcmath.Helper;
+import funcmath.function.FunctionMaker;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +15,8 @@ public class Game {
     HashSet<Integer> completedLevels;
     int lastLevel;
     boolean tutorial = true;
+    boolean levelMakerTutorial = true;
+    boolean functionMakerTutorial = true;
 
     Game(String name) {
         this.name = name;
@@ -58,10 +62,6 @@ public class Game {
         tutorial = result[0];
         if (result[1]) completedLevels.add(level);
         Helper.write(completedLevels, "data\\players\\" + hashedName + ".dat");
-    }
-
-    private void makeLevel() {
-        // to do...
     }
 
     private void play() {
@@ -122,14 +122,16 @@ public class Game {
         System.out.println("help          - Узнать список команд");
         System.out.println("play          - Начать/продолжить игру");
         System.out.println("level {lvl}   - Перейти к уровню {lvl}");
-        System.out.println("custom {lvl}  - Играть в пользовательский уровень {lvl} (НЕ РАБОТАЕТ)");
+        System.out.println("custom {lvl}  - Играть в пользовательский уровень {lvl}");
         System.out.println("random {dfc}  - Играть в случайный уровень сложности {dfc} (НЕ РАБОТАЕТ)");
+        System.out.println("list {n}      - Открыть список обычных уровней на странице {n} (НЕ РАБОТАЕТ)");
+        System.out.println("clist {n}     - Открыть список пользовательских уровней на странице {n} (НЕ РАБОТАЕТ)");
         System.out.println("last          - Перейти к последнему уровню");
         System.out.println("prev          - Перейти к предыдущему уровню");
         System.out.println("next          - Перейти к следующему уровню");
         System.out.println("stats         - Узнать свою статистику (НЕ РАБОТАЕТ)");
-        System.out.println("make level    - Создать свой уровень (НЕ РАБОТАЕТ)");
-        System.out.println("make function - Создать свою функцию (НЕ РАБОТАЕТ)");
+        System.out.println("make level    - Создать свой уровень");
+        System.out.println("make function - Создать свою функцию");
         System.out.println("exit          - Выйти из игры");
     }
 
@@ -157,7 +159,7 @@ public class Game {
     }
 
     public void game() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         Helper.clear();
         menu();
         boolean running = true;
@@ -168,16 +170,10 @@ public class Game {
             ArrayList<String> command = Helper.wordsFromString(scanner.nextLine());
             String first_command = command.get(0);
             switch (first_command) {
-                case "menu":
-                    menu();
-                    break;
-                case "help":
-                    help();
-                    break;
-                case "play":
-                    play();
-                    break;
-                case "level":
+                case "menu" -> menu();
+                case "help" -> help();
+                case "play" -> play();
+                case "level" -> {
                     if (command.size() > 2) {
                         System.out.println("Избыток аргументов! Введите команду ещё раз.");
                         continue;
@@ -193,31 +189,20 @@ public class Game {
                         continue;
                     }
                     level(level);
-                    break;
-                case "random":
-                    System.out.println("Скоро будет, но не щас.");
-                    break;
-                case "last":
-                    last();
-                    break;
-                case "prev":
-                    prev();
-                    break;
-                case "make":
-                    System.out.println("Скоро будет, но не щас.");
-                    break;
-                case "next":
-                    next();
-                    break;
-                case "stats":
-                    System.out.println("Скоро будет, но не щас.");
-                    break;
-                case "exit":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Неизвестная команда :( Введите help, чтобы узнать список команд.");
-                    break;
+                }
+                case "random" -> System.out.println("Скоро будет, но не щас.");
+                case "last" -> last();
+                case "prev" -> prev();
+                case "make" -> {
+                    switch (command.get(1)) {
+                        case "function" -> functionMakerTutorial = FunctionMaker.make(functionMakerTutorial);
+                        case "level" -> levelMakerTutorial = LevelMaker.make(levelMakerTutorial, tutorial);
+                    }
+                }
+                case "next" -> next();
+                case "stats" -> System.out.println("Скоро будет, но не щас.");
+                case "exit" -> running = false;
+                default -> System.out.println("Неизвестная команда :( Введите help, чтобы узнать список команд.");
             }
         }
     }
@@ -229,7 +214,7 @@ public class Game {
         } catch (Exception e) {
             players = new HashMap<>();
         }
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         System.out.print("Введите ваш логин: ");
         String name = scanner.nextLine();
         if (!players.containsValue(name)) {

@@ -4,6 +4,7 @@ import funcmath.Helper;
 import funcmath.function.Function;
 import funcmath.object.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Level {
@@ -21,6 +22,7 @@ public class Level {
     // int difficulty;
     boolean tutorial;
     String resultClassName;
+    String description;
     boolean completed = false;
 
     public Level(int level, boolean tutorial, int customFlag) {
@@ -47,10 +49,11 @@ public class Level {
         hints = (ArrayList<String>) generated.get(3);
         resultClassName = (String) generated.get(4);
         cutscene = (ArrayList<String>) generated.get(5);
+        description = (String) generated.get(6);
     }
 
     private void playCutscene() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         Helper.clear();
         for (String phrase : cutscene) {
             System.out.print(phrase + " ");
@@ -261,7 +264,7 @@ public class Level {
     }
 
     private int turn() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         System.out.print("[Level] Введите выражение: ");
         ArrayList<String> command = Helper.wordsFromString(scanner.nextLine());
         String first_command = command.get(0);
@@ -310,8 +313,8 @@ public class Level {
         return Objects.hash(originalNumbers, originalFunctions, hints, ans, resultClassName);
     }
 
-    public static void main(String[] args) {
-        Level l = new Level(1, true, 0);
-        boolean[] result = l.game();
+    @Override
+    public String toString() {
+        return "Level " + this.level + ": " + this.description;
     }
 }

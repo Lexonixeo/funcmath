@@ -4,27 +4,45 @@ import funcmath.Helper;
 import funcmath.function.Function;
 import funcmath.object.MathObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class LevelMaker {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        String path = "data\\preLevels\\";
+    private static void tutorial() {
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
+        Helper.clear();
+        System.out.println("Добро пожаловать в мастерскую создания уровней!");
+        System.out.println("Временно здесь нет туториала :(");
+        System.out.println("Разбирайтесь! :)");
+        System.out.println("Нажмите Enter, чтобы продолжить... ");
+        scanner.nextLine();
+    }
 
-        System.out.print("Введите режим создания уровня: ");
+    public static boolean make(boolean levelMakerTutorial, boolean tutorial) {
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
+        Helper.clear();
+
+        System.out.println("Добро пожаловать в мастерскую создания уровней!");
+        if (levelMakerTutorial) {
+            System.out.print("Хотите ли вы прочитать туториал? y/n ");
+            String input = scanner.nextLine();
+            if (input.equals("y") || input.equals("у")) tutorial();
+        }
+
+        String path = "data\\preLevels\\";
+        System.out.print("Введите что-нибудь: ");
         String mode = scanner.nextLine();
-        if (mode.equals("admin")) {
+        boolean universalMode = Integer.toHexString(mode.hashCode()).equals("586034f");
+        if (universalMode) {
             path = "data\\levels\\";
         }
 
         HashMap<String, Function> originalFunctions = new HashMap<>();
 
-        System.out.println("Обратите внимание: названия функций не должны повторяться!");
-        System.out.println("Обратите внимание: область определения функций должна быть одинакова!");
-        System.out.print("Введите ID функций: ");
+        System.out.print("Введите ID функций через пробел: ");
         ArrayList<Integer> ids = Helper.integersFromWords(Helper.wordsFromString(scanner.nextLine()));
         String resultClassName = "";
 
@@ -69,6 +87,9 @@ public class LevelMaker {
             cutscene.add(scanner.nextLine());
         }
 
+        System.out.print("Введите описание уровня: ");
+        String description = scanner.nextLine();
+
         ArrayList<Object> generated = new ArrayList<>();
         generated.add(originalNumbers);
         generated.add(originalFunctions);
@@ -76,11 +97,35 @@ public class LevelMaker {
         generated.add(hints);
         generated.add(resultClassName);
         generated.add(cutscene);
+        generated.add(description);
 
         int levelHash = Objects.hash(originalNumbers, originalFunctions, hints, ans, resultClassName);
         String level = "level" + levelHash + ".dat";
-        if (mode.equals("admin")) level = "level" + (Helper.filesCount(path) + 1) + ".dat";
+        while (!universalMode && Helper.getFileNames(path).contains(level)) {
+            levelHash += mode.hashCode();
+            level = "level" + levelHash + ".dat";
+        }
+        if (universalMode) level = "level" + (Helper.filesCount(path) + 1) + ".dat";
 
         Helper.write(generated, path + level);
+
+        if (!universalMode) {
+            System.out.println("А теперь вам придётся проходить уровень, чтобы он попал в список пользовательских.");
+            System.out.print("Будете проходить? y/n ");
+            String answer = scanner.nextLine();
+            if (answer.equals("y") || answer.equals("у")) {
+                Level l = new Level(levelHash, tutorial, 2);
+                boolean[] result = l.game();
+                if (result[1]) {
+                    Helper.write(generated, "data\\customLevels\\" + level);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static void main(String[] args) {
+        make(false, false);
     }
 }
