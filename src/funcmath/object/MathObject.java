@@ -18,10 +18,9 @@ public interface MathObject extends Serializable {
     MathObject root(MathObject a, MathObject b);
     MathObject log(MathObject a, MathObject b);
     MathObject gcd(MathObject a, MathObject b);
-    MathObject lcm(MathObject a, MathObject b);
+    MathObject fact(MathObject a);
     MathObject rand(MathObject a, MathObject b);
     MathObject abs(MathObject a);
-    MathObject xor(MathObject a, MathObject b);
     MathObject not(MathObject a);
     MathObject and(MathObject a, MathObject b);
     MathObject or(MathObject a, MathObject b);
@@ -53,6 +52,7 @@ public interface MathObject extends Serializable {
 
     /*
     В будущем добавить:
+    FModuloInteger (по какому-то модулю)
     FGauss
     FVector
     FMatrix
@@ -63,4 +63,7 @@ public interface MathObject extends Serializable {
     FMinecraftItem
     FWord - это то, из-за чего я придумал эту игру :)
      */
+
+    // xor a b = and or a b not and a b
+    // lcm a b = div mul a b gcd a b
 }

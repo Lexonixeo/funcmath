@@ -124,11 +124,8 @@ public class FInteger implements MathObject {
     }
 
     @Override
-    public FInteger lcm(MathObject a, MathObject b) {
-        // div mul a b gcd a b
-        FInteger an = new FInteger(a);
-        FInteger bn = new FInteger(b);
-        return this.div(this.mul(an, bn), this.gcd(an, bn));
+    public MathObject fact(MathObject a) {
+        return null;
     }
 
     @Override
@@ -145,14 +142,6 @@ public class FInteger implements MathObject {
     public FInteger abs(MathObject a) {
         FInteger an = new FInteger(a);
         return new FInteger(Math.abs(an.get()));
-    }
-
-    @Override
-    public FInteger xor(MathObject a, MathObject b) {
-        // and or a b not and a b
-        FInteger an = new FInteger(a);
-        FInteger bn = new FInteger(b);
-        return new FInteger(an.get() ^ bn.get());
     }
 
     @Override

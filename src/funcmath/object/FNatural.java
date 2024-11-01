@@ -1,5 +1,6 @@
 package funcmath.object;
 
+import java.security.SecureRandom;
 import java.util.Objects;
 
 public class FNatural implements MathObject {
@@ -54,27 +55,39 @@ public class FNatural implements MathObject {
 
     @Override
     public FNatural sum(MathObject a, MathObject b) {
-        return (new FInteger(0)).sum(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        return new FNatural(an.get() + bn.get());
     }
 
     @Override
     public FNatural sub(MathObject a, MathObject b) {
-        return (new FInteger(0)).sub(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        return new FNatural(an.get() - bn.get());
     }
 
     @Override
     public FNatural mul(MathObject a, MathObject b) {
-        return (new FInteger(0)).mul(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        return new FNatural(an.get() * bn.get());
     }
 
     @Override
     public FNatural div(MathObject a, MathObject b) {
-        return (new FInteger(0)).div(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (bn.get() == 0) return new FNatural(an.get() == 0 ? 0 : Integer.MAX_VALUE);
+        else return new FNatural(an.get() / bn.get());
     }
 
     @Override
     public FNatural mod(MathObject a, MathObject b) {
-        return (new FInteger(0)).mod(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (bn.get() == 0) return new FNatural(0);
+        else return new FNatural(an.get() % bn.get());
     }
 
     @Override
@@ -105,27 +118,31 @@ public class FNatural implements MathObject {
 
     @Override
     public FNatural gcd(MathObject a, MathObject b) {
-        return (new FInteger(0)).gcd(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (an.get() < bn.get()) return this.gcd(bn, an);
+        else if (bn.get() == 0) return an;
+        else return this.gcd(bn, this.mod(an, bn));
     }
 
     @Override
-    public FNatural lcm(MathObject a, MathObject b) {
-        return (new FInteger(0)).lcm(new FNatural(a), new FNatural(b)).getNatural();
+    public MathObject fact(MathObject a) {
+        return null;
     }
 
     @Override
     public FNatural rand(MathObject a, MathObject b) {
-        return (new FInteger(0)).rand(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        SecureRandom random = new SecureRandom();
+        return new FNatural(
+                random.nextInt(Math.abs(bn.get() - an.get()) + 1) + Math.min(an.get(), bn.get())
+        );
     }
 
     @Override
     public FNatural abs(MathObject a) {
         return (new FInteger(0)).abs(new FNatural(a)).getNatural();
-    }
-
-    @Override
-    public FNatural xor(MathObject a, MathObject b) {
-        return (new FInteger(0)).xor(new FNatural(a), new FNatural(b)).getNatural();
     }
 
     @Override

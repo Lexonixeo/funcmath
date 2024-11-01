@@ -135,7 +135,7 @@ public class FRational implements MathObject {
     }
 
     @Override
-    public MathObject lcm(MathObject a, MathObject b) {
+    public MathObject fact(MathObject a) {
         return null;
     }
 
@@ -148,11 +148,6 @@ public class FRational implements MathObject {
     public FRational abs(MathObject a) {
         FRational an = new FRational(a);
         return new FRational(Math.abs(an.get()[0]), an.get()[1]);
-    }
-
-    @Override
-    public MathObject xor(MathObject a, MathObject b) {
-        return null;
     }
 
     @Override

@@ -83,7 +83,7 @@ public class LevelMaker {
         System.out.print("Введите кол-во фраз в катсцене: ");
         int m = Integer.parseInt(scanner.nextLine());
         for (int i = 0; i < m; i++) {
-            System.out.println("(" + (i + 1) + ") ");
+            System.out.print("(" + (i + 1) + ") ");
             cutscene.add(scanner.nextLine());
         }
 

@@ -110,17 +110,12 @@ public class FComplex implements MathObject {
     }
 
     @Override
-    public MathObject lcm(MathObject a, MathObject b) {
+    public MathObject fact(MathObject a) {
         return null;
     }
 
     @Override
     public MathObject rand(MathObject a, MathObject b) {
-        return null;
-    }
-
-    @Override
-    public MathObject xor(MathObject a, MathObject b) {
         return null;
     }
 

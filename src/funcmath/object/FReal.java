@@ -106,7 +106,7 @@ public class FReal implements MathObject {
     }
 
     @Override
-    public MathObject lcm(MathObject a, MathObject b) {
+    public MathObject fact(MathObject a) {
         return null;
     }
 
@@ -122,11 +122,6 @@ public class FReal implements MathObject {
     public FReal abs(MathObject a) {
         FReal an = new FReal(a);
         return new FReal(Math.abs(an.get()));
-    }
-
-    @Override
-    public MathObject xor(MathObject a, MathObject b) {
-        return null;
     }
 
     @Override

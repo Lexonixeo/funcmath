@@ -190,13 +190,30 @@ public class Game {
                     }
                     level(level);
                 }
+                case "custom" -> {
+                    if (command.size() > 2) {
+                        System.out.println("Избыток аргументов! Введите команду ещё раз.");
+                        continue;
+                    } else if (command.size() == 1) {
+                        System.out.println("Недостаточно аргументов! Введите команду ещё раз.");
+                        continue;
+                    }
+                    int level;
+                    try {
+                        level = Integer.parseInt(command.get(1));
+                    } catch (NumberFormatException e) {
+                        System.out.println("Неверный аргумент: должно быть число!");
+                        continue;
+                    }
+                    customLevel(level);
+                }
                 case "random" -> System.out.println("Скоро будет, но не щас.");
                 case "last" -> last();
                 case "prev" -> prev();
                 case "make" -> {
                     switch (command.get(1)) {
-                        case "function" -> functionMakerTutorial = FunctionMaker.make(functionMakerTutorial);
-                        case "level" -> levelMakerTutorial = LevelMaker.make(levelMakerTutorial, tutorial);
+                        case "function" -> this.functionMakerTutorial = FunctionMaker.make(functionMakerTutorial);
+                        case "level" -> this.levelMakerTutorial = LevelMaker.make(levelMakerTutorial, tutorial);
                     }
                 }
                 case "next" -> next();

@@ -51,20 +51,12 @@ public class SimpleFunctions {
         return resultClass.gcd(a, b);
     }
 
-    public static MathObject lcm(MathObject resultClass, MathObject a, MathObject b) {
-        return resultClass.lcm(a, b);
-    }
-
     public static MathObject rand(MathObject resultClass, MathObject a, MathObject b) {
         return resultClass.rand(a, b);
     }
 
     public static MathObject abs(MathObject resultClass, MathObject a) {
         return resultClass.abs(a);
-    }
-
-    public static MathObject xor(MathObject resultClass, MathObject a, MathObject b) {
-        return resultClass.xor(a, b);
     }
 
     public static MathObject not(MathObject resultClass, MathObject a) {
