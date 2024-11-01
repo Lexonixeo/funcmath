@@ -128,4 +128,6 @@ public class LevelMaker {
     public static void main(String[] args) {
         make(false, false);
     }
+
+    // в будущем реализовать LevelGenerator
 }
