@@ -2,12 +2,15 @@ package funcmath.object;
 
 import funcmath.Helper;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FRational implements MathObject {
     protected FInteger numerator;
     protected FNatural denominator;
+    private final FInteger fint = new FInteger(0);
+    private final FNatural fnat = new FNatural(0);
 
     public FRational(long numerator, long denominator) {
         if (denominator < 0) {
@@ -15,15 +18,57 @@ public class FRational implements MathObject {
             denominator *= -1;
         }
         if (denominator == 0) {
-            denominator = 1;
-            numerator = numerator == 0 ? 0 : (numerator > 0 ? Long.MAX_VALUE : Long.MIN_VALUE);
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
         }
         this.numerator = new FInteger(numerator);
         this.denominator = new FNatural(denominator);
 
-        FInteger gcd = (new FInteger(0)).gcd(this.numerator, this.denominator);
-        this.numerator = (new FInteger(0)).div(this.numerator, gcd);
-        this.denominator = (new FNatural(0)).div(this.denominator, gcd);
+        FInteger gcd = fint.gcd(this.numerator, this.denominator);
+        this.numerator = fint.div(this.numerator, gcd);
+        this.denominator = fnat.div(this.denominator, gcd);
+    }
+
+    public FRational(FInteger numerator, FInteger denominator) {
+        if (denominator.get().compareTo(BigInteger.ZERO) < 0) {
+            numerator = fint.mul(numerator, new FInteger(-1));
+            denominator = fint.mul(denominator, new FInteger(-1));
+        }
+        if (denominator.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
+
+        this.numerator = new FInteger(numerator);
+        this.denominator = new FNatural(denominator);
+
+        FInteger gcd = fint.gcd(this.numerator, this.denominator);
+        this.numerator = fint.div(this.numerator, gcd);
+        this.denominator = fnat.div(this.denominator, gcd);
+    }
+
+    public FRational(FInteger numerator, FNatural denominator) {
+        this.numerator = numerator;
+        this.denominator = denominator;
+        if (denominator.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
+
+        FInteger gcd = fint.gcd(this.numerator, this.denominator);
+        this.numerator = fint.div(this.numerator, gcd);
+        this.denominator = fnat.div(this.denominator, gcd);
+    }
+
+    public FRational(BigInteger numerator, BigInteger denominator) {
+        if (denominator.compareTo(BigInteger.ZERO) < 0) {
+            numerator = numerator.multiply(BigInteger.ONE.negate());
+            denominator = denominator.multiply(BigInteger.ONE.negate());
+        }
+        if (denominator.equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
+
+        this.numerator = new FInteger(numerator);
+        this.denominator = new FNatural(denominator);
+
+        FInteger gcd = fint.gcd(this.numerator, this.denominator);
+        this.numerator = fint.div(this.numerator, gcd);
+        this.denominator = fnat.div(this.denominator, gcd);
     }
 
     public FRational(MathObject number) {
@@ -40,8 +85,13 @@ public class FRational implements MathObject {
     }
 
     @Override
-    public Long[] get() {
-        return new Long[]{this.numerator.get(), this.denominator.get()};
+    public BigInteger[] get() {
+        return new BigInteger[]{this.numerator.get(), this.denominator.get()};
+    }
+
+    public MathObject get(int n) {
+        if (n == 0) return numerator;
+        else return denominator;
     }
 
     @Override
@@ -51,7 +101,7 @@ public class FRational implements MathObject {
 
     @Override
     public FInteger getInteger() {
-        return (new FInteger(0)).div(this.numerator, this.denominator);
+        return fint.div(this.numerator, this.denominator);
     }
 
     @Override
@@ -74,8 +124,8 @@ public class FRational implements MathObject {
         FRational an = new FRational(a);
         FRational bn = new FRational(b);
         return new FRational(
-                an.get()[0] * bn.get()[1] + an.get()[1] * bn.get()[0],
-                an.get()[1] * bn.get()[1]
+                fint.sum(fint.mul(an.get(0), bn.get(1)), fint.mul(an.get(1), bn.get(0))),
+                fnat.mul(an.get(1), bn.get(1))
         );
     }
 
@@ -84,8 +134,8 @@ public class FRational implements MathObject {
         FRational an = new FRational(a);
         FRational bn = new FRational(b);
         return new FRational(
-                an.get()[0] * bn.get()[1] - an.get()[1] * bn.get()[0],
-                an.get()[1] * bn.get()[1]
+                fint.sub(fint.mul(an.get(0), bn.get(1)), fint.mul(an.get(1), bn.get(0))),
+                fnat.mul(an.get(1), bn.get(1))
         );
     }
 
@@ -94,8 +144,8 @@ public class FRational implements MathObject {
         FRational an = new FRational(a);
         FRational bn = new FRational(b);
         return new FRational(
-                an.get()[0] * bn.get()[0],
-                an.get()[1] * bn.get()[1]
+                fint.mul(an.get(0), bn.get(0)),
+                fnat.mul(an.get(1), bn.get(1))
         );
     }
 
@@ -104,8 +154,8 @@ public class FRational implements MathObject {
         FRational an = new FRational(a);
         FRational bn = new FRational(b);
         return new FRational(
-                an.get()[0] * bn.get()[1],
-                an.get()[1] * bn.get()[0]
+                fint.mul(an.get(0), bn.get(1)),
+                fint.mul(an.get(1), bn.get(0))
         );
     }
 
@@ -147,7 +197,7 @@ public class FRational implements MathObject {
     @Override
     public FRational abs(MathObject a) {
         FRational an = new FRational(a);
-        return new FRational(Math.abs(an.get()[0]), an.get()[1]);
+        return new FRational(fint.abs(an.get(0)), fnat.abs(an.get(1)));
     }
 
     @Override

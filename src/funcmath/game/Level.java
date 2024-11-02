@@ -200,7 +200,8 @@ public class Level {
                         try {
                             ans = fStack.peek().use(mode, nums.peek().toArray(args));
                         } catch (RuntimeException e) {
-                            System.out.println("= У функции " + fStack.peek().getName() + " закончилось число использований");
+                            System.out.println("= " + e.getMessage());
+                            functions = Helper.deepClone(functionsStack.peek());
                             return;
                         }
                         fStack.pop();

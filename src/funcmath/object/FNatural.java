@@ -1,14 +1,19 @@
 package funcmath.object;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Objects;
 
 public class FNatural implements MathObject {
-    protected long number;
+    protected BigInteger number;
 
     public FNatural(long number) {
-        // if (number < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
-        if (number < 0) number = 0;
+        if (number < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+        this.number = BigInteger.valueOf(number);
+    }
+
+    public FNatural(BigInteger number) {
+        if (number.compareTo(BigInteger.ZERO) < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
         this.number = number;
     }
 
@@ -17,14 +22,13 @@ public class FNatural implements MathObject {
     }
 
     public FNatural(String s) {
-        long number = Long.parseLong(s);
-        // if (number < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
-        if (number < 0) number = 0;
+        BigInteger number = new BigInteger(s);
+        if (number.compareTo(BigInteger.ZERO) < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
         this.number = number;
     }
 
     @Override
-    public Long get() {
+    public BigInteger get() {
         return this.number;
     }
 
@@ -40,62 +44,62 @@ public class FNatural implements MathObject {
 
     @Override
     public FRational getRational() {
-        return new FRational(this.number, 1);
+        return new FRational(this.number, BigInteger.ONE);            // to do...
     }
 
     @Override
     public FReal getReal() {
-        return new FReal(this.number);
+        return new FReal(this.number.doubleValue());
     }
 
     @Override
     public FComplex getComplex() {
-        return new FComplex(this.number, 0);
+        return new FComplex(this.number.doubleValue(), 0);
     }
 
     @Override
     public FNatural sum(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        return new FNatural(an.get() + bn.get());
+        return new FNatural(an.get().add(bn.get()));
     }
 
     @Override
     public FNatural sub(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        return new FNatural(an.get() - bn.get());
+        return new FNatural(an.get().add(bn.get().negate()));
     }
 
     @Override
     public FNatural mul(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        return new FNatural(an.get() * bn.get());
+        return new FNatural(an.get().multiply(bn.get()));
     }
 
     @Override
     public FNatural div(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get() == 0) return new FNatural(an.get() == 0 ? 0 : Long.MAX_VALUE);
-        else return new FNatural(an.get() / bn.get());
+        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
+        else return new FNatural(an.get().divide(bn.get()));
     }
 
     @Override
     public FNatural mod(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get() == 0) return new FNatural(0);
-        else return new FNatural(an.get() % bn.get());
+        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "%" + bn);
+        else return new FNatural(an.get().mod(bn.get()));
     }
 
     @Override
     public FNatural pow(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get() == 0) return new FNatural(1);
-        else if (bn.get() % 2 == 0) {
+        if (bn.get().equals(BigInteger.ZERO)) return new FNatural(1);
+        else if (bn.get().mod(BigInteger.TWO).equals(BigInteger.ZERO)) {
             FNatural cn = this.div(bn, new FNatural(2));
             FNatural dn = this.pow(an, cn);
             return this.mul(dn, dn);
@@ -110,48 +114,49 @@ public class FNatural implements MathObject {
     public FNatural root(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get() == 0) return new FNatural(Long.MAX_VALUE);
+        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "^(1/" + bn + ")");
 
-        long l = -1, r = an.get() + 1;
-        while (r - l > 1) {
-            long m = (r + l) / 2;
-            FNatural cn = new FNatural(m);
-            FNatural res = this.pow(cn, bn);
-            if (res.get() > an.get()) r = m;
+        FNatural l = new FNatural(BigInteger.ONE.negate());
+        FNatural r = new FNatural(an.get().add(BigInteger.ONE));
+        while (this.sub(r, l).get().compareTo(BigInteger.ONE) > 0) {
+            FNatural m = this.div(this.sum(r, l), new FNatural(2));
+            FNatural res = this.pow(m, bn);
+            if (res.get().compareTo(an.get()) > 0) r = m;
             else l = m;
         }
-        return new FNatural(l);
+        return l;
     }
 
     @Override
-    public FNatural log(MathObject a, MathObject b) {
+    public FNatural log(MathObject a, MathObject b) { // TO DO
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get() == 0) return new FNatural(Long.MAX_VALUE);
-        long l = -1, r = an.get() + 1;
-        while (r - l > 1) {
-            long m = (r + l) / 2;
-            FNatural cn = new FNatural(m);
-            FNatural res = this.pow(an, cn);
-            if (res.get() > an.get()) r = m;
+        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "^(1/" + bn + ")");
+
+        FNatural l = new FNatural(BigInteger.ONE.negate());
+        FNatural r = new FNatural(an.get().add(BigInteger.ONE));
+        while (this.sub(r, l).get().compareTo(BigInteger.ONE) > 0) {
+            FNatural m = this.div(this.sum(r, l), new FNatural(2));
+            FNatural res = this.pow(an, m);
+            if (res.get().compareTo(an.get()) > 0) r = m;
             else l = m;
         }
-        return new FNatural(l);
+        return l;
     }
 
     @Override
     public FNatural gcd(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (an.get() < bn.get()) return this.gcd(bn, an);
-        else if (bn.get() == 0) return an;
+        if (an.get().compareTo(bn.get()) < 0) return this.gcd(bn, an);
+        else if (bn.get().equals(BigInteger.ZERO)) return an;
         else return this.gcd(bn, this.mod(an, bn));
     }
 
     @Override
     public FNatural fact(MathObject a) {
         FNatural an = new FNatural(a);
-        if (an.get() == 0) return new FNatural(1);
+        if (an.get().equals(BigInteger.ZERO)) return new FNatural(1);
         return this.mul(fact(sub(a, new FNatural(1))), a);
     }
 
@@ -159,44 +164,51 @@ public class FNatural implements MathObject {
     public FNatural rand(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
+        if (an.get().compareTo(bn.get()) > 0) return this.rand(b, a);
+
         SecureRandom random = new SecureRandom();
-        return new FNatural(
-                random.nextLong(Math.abs(bn.get() - an.get()) + 1) + Math.min(an.get(), bn.get())
-        );
+        FNatural upperLimit = this.sum(new FNatural(1), this.sub(bn, an));
+
+        BigInteger randomNumber;
+        do {
+            randomNumber = new BigInteger(upperLimit.get().bitLength(), random);
+        } while (randomNumber.compareTo(upperLimit.get()) >= 0);
+
+        return this.sum(new FNatural(randomNumber), an);
     }
 
     @Override
     public FNatural abs(MathObject a) {
-        return this;
+        return new FNatural(a);
     }
 
     @Override
     public MathObject not(MathObject a) {
-        return null;
+        throw new ArithmeticException("Функция not не определена для натуральных чисел.");
     }
 
     @Override
     public FNatural and(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        return new FNatural(an.get() & bn.get());
+        return new FNatural(an.get().and(bn.get()));
     }
 
     @Override
     public FNatural or(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        return new FNatural(an.get() | bn.get());
+        return new FNatural(an.get().or(bn.get()));
     }
 
     @Override
-    public MathObject conj(MathObject a) {
-        return null;
+    public FNatural conj(MathObject a) {
+        return new FNatural(a);
     }
 
     @Override
-    public MathObject arg(MathObject a) {
-        return null;
+    public FNatural arg(MathObject a) {
+        return this.mul(a, new FNatural(0));
     }
 
     @Override
