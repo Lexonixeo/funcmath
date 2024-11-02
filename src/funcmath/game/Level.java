@@ -4,10 +4,15 @@ import funcmath.Helper;
 import funcmath.function.Function;
 import funcmath.object.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Level {
+public class Level implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 7967415798449468220L;
+
     ArrayList<MathObject> numbers;
     ArrayList<MathObject> originalNumbers;
     HashMap<String, Function> originalFunctions;

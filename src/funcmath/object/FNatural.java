@@ -1,10 +1,13 @@
 package funcmath.object;
 
+import java.io.Serial;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Objects;
 
 public class FNatural implements MathObject {
+    @Serial
+    private static final long serialVersionUID = -1322027344216575257L;
+
     protected BigInteger number;
 
     public FNatural(long number) {
@@ -49,12 +52,12 @@ public class FNatural implements MathObject {
 
     @Override
     public FReal getReal() {
-        return new FReal(this.number.doubleValue());
+        return new FReal(this.number);
     }
 
     @Override
     public FComplex getComplex() {
-        return new FComplex(this.number.doubleValue(), 0);
+        return new FComplex(this.number, BigInteger.ZERO);
     }
 
     @Override
@@ -213,7 +216,7 @@ public class FNatural implements MathObject {
 
     @Override
     public boolean equals(Object obj) {
-        return obj.getClass() == FNatural.class && Objects.equals(((FNatural) obj).get(), this.get());
+        return obj.getClass() == FNatural.class && this.get().equals(((FNatural) obj).get());
     }
     
     @Override

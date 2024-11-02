@@ -3,10 +3,14 @@ package funcmath.function;
 import funcmath.Helper;
 import funcmath.object.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
 public class Function implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -5266414674402354315L;
+
     String name;
     String description;
     ArrayList<String> definition;

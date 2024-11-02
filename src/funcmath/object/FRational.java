@@ -2,11 +2,15 @@ package funcmath.object;
 
 import funcmath.Helper;
 
+import java.io.Serial;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FRational implements MathObject {
+    @Serial
+    private static final long serialVersionUID = 8367368182099731988L;
+
     protected FInteger numerator;
     protected FNatural denominator;
     private final FInteger fint = new FInteger(0);
@@ -116,7 +120,7 @@ public class FRational implements MathObject {
 
     @Override
     public FComplex getComplex() {
-        return new FComplex(this.getReal().get(), 0);
+        return new FComplex(this.getReal().get(), BigDecimal.ZERO); // to do...
     }
 
     @Override
@@ -161,37 +165,38 @@ public class FRational implements MathObject {
 
     @Override
     public MathObject mod(MathObject a, MathObject b) {
-        return null;
+        throw new ArithmeticException("Функция mod не определена для рациональных чисел.");
     }
 
     @Override
     public MathObject pow(MathObject a, MathObject b) {
-        return null;
+        throw new NullPointerException("Функция pow временно не введена для целых чисел.");
     }
 
     @Override
     public MathObject root(MathObject a, MathObject b) {
-        return null;
+        throw new NullPointerException("Функция root временно не введена для рациональных чисел.");
     }
 
     @Override
     public MathObject log(MathObject a, MathObject b) {
-        return null;
+        throw new NullPointerException("Функция log временно не введена для рациональных чисел.");
     }
 
     @Override
     public MathObject gcd(MathObject a, MathObject b) {
-        return null;
+        throw new ArithmeticException("Функция gcd временно не введена для рациональных чисел.");
+        // или умножаем дроби на НОК знаменателей, находим НОД, делим на НОК знаменателей?
     }
 
     @Override
     public MathObject fact(MathObject a) {
-        return null;
+        throw new NullPointerException("Функция fact временно не введена для рациональных чисел.");
     }
 
     @Override
     public MathObject rand(MathObject a, MathObject b) {
-        return null;
+        throw new NullPointerException("Функция rand временно не введена для рациональных чисел.");
     }
 
     @Override
@@ -202,32 +207,35 @@ public class FRational implements MathObject {
 
     @Override
     public MathObject not(MathObject a) {
-        return null;
+        throw new ArithmeticException("Функция not не определена для рациональных чисел.");
     }
 
     @Override
     public MathObject and(MathObject a, MathObject b) {
-        return null;
+        throw new ArithmeticException("Функция and не определена для рациональных чисел.");
     }
 
     @Override
     public MathObject or(MathObject a, MathObject b) {
-        return null;
+        throw new ArithmeticException("Функция or не определена для рациональных чисел.");
     }
 
     @Override
-    public MathObject conj(MathObject a) {
-        return null;
+    public FRational conj(MathObject a) {
+        return new FRational(a);
     }
 
     @Override
-    public MathObject arg(MathObject a) {
-        return null;
+    public FRational arg(MathObject a) {
+        FRational an = new FRational(a);
+        return new FRational(((BigInteger) an.get(0).get()).compareTo(BigInteger.ZERO) >= 0 ? new FReal(0) : (new FReal(Math.PI)).getRational());
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj.getClass() == FRational.class && Arrays.equals(((FRational) obj).get(), this.get());
+        return obj.getClass() == FRational.class
+                && this.numerator.equals(((FRational) obj).numerator)
+                && this.denominator.equals(((FRational) obj).denominator);
     }
 
     @Override

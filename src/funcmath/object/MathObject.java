@@ -27,18 +27,6 @@ public interface MathObject extends Serializable {
     MathObject conj(MathObject a);
     MathObject arg(MathObject a);
 
-    static MathObject parseMathObject(String s) {
-        String ss = s.substring(0, s.length() - 1);
-        return switch (s.charAt(s.length() - 1)) {
-            case 'z' -> new FInteger(ss);
-            case 'n' -> new FNatural(ss);
-            case 'q' -> new FRational(ss);
-            case 'r' -> new FReal(ss);
-            case 'c' -> new FComplex(ss);
-            default -> throw new IllegalArgumentException("Не существует такого числа");
-        };
-    }
-
     static MathObject parseMathObject(String s, String resultClassName) {
         return switch (resultClassName) {
             case "integer" -> new FInteger(s);
@@ -52,6 +40,7 @@ public interface MathObject extends Serializable {
 
     /*
     В будущем добавить:
+    FErrorInteger (число с погрешностью)
     FModuloInteger (по какому-то модулю)
     FGauss
     FVector
