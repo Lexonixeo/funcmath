@@ -151,7 +151,7 @@ public class Game {
     }
 
     private void list(int page) {
-        ArrayList<String> levels = Helper.getFileNames("data\\levels");
+        ArrayList<Integer> levels = Helper.getLevelList(Helper.getFileNames("data\\levels\\"));
         if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
             System.out.println("Не бывает такой страницы!");
             return;
@@ -159,12 +159,12 @@ public class Game {
         Helper.clear();
         System.out.println("Страница " + page + " из " + ((levels.size() - 1) / 20 + 1));
         for (int i = 20 * (page - 1); i < Math.min(20 * page, levels.size()); i++) {
-            System.out.println(new Level(Integer.parseInt(levels.get(i).substring(5, levels.get(i).length() - 4)), false, 0));
+            System.out.println(new Level(levels.get(i), false, 0));
         }
     }
 
     private void clist(int page) {
-        ArrayList<String> levels = Helper.getFileNames("data\\customLevels\\");
+        ArrayList<Integer> levels = Helper.getLevelList(Helper.getFileNames("data\\customLevels\\"));
         if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
             System.out.println("Не бывает такой страницы!");
             return;
@@ -172,7 +172,7 @@ public class Game {
         Helper.clear();
         System.out.println("Страница " + page + " из " + ((levels.size() - 1) / 20 + 1));
         for (int i = 20 * (page - 1); i < Math.min(20 * page, levels.size()); i++) {
-            System.out.println(new Level(Integer.parseInt(levels.get(i).substring(5, levels.get(i).length() - 4)), false, 1));
+            System.out.println(new Level(levels.get(i), false, 1));
         }
     }
 

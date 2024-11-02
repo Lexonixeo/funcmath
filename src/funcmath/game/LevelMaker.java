@@ -53,6 +53,7 @@ public class LevelMaker {
             cutscene.add(input);
             System.out.print("(" + j + ") ");
             input = scanner.nextLine();
+            j++;
         } while(!input.isEmpty());
         cutscene.remove(0);
 

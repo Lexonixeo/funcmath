@@ -40,6 +40,7 @@ public interface MathObject extends Serializable {
 
     /*
     В будущем добавить:
+    FBinaryInteger (с другой системой счисления)
     FErrorInteger (число с погрешностью)
     FModuloInteger (по какому-то модулю)
     FGauss
@@ -49,6 +50,7 @@ public interface MathObject extends Serializable {
     FTriangle и т.д.
     FString
     FColor
+    FMoney (деньги с разными валютами - курсы валют меняются с каждым ходом)
     FMinecraftItem
     FWord - это то, из-за чего я придумал эту игру :)
      */

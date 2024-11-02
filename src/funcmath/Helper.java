@@ -2,6 +2,7 @@ package funcmath;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Helper {
     public static Object read(String pathname) {
@@ -129,6 +130,15 @@ public class Helper {
                 answer.add(file.getName());
             }
         }
+        return answer;
+    }
+
+    public static ArrayList<Integer> getLevelList(ArrayList<String> fileNames) {
+        ArrayList<Integer> answer = new ArrayList<>();
+        for (String fileName : fileNames) {
+            answer.add(Integer.parseInt(fileName.substring(5, fileName.length() - 4)));
+        }
+        answer.sort(Comparator.naturalOrder());
         return answer;
     }
 

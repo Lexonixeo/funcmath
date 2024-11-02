@@ -205,7 +205,15 @@ public class Level implements Serializable {
                         try {
                             ans = fStack.peek().use(mode, nums.peek().toArray(args));
                         } catch (RuntimeException e) {
-                            System.out.println("= " + e.getMessage());
+                            try {
+                                System.out.println("= " + e.getCause().getCause().getMessage());
+                            } catch (RuntimeException ex) {
+                                try {
+                                    System.out.println("= " + e.getCause().getMessage());
+                                } catch (RuntimeException exc) {
+                                    System.out.println("= " + e.getMessage());
+                                }
+                            }
                             functions = Helper.deepClone(functionsStack.peek());
                             return;
                         }
@@ -251,7 +259,7 @@ public class Level implements Serializable {
                 System.out.println("Подсказка №"+ (i + 1) + ": " + hints.get(i));
             }
         } else {
-            System.out.println("Подсказка №" + hint + ": " + hints.get(hint));
+            System.out.println("Подсказка №" + hint + ": " + hints.get(hint - 1));
         }
     }
 
@@ -294,7 +302,7 @@ public class Level implements Serializable {
     }
 
     public boolean[] game() {
-        playCutscene();
+        if (!cutscene.isEmpty()) playCutscene();
         start();
         while (!completed) {
             int check = turn();
