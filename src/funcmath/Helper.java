@@ -126,7 +126,7 @@ public class Helper {
 
         for (File file : listOfFiles) {
             if (file.isFile()) {
-                answer.add(file.getName().substring(5, file.getName().length() - 4));
+                answer.add(file.getName());
             }
         }
         return answer;

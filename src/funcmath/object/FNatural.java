@@ -4,9 +4,9 @@ import java.security.SecureRandom;
 import java.util.Objects;
 
 public class FNatural implements MathObject {
-    protected int number;
+    protected long number;
 
-    public FNatural(int number) {
+    public FNatural(long number) {
         // if (number < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
         if (number < 0) number = 0;
         this.number = number;
@@ -17,14 +17,14 @@ public class FNatural implements MathObject {
     }
 
     public FNatural(String s) {
-        int number = Integer.parseInt(s);
+        long number = Long.parseLong(s);
         // if (number < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
         if (number < 0) number = 0;
         this.number = number;
     }
 
     @Override
-    public Integer get() {
+    public Long get() {
         return this.number;
     }
 
@@ -78,7 +78,7 @@ public class FNatural implements MathObject {
     public FNatural div(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get() == 0) return new FNatural(an.get() == 0 ? 0 : Integer.MAX_VALUE);
+        if (bn.get() == 0) return new FNatural(an.get() == 0 ? 0 : Long.MAX_VALUE);
         else return new FNatural(an.get() / bn.get());
     }
 
@@ -107,13 +107,36 @@ public class FNatural implements MathObject {
     }
 
     @Override
-    public MathObject root(MathObject a, MathObject b) {
-        return null;
+    public FNatural root(MathObject a, MathObject b) {
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (bn.get() == 0) return new FNatural(Long.MAX_VALUE);
+
+        long l = -1, r = an.get() + 1;
+        while (r - l > 1) {
+            long m = (r + l) / 2;
+            FNatural cn = new FNatural(m);
+            FNatural res = this.pow(cn, bn);
+            if (res.get() > an.get()) r = m;
+            else l = m;
+        }
+        return new FNatural(l);
     }
 
     @Override
-    public MathObject log(MathObject a, MathObject b) {
-        return null;
+    public FNatural log(MathObject a, MathObject b) {
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (bn.get() == 0) return new FNatural(Long.MAX_VALUE);
+        long l = -1, r = an.get() + 1;
+        while (r - l > 1) {
+            long m = (r + l) / 2;
+            FNatural cn = new FNatural(m);
+            FNatural res = this.pow(an, cn);
+            if (res.get() > an.get()) r = m;
+            else l = m;
+        }
+        return new FNatural(l);
     }
 
     @Override
@@ -126,8 +149,10 @@ public class FNatural implements MathObject {
     }
 
     @Override
-    public MathObject fact(MathObject a) {
-        return null;
+    public FNatural fact(MathObject a) {
+        FNatural an = new FNatural(a);
+        if (an.get() == 0) return new FNatural(1);
+        return this.mul(fact(sub(a, new FNatural(1))), a);
     }
 
     @Override
@@ -136,28 +161,32 @@ public class FNatural implements MathObject {
         FNatural bn = new FNatural(b);
         SecureRandom random = new SecureRandom();
         return new FNatural(
-                random.nextInt(Math.abs(bn.get() - an.get()) + 1) + Math.min(an.get(), bn.get())
+                random.nextLong(Math.abs(bn.get() - an.get()) + 1) + Math.min(an.get(), bn.get())
         );
     }
 
     @Override
     public FNatural abs(MathObject a) {
-        return (new FInteger(0)).abs(new FNatural(a)).getNatural();
+        return this;
     }
 
     @Override
-    public FNatural not(MathObject a) {
-        return (new FInteger(0)).not(new FNatural(a)).getNatural();
+    public MathObject not(MathObject a) {
+        return null;
     }
 
     @Override
     public FNatural and(MathObject a, MathObject b) {
-        return (new FInteger(0)).and(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        return new FNatural(an.get() & bn.get());
     }
 
     @Override
     public FNatural or(MathObject a, MathObject b) {
-        return (new FInteger(0)).or(new FNatural(a), new FNatural(b)).getNatural();
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        return new FNatural(an.get() | bn.get());
     }
 
     @Override

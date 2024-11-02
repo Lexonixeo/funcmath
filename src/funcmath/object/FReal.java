@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 import java.util.Objects;
 
 public class FReal implements MathObject {
-    double number;
+    protected double number;
 
     public FReal(double number) {
         this.number = number;

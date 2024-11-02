@@ -33,12 +33,28 @@ public class LevelMaker {
         }
 
         String path = "data\\preLevels\\";
+        String normalPath = "data\\customLevels\\";
         System.out.print("Введите что-нибудь: ");
         String mode = scanner.nextLine();
         boolean universalMode = Integer.toHexString(mode.hashCode()).equals("586034f");
         if (universalMode) {
             path = "data\\levels\\";
         }
+
+        System.out.print("Введите название уровня: ");
+        String name = scanner.nextLine();
+
+        ArrayList<String> cutscene = new ArrayList<>();
+        System.out.println("Введите катсцену, которая будет перед уровнем:");
+        System.out.println("(введите пустую строку, чтобы закончить катсцену)");
+        String input = "";
+        int j = 1;
+        do {
+            cutscene.add(input);
+            System.out.print("(" + j + ") ");
+            input = scanner.nextLine();
+        } while(!input.isEmpty());
+        cutscene.remove(0);
 
         HashMap<String, Function> originalFunctions = new HashMap<>();
 
@@ -74,21 +90,10 @@ public class LevelMaker {
         ArrayList<String> hints = new ArrayList<>();
         System.out.print("Введите кол-во подсказок: ");
         int n = Integer.parseInt(scanner.nextLine());
-        for (int i = 0; i < n; i++) {
-            System.out.print("Введите подсказку №" + (i + 1) + ": ");
+        for (int i = 1; i <= n; i++) {
+            System.out.print("Введите подсказку №" + i + ": ");
             hints.add(scanner.nextLine());
         }
-
-        ArrayList<String> cutscene = new ArrayList<>();
-        System.out.print("Введите кол-во фраз в катсцене: ");
-        int m = Integer.parseInt(scanner.nextLine());
-        for (int i = 0; i < m; i++) {
-            System.out.print("(" + (i + 1) + ") ");
-            cutscene.add(scanner.nextLine());
-        }
-
-        System.out.print("Введите описание уровня: ");
-        String description = scanner.nextLine();
 
         ArrayList<Object> generated = new ArrayList<>();
         generated.add(originalNumbers);
@@ -97,11 +102,11 @@ public class LevelMaker {
         generated.add(hints);
         generated.add(resultClassName);
         generated.add(cutscene);
-        generated.add(description);
+        generated.add(name);
 
         int levelHash = Objects.hash(originalNumbers, originalFunctions, hints, ans, resultClassName);
         String level = "level" + levelHash + ".dat";
-        while (!universalMode && Helper.getFileNames(path).contains(level)) {
+        while (!universalMode && Helper.getFileNames(normalPath).contains(level)) {
             levelHash += mode.hashCode();
             level = "level" + levelHash + ".dat";
         }
@@ -117,7 +122,7 @@ public class LevelMaker {
                 Level l = new Level(levelHash, tutorial, 2);
                 boolean[] result = l.game();
                 if (result[1]) {
-                    Helper.write(generated, "data\\customLevels\\" + level);
+                    Helper.write(generated, normalPath + level);
                 }
             }
         }

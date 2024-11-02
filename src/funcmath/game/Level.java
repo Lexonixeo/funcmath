@@ -22,7 +22,7 @@ public class Level {
     // int difficulty;
     boolean tutorial;
     String resultClassName;
-    String description;
+    String name;
     boolean completed = false;
 
     public Level(int level, boolean tutorial, int customFlag) {
@@ -49,7 +49,7 @@ public class Level {
         hints = (ArrayList<String>) generated.get(3);
         resultClassName = (String) generated.get(4);
         cutscene = (ArrayList<String>) generated.get(5);
-        description = (String) generated.get(6);
+        name = (String) generated.get(6);
     }
 
     private void playCutscene() {
@@ -111,7 +111,7 @@ public class Level {
 
     private void start() {
         Helper.clear();
-        System.out.println("Уровень " + level + ".");
+        System.out.println(this);
 
         String mathObjectType = switch (resultClassName) {
             case "integer" -> "целых";
@@ -315,6 +315,6 @@ public class Level {
 
     @Override
     public String toString() {
-        return "Level " + this.level + ": " + this.description;
+        return "Уровень " + this.level + ": " + this.name;
     }
 }

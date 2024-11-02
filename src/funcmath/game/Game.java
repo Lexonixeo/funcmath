@@ -124,8 +124,8 @@ public class Game {
         System.out.println("level {lvl}   - Перейти к уровню {lvl}");
         System.out.println("custom {lvl}  - Играть в пользовательский уровень {lvl}");
         System.out.println("random {dfc}  - Играть в случайный уровень сложности {dfc} (НЕ РАБОТАЕТ)");
-        System.out.println("list {n}      - Открыть список обычных уровней на странице {n} (НЕ РАБОТАЕТ)");
-        System.out.println("clist {n}     - Открыть список пользовательских уровней на странице {n} (НЕ РАБОТАЕТ)");
+        System.out.println("list {n}      - Открыть список обычных уровней на странице {n}");
+        System.out.println("clist {n}     - Открыть список пользовательских уровней на странице {n}");
         System.out.println("last          - Перейти к последнему уровню");
         System.out.println("prev          - Перейти к предыдущему уровню");
         System.out.println("next          - Перейти к следующему уровню");
@@ -148,6 +148,32 @@ public class Game {
         System.out.println("Чтобы играть в конкретный уровень, введите команду level {номер уровня}.");
         System.out.println("Чтобы узнать список команд, введите команду help.");
         System.out.println("Чтобы выйти из игры, введите команду exit.");
+    }
+
+    private void list(int page) {
+        ArrayList<String> levels = Helper.getFileNames("data\\levels");
+        if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
+            System.out.println("Не бывает такой страницы!");
+            return;
+        }
+        Helper.clear();
+        System.out.println("Страница " + page + " из " + ((levels.size() - 1) / 20 + 1));
+        for (int i = 20 * (page - 1); i < Math.min(20 * page, levels.size()); i++) {
+            System.out.println(new Level(Integer.parseInt(levels.get(i).substring(5, levels.get(i).length() - 4)), false, 0));
+        }
+    }
+
+    private void clist(int page) {
+        ArrayList<String> levels = Helper.getFileNames("data\\customLevels\\");
+        if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
+            System.out.println("Не бывает такой страницы!");
+            return;
+        }
+        Helper.clear();
+        System.out.println("Страница " + page + " из " + ((levels.size() - 1) / 20 + 1));
+        for (int i = 20 * (page - 1); i < Math.min(20 * page, levels.size()); i++) {
+            System.out.println(new Level(Integer.parseInt(levels.get(i).substring(5, levels.get(i).length() - 4)), false, 1));
+        }
     }
 
     private void stats() {
@@ -207,6 +233,28 @@ public class Game {
                     }
                     customLevel(level);
                 }
+                case "list" -> {
+                    int page;
+                    try {
+                        page = Integer.parseInt(command.get(1));
+                        list(page);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Неверный аргумент: должно быть число!");
+                    } catch (IndexOutOfBoundsException e) {
+                        list(1);
+                    }
+                }
+                case "clist" -> {
+                    int page;
+                    try {
+                        page = Integer.parseInt(command.get(1));
+                        clist(page);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Неверный аргумент: должно быть число!");
+                    } catch (IndexOutOfBoundsException e) {
+                        clist(1);
+                    }
+                }
                 case "random" -> System.out.println("Скоро будет, но не щас.");
                 case "last" -> last();
                 case "prev" -> prev();
@@ -214,6 +262,7 @@ public class Game {
                     switch (command.get(1)) {
                         case "function" -> this.functionMakerTutorial = FunctionMaker.make(functionMakerTutorial);
                         case "level" -> this.levelMakerTutorial = LevelMaker.make(levelMakerTutorial, tutorial);
+                        default -> System.out.println("Неизвестная команда :( Введите help, чтобы узнать список команд.");
                     }
                 }
                 case "next" -> next();

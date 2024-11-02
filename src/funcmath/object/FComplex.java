@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FComplex implements MathObject {
-    FReal real, imaginary;
+    protected FReal real, imaginary;
 
     public FComplex(double real, double imaginary) {
         this.real = new FReal(real);

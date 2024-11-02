@@ -9,14 +9,14 @@ public class FRational implements MathObject {
     protected FInteger numerator;
     protected FNatural denominator;
 
-    public FRational(int numerator, int denominator) {
+    public FRational(long numerator, long denominator) {
         if (denominator < 0) {
             numerator *= -1;
             denominator *= -1;
         }
         if (denominator == 0) {
             denominator = 1;
-            numerator = numerator == 0 ? 0 : (numerator > 0 ? Integer.MAX_VALUE : Integer.MIN_VALUE);
+            numerator = numerator == 0 ? 0 : (numerator > 0 ? Long.MAX_VALUE : Long.MIN_VALUE);
         }
         this.numerator = new FInteger(numerator);
         this.denominator = new FNatural(denominator);
@@ -40,8 +40,8 @@ public class FRational implements MathObject {
     }
 
     @Override
-    public Integer[] get() {
-        return new Integer[]{this.numerator.get(), this.denominator.get()};
+    public Long[] get() {
+        return new Long[]{this.numerator.get(), this.denominator.get()};
     }
 
     @Override

@@ -51,6 +51,10 @@ public class SimpleFunctions {
         return resultClass.gcd(a, b);
     }
 
+    public static MathObject fact(MathObject resultClass, MathObject a) {
+        return resultClass.fact(a);
+    }
+
     public static MathObject rand(MathObject resultClass, MathObject a, MathObject b) {
         return resultClass.rand(a, b);
     }

@@ -4,9 +4,9 @@ import java.security.SecureRandom;
 import java.util.Objects;
 
 public class FInteger implements MathObject {
-    protected int number;
+    protected long number;
 
-    public FInteger(int number) {
+    public FInteger(long number) {
         this.number = number;
     }
 
@@ -19,7 +19,7 @@ public class FInteger implements MathObject {
     }
 
     @Override
-    public Integer get() {
+    public Long get() {
         return this.number;
     }
 
@@ -73,7 +73,7 @@ public class FInteger implements MathObject {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
         if (bn.get() == 0) return new FInteger(
-                an.get() == 0 ? 0 : (an.get() > 0 ? Integer.MAX_VALUE : Integer.MIN_VALUE)
+                an.get() == 0 ? 0 : (an.get() > 0 ? Long.MAX_VALUE : Long.MIN_VALUE)
         );
         else return new FInteger((an.get() - this.mod(a, b).get()) / bn.get());
     }
@@ -90,7 +90,7 @@ public class FInteger implements MathObject {
     public FInteger pow(MathObject a, MathObject b) {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
-        if (bn.get() < 0 && an.get() == 0) return new FInteger(Integer.MAX_VALUE);
+        if (bn.get() < 0 && an.get() == 0) return new FInteger(Long.MAX_VALUE);
         if (bn.get() < 0) return new FInteger((an.get() > 0 || bn.get() % 2 == 0 ? 0 : -1));
         if (bn.get() == 0) return new FInteger(1);
         else if (bn.get() % 2 == 0) {
@@ -134,7 +134,7 @@ public class FInteger implements MathObject {
         FInteger bn = new FInteger(b);
         SecureRandom random = new SecureRandom();
         return new FInteger(
-                random.nextInt(Math.abs(bn.get() - an.get()) + 1) + Math.min(an.get(), bn.get())
+                random.nextLong(Math.abs(bn.get() - an.get()) + 1) + Math.min(an.get(), bn.get())
         );
     }
 
