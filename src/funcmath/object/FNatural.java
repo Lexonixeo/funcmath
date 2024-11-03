@@ -124,7 +124,7 @@ public class FNatural implements MathObject {
         if (bn.get().equals(BigInteger.ZERO))
             throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "^(1/" + bn + ")");
 
-        FNatural l = new FNatural(BigInteger.ONE.negate());
+        FNatural l = new FNatural(BigInteger.ZERO);
         FNatural r = new FNatural(an.get().add(BigInteger.ONE));
         while (this.sub(r, l).get().compareTo(BigInteger.ONE) > 0) {
             FNatural m = this.div(this.sum(r, l), new FNatural(2));
@@ -140,14 +140,18 @@ public class FNatural implements MathObject {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
         if (bn.get().equals(BigInteger.ZERO))
-            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "^(1/" + bn + ")");
+            throw new ArithmeticException("Логарифм от нуля не определен.");
+        if (an.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Логарифм по основанию нуля не определен.");
+        if (an.get().equals(BigInteger.ONE))
+            throw new ArithmeticException("Логарифм по основанию единицы не определен.");
 
-        FNatural l = new FNatural(BigInteger.ONE.negate());
-        FNatural r = new FNatural(an.get().add(BigInteger.ONE));
+        FNatural l = new FNatural(BigInteger.ZERO);
+        FNatural r = new FNatural(bn.get().bitLength() * 4L);
         while (this.sub(r, l).get().compareTo(BigInteger.ONE) > 0) {
             FNatural m = this.div(this.sum(r, l), new FNatural(2));
             FNatural res = this.pow(an, m);
-            if (res.get().compareTo(an.get()) > 0) r = m;
+            if (res.get().compareTo(bn.get()) > 0) r = m;
             else l = m;
         }
         return l;
