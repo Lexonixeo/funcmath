@@ -27,3 +27,11 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### game
+funcmath.jar
+launch.bat
+data/players/
+data/customLevels/
+data/preLevels/
+data/functions.dat
