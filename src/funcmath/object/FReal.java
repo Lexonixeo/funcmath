@@ -92,7 +92,8 @@ public class FReal implements MathObject {
     public FReal div(MathObject a, MathObject b) {
         FReal an = new FReal(a);
         FReal bn = new FReal(b);
-        if (bn.get().equals(BigDecimal.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
+        if (bn.get().equals(BigDecimal.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
         return new FReal(an.get().divide(bn.get(), RoundingMode.HALF_UP));
     }
 
@@ -134,6 +135,11 @@ public class FReal implements MathObject {
     }
 
     @Override
+    public MathObject conc(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция conc не определена для действительных чисел.");
+    }
+
+    @Override
     public FReal rand(MathObject a, MathObject b) {
         FReal an = new FReal(a);
         FReal bn = new FReal(b);
@@ -160,6 +166,11 @@ public class FReal implements MathObject {
     @Override
     public MathObject or(MathObject a, MathObject b) {
         throw new ArithmeticException("Функция or не определена для действительных чисел.");
+    }
+
+    @Override
+    public MathObject xor(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция xor не определена для действительных чисел.");
     }
 
     @Override

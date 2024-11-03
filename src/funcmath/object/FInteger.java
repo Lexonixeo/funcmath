@@ -81,7 +81,8 @@ public class FInteger implements MathObject {
     public FInteger div(MathObject a, MathObject b) {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
-        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
+        if (bn.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
         else return new FInteger(this.sub(an, this.mod(an, bn)).get().divide(bn.get()));
     }
 
@@ -89,7 +90,8 @@ public class FInteger implements MathObject {
     public FInteger mod(MathObject a, MathObject b) {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
-        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "%" + bn);
+        if (bn.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "%" + bn);
         else return new FInteger(an.get().mod(bn.get().abs()));
     }
 
@@ -100,9 +102,11 @@ public class FInteger implements MathObject {
         if (bn.get().compareTo(BigInteger.ZERO) < 0 && an.get().compareTo(BigInteger.ZERO) == 0)
             throw new ArithmeticException("Деление на ноль не имеет смысла: 1/(0^" + bn.get().negate() + ")");
 
-        if (bn.get().compareTo(BigInteger.ZERO) < 0) return new FInteger(
-                (an.get().compareTo(BigInteger.ZERO) > 0 || this.mod(bn, new FInteger(2)).get().equals(BigInteger.ZERO) ? 0 : -1)
-        );
+        if (bn.get().compareTo(BigInteger.ZERO) < 0) return new FInteger((
+                an.get().compareTo(BigInteger.ZERO) > 0
+                        || this.mod(bn, new FInteger(2)).get().equals(BigInteger.ZERO)
+                        ? 0 : -1
+        ));
 
         if (bn.get().equals(BigInteger.ZERO)) return new FInteger(1);
         else if (this.mod(bn, new FInteger(2)).get().equals(BigInteger.ZERO)) {
@@ -138,9 +142,19 @@ public class FInteger implements MathObject {
     @Override
     public FInteger fact(MathObject a) {
         FInteger an = new FInteger(a);
-        if (an.get().compareTo(BigInteger.ZERO) < 0) throw new ArithmeticException("Факториал для отрицательных целых чисел не определен.");
+        if (an.get().compareTo(BigInteger.ZERO) < 0)
+            throw new ArithmeticException("Факториал для отрицательных целых чисел не определен.");
         else if (an.get().equals(BigInteger.ZERO)) return new FInteger(1);
         return this.mul(fact(sub(a, new FInteger(1))), a);
+    }
+
+    @Override
+    public MathObject conc(MathObject a, MathObject b) {
+        if (new FInteger(b).get().compareTo(BigInteger.ZERO) < 0)
+            throw new ArithmeticException("Конкатенация для отрицательного второго аргумента не определена.");
+        String an = new FInteger(a).get().toString();
+        String bn = new FInteger(b).get().toString();
+        return new FInteger(an + bn);
     }
 
     @Override
@@ -184,6 +198,13 @@ public class FInteger implements MathObject {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
         return new FInteger(an.get().or(bn.get()));
+    }
+
+    @Override
+    public FInteger xor(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        return new FInteger(an.get().xor(bn.get()));
     }
 
     @Override

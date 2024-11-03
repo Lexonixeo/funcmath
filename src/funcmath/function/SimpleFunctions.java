@@ -55,6 +55,10 @@ public class SimpleFunctions {
         return resultClass.fact(a);
     }
 
+    public static MathObject conc(MathObject resultClass, MathObject a, MathObject b) {
+        return resultClass.conc(a, b);
+    }
+
     public static MathObject rand(MathObject resultClass, MathObject a, MathObject b) {
         return resultClass.rand(a, b);
     }
@@ -73,6 +77,10 @@ public class SimpleFunctions {
 
     public static MathObject or(MathObject resultClass, MathObject a, MathObject b) {
         return resultClass.or(a, b);
+    }
+
+    public static MathObject xor(MathObject resultClass, MathObject a, MathObject b) {
+        return resultClass.xor(a, b);
     }
 
     public static MathObject conj(MathObject resultClass, MathObject a) {

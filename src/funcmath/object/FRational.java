@@ -82,7 +82,9 @@ public class FRational implements MathObject {
     }
 
     public FRational(String s) {
-        ArrayList<Integer> numbers = Helper.integersFromWords(Helper.wordsFromString(s.replace('/', ' ')));
+        ArrayList<Integer> numbers = Helper.integersFromWords(
+                Helper.wordsFromString(s.replace('/', ' '))
+        );
         FRational num = new FRational(numbers.get(0), numbers.get(1));
         this.numerator = new FInteger(num.get()[0]);
         this.denominator = new FNatural(num.get()[1]);
@@ -195,6 +197,11 @@ public class FRational implements MathObject {
     }
 
     @Override
+    public MathObject conc(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция conc не определена для рациональных чисел.");
+    }
+
+    @Override
     public MathObject rand(MathObject a, MathObject b) {
         throw new NullPointerException("Функция rand временно не введена для рациональных чисел.");
     }
@@ -218,6 +225,11 @@ public class FRational implements MathObject {
     @Override
     public MathObject or(MathObject a, MathObject b) {
         throw new ArithmeticException("Функция or не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject xor(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция xor не определена для рациональных чисел.");
     }
 
     @Override

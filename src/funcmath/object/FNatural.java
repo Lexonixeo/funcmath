@@ -16,7 +16,8 @@ public class FNatural implements MathObject {
     }
 
     public FNatural(BigInteger number) {
-        if (number.compareTo(BigInteger.ZERO) < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+        if (number.compareTo(BigInteger.ZERO) < 0)
+            throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
         this.number = number;
     }
 
@@ -26,7 +27,8 @@ public class FNatural implements MathObject {
 
     public FNatural(String s) {
         BigInteger number = new BigInteger(s);
-        if (number.compareTo(BigInteger.ZERO) < 0) throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+        if (number.compareTo(BigInteger.ZERO) < 0)
+            throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
         this.number = number;
     }
 
@@ -85,7 +87,8 @@ public class FNatural implements MathObject {
     public FNatural div(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
+        if (bn.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
         else return new FNatural(an.get().divide(bn.get()));
     }
 
@@ -93,7 +96,8 @@ public class FNatural implements MathObject {
     public FNatural mod(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "%" + bn);
+        if (bn.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "%" + bn);
         else return new FNatural(an.get().mod(bn.get()));
     }
 
@@ -117,7 +121,8 @@ public class FNatural implements MathObject {
     public FNatural root(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "^(1/" + bn + ")");
+        if (bn.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "^(1/" + bn + ")");
 
         FNatural l = new FNatural(BigInteger.ONE.negate());
         FNatural r = new FNatural(an.get().add(BigInteger.ONE));
@@ -134,7 +139,8 @@ public class FNatural implements MathObject {
     public FNatural log(MathObject a, MathObject b) { // TO DO
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
-        if (bn.get().equals(BigInteger.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "^(1/" + bn + ")");
+        if (bn.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "^(1/" + bn + ")");
 
         FNatural l = new FNatural(BigInteger.ONE.negate());
         FNatural r = new FNatural(an.get().add(BigInteger.ONE));
@@ -161,6 +167,13 @@ public class FNatural implements MathObject {
         FNatural an = new FNatural(a);
         if (an.get().equals(BigInteger.ZERO)) return new FNatural(1);
         return this.mul(fact(sub(a, new FNatural(1))), a);
+    }
+
+    @Override
+    public FNatural conc(MathObject a, MathObject b) {
+        String an = new FNatural(a).get().toString();
+        String bn = new FNatural(b).get().toString();
+        return new FNatural(an + bn);
     }
 
     @Override
@@ -202,6 +215,13 @@ public class FNatural implements MathObject {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
         return new FNatural(an.get().or(bn.get()));
+    }
+
+    @Override
+    public FNatural xor(MathObject a, MathObject b) {
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        return new FNatural(an.get().xor(bn.get()));
     }
 
     @Override

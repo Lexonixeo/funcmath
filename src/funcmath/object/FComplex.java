@@ -118,7 +118,8 @@ public class FComplex implements MathObject {
         FComplex an = new FComplex(a);
         FComplex bn = new FComplex(b);
         FReal mod = this.abs(bn).getReal();
-        if (mod.get().equals(BigDecimal.ZERO)) throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
+        if (mod.get().equals(BigDecimal.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
         FComplex c = this.mul(an, this.conj(bn));
         return new FComplex(freal.div(c.getReal(), mod), freal.div(c.getImaginary(), mod));
     }
@@ -154,6 +155,11 @@ public class FComplex implements MathObject {
     }
 
     @Override
+    public MathObject conc(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция conc не определена для комплексных чисел.");
+    }
+
+    @Override
     public MathObject rand(MathObject a, MathObject b) {
         throw new NullPointerException("Функция rand временно не введена для комплексных чисел.");
     }
@@ -174,10 +180,16 @@ public class FComplex implements MathObject {
     }
 
     @Override
+    public MathObject xor(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция xor не определена для комплексных чисел.");
+    }
+
+    @Override
     public FComplex abs(MathObject a) {
-        return new FComplex(
-                freal.root(freal.sum(freal.mul(this.real, this.real), freal.mul(this.imaginary, this.imaginary)), new FReal(2))
-        );
+        return new FComplex(freal.root(
+                freal.sum(freal.mul(this.real, this.real), freal.mul(this.imaginary, this.imaginary)),
+                new FReal(2)
+        ));
     }
 
     @Override
@@ -189,7 +201,8 @@ public class FComplex implements MathObject {
     @Override
     public FComplex arg(MathObject a) {
         FComplex an = new FComplex(a);
-        return new FComplex(Math.atan2(an.get()[1].doubleValue(), an.get()[0].doubleValue()), 0); // потом исправить
+        return new FComplex(Math.atan2(an.get()[1].doubleValue(), an.get()[0].doubleValue()), 0);
+        // потом исправить с .doubleValue() на что-то иное, в BigDecimalMath нет atan2 :(
     }
 
     @Override
@@ -201,6 +214,8 @@ public class FComplex implements MathObject {
 
     @Override
     public String toString() {
-        return this.real.toString() + (this.imaginary.get().compareTo(BigDecimal.ZERO) >= 0 ? "+" : "") + this.imaginary.toString() + "i";
+        return this.real.toString()
+                + (this.imaginary.get().compareTo(BigDecimal.ZERO) >= 0 ? "+" : "") // знак мнимой компоненты
+                + this.imaginary.toString() + "i";
     }
 }

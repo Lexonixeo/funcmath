@@ -19,11 +19,13 @@ public interface MathObject extends Serializable {
     MathObject log(MathObject a, MathObject b);
     MathObject gcd(MathObject a, MathObject b);
     MathObject fact(MathObject a);
+    MathObject conc(MathObject a, MathObject b);
     MathObject rand(MathObject a, MathObject b);
     MathObject abs(MathObject a);
     MathObject not(MathObject a);
     MathObject and(MathObject a, MathObject b);
     MathObject or(MathObject a, MathObject b);
+    MathObject xor(MathObject a, MathObject b);
     MathObject conj(MathObject a);
     MathObject arg(MathObject a);
 
@@ -51,10 +53,11 @@ public interface MathObject extends Serializable {
     FString
     FColor
     FMoney (деньги с разными валютами - курсы валют меняются с каждым ходом)
+    FMeasure (физическая величина с размерностью)
+    FErrorMeasure
     FMinecraftItem
-    FWord - это то, из-за чего я придумал эту игру :)
+    FWord - это то, из-за чего я придумал эту игру
      */
 
-    // xor a b = and or a b not and a b
     // lcm a b = div mul a b gcd a b
 }
