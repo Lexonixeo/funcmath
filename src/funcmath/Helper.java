@@ -8,7 +8,7 @@ public class Helper {
     public static Object read(String pathname) {
         Object ans;
         try {
-            FileInputStream fis = new FileInputStream(pathname);
+            FileInputStream fis = new FileInputStream(pathname.replace('\\', '/'));
             ObjectInputStream iis = new ObjectInputStream(fis);
             ans = iis.readObject();
             iis.close();
@@ -20,7 +20,8 @@ public class Helper {
 
     public static void write(Object obj, String pathname) {
         try {
-            FileOutputStream fos = new FileOutputStream(pathname);
+            File ourFile = new File(pathname.replace('\\', '/'));
+            FileOutputStream fos = new FileOutputStream(ourFile);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(obj);
             oos.flush();
@@ -28,6 +29,8 @@ public class Helper {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // в линуксе может отсутствовать директория у файла, решаю через generateDirectories()
     }
 
     private static ArrayList<Character> stringProcessing(String str) {
@@ -86,7 +89,7 @@ public class Helper {
     }
 
     public static int filesCount(String pathname) {
-        return new File(pathname).listFiles().length;
+        return new File(pathname.replace('\\', '/')).listFiles().length;
     }
 
     public static void clear() {
@@ -114,12 +117,12 @@ public class Helper {
     }
 
     public static boolean isFileExists(String pathname) {
-        return (new File(pathname)).exists();
+        return (new File(pathname.replace('\\', '/'))).exists();
     }
 
     public static ArrayList<String> getFileNames(String pathname) {
         ArrayList<String> answer = new ArrayList<>();
-        File folder = new File(pathname);
+        File folder = new File(pathname.replace('\\', '/'));
         File[] listOfFiles = folder.listFiles();
         if (listOfFiles == null) {
             return answer;
@@ -140,6 +143,19 @@ public class Helper {
         }
         answer.sort(Comparator.naturalOrder());
         return answer;
+    }
+
+    public static void generateDirectories() {
+        new File("data/customLevels").mkdirs();
+        new File("data/functions").mkdirs();
+        new File("data/functions/natural").mkdirs();
+        new File("data/functions/integer").mkdirs();
+        new File("data/functions/rational").mkdirs();
+        new File("data/functions/real").mkdirs();
+        new File("data/functions/complex").mkdirs();
+        new File("data/levels").mkdirs();
+        new File("data/players").mkdirs();
+        new File("data/preLevels").mkdirs();
     }
 
     // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ
