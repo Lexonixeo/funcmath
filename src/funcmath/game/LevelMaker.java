@@ -59,22 +59,17 @@ public class LevelMaker {
 
         HashMap<String, Function> originalFunctions = new HashMap<>();
 
-        System.out.print("Введите ID функций через пробел: ");
-        ArrayList<Integer> ids = Helper.integersFromWords(Helper.wordsFromString(scanner.nextLine()));
-        String resultClassName = "";
+        System.out.print("Введите область определения уровня: ");
+        String resultClassName = scanner.nextLine();
 
-        for (int id : ids) {
-            Function f = new Function(id);
-            if (!resultClassName.isEmpty() && !f.getResultClassName().equals(resultClassName)) {
-                throw new IllegalArgumentException(
-                        "Функции должны иметь одинаковую область определения. " +
-                                "Должно: " + resultClassName + ", есть: " + f.getResultClassName()
-                );
-            }
+        System.out.print("Введите ID функций через пробел: ");
+        ArrayList<String> ids = Helper.wordsFromString(scanner.nextLine());
+
+        for (String id : ids) {
+            Function f = new Function(resultClassName, id);
             if (originalFunctions.containsKey(f.getName())) {
                 throw new IllegalArgumentException("Названия функций не должны повторяться: " + f.getName());
             }
-            resultClassName = f.getResultClassName();
             originalFunctions.put(f.getName(), f);
         }
 

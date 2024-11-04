@@ -18,22 +18,18 @@ public class Function implements Serializable {
     int uses;
     String resultClassName;
 
-    public Function(int hashCode) {
-        HashMap<Integer, Function> functions;
+    public Function(String resultClassName, String hashCode) {
+        Function f;
         try {
-            functions = (HashMap<Integer, Function>) Helper.read("data\\functions.dat");
+            f = (Function) Helper.read("data/functions/" + resultClassName + "/f" + hashCode + ".dat");
         } catch (RuntimeException e) {
-            functions = new HashMap<>();
+            throw new RuntimeException(e);
         }
-        if (!functions.containsKey(hashCode)) {
-            throw new NullPointerException("В functions.dat отсуствует функция: " + hashCode);
-        }
-        Function f = functions.get(hashCode);
         this.name = f.name;
         this.description = f.description;
         this.definition = f.definition;
         this.numberOfArgs = f.numberOfArgs;
-        this.resultClassName = f.resultClassName;
+        this.resultClassName = resultClassName;
         this.uses = f.uses;
     }
 

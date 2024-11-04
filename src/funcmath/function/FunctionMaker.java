@@ -3,10 +3,7 @@ package funcmath.function;
 import funcmath.Helper;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class FunctionMaker {
     private static void tutorial() {
@@ -77,7 +74,7 @@ public class FunctionMaker {
 
         System.out.println("После данных действий вам выдадут ID вашей функции и вы сможете добавлять вашу функцию в любой ваш уровень.");
         System.out.println("Обратите внимание: данный ID функции действителен только на вашем компьютере.");
-        System.out.println("Ваша функция теперь имеет ID: 71395630152482        (он недействительный, написал в качестве примера)");
+        System.out.println("Ваша функция теперь имеет ID: 12345abc        (он недействительный, написал в качестве примера)");
         scanner.nextLine();
 
         System.out.println("Спасибо за прочтение!");
@@ -97,12 +94,20 @@ public class FunctionMaker {
             }
         }
 
+        ArrayList<String> resultClassNames = new ArrayList<>(List.of(
+                "natural", "integer", "rational", "real", "complex"
+        ));
+
         System.out.print("Введите название функции: ");
         String name = scanner.nextLine();
         System.out.print("Введите описание функции: ");
         String description = scanner.nextLine();
         System.out.print("Введите область опредения функции: ");
         String resultClassName = scanner.nextLine();
+        if (!resultClassNames.contains(resultClassName)) {
+            System.out.println("Неверная область определения!");
+            return true;
+        }
         System.out.print("Введите определение функции, используя простейшие: ");
         ArrayList<String> definition = Helper.wordsFromString(scanner.nextLine());
         System.out.print("Введите кол-во использований функции (-1 если бесконечно): ");
@@ -117,15 +122,15 @@ public class FunctionMaker {
         }
 
         Function function = new Function(name, definition, resultClassName, description, uses);
-        HashMap<Integer, Function> functions;
-        if (!Helper.isFileExists("data\\functions.dat")) {
-            functions = new HashMap<>();
-        } else {
-            functions = (HashMap<Integer, Function>) Helper.read("data\\functions.dat");
+        int functionHash = function.hashCode();
+        String functionFileName = "f" + Integer.toHexString(functionHash) + ".dat";
+        while (Helper.getFileNames("data/functions/" + resultClassName + "/").contains(functionFileName)) {
+            functionHash += functionFileName.hashCode();
+            functionFileName = "f" + Integer.toHexString(functionHash) + ".dat";
         }
-        functions.put(function.hashCode(), function);
-        Helper.write(functions, "data\\functions.dat");
-        System.out.println("Ваша функция теперь имеет ID: " + function.hashCode());
+        Helper.write(function, "data/functions/" + resultClassName + "/" + functionFileName);
+
+        System.out.println("Ваша функция теперь имеет ID: " + Integer.toHexString(functionHash));
 
         return false;
     }

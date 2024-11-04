@@ -106,7 +106,7 @@ public class Level implements Serializable {
         System.out.println("Введите clear, чтобы очистить экран от лишних выражений.");
         System.out.println("Введите nums, чтобы узнать текущий набор чисел.");
         System.out.println("Введите hint, чтобы получить подсказку.");
-        System.out.println("Введите calc {выражение}, чтобы посчитать выражение.");
+        System.out.println("Введите calc {выражение}, чтобы посчитать независимое выражение. (не забирает и не добавляет числа в набор)");
         System.out.println("Введите back, чтобы откатить предыдущее выражение.");
         System.out.println("Введите reset, чтобы перезагрузить уровень.");
         System.out.println("Введите exit, чтобы выйти из уровня.\n");
