@@ -51,6 +51,10 @@ public class SimpleFunctions {
         return resultClass.gcd(a, b);
     }
 
+    public static MathObject lcm(MathObject resultClass, MathObject a, MathObject b) {
+        return resultClass.lcm(a, b);
+    }
+
     public static MathObject fact(MathObject resultClass, MathObject a) {
         return resultClass.fact(a);
     }
@@ -67,10 +71,6 @@ public class SimpleFunctions {
         return resultClass.abs(a);
     }
 
-    public static MathObject not(MathObject resultClass, MathObject a) {
-        return resultClass.not(a);
-    }
-
     public static MathObject and(MathObject resultClass, MathObject a, MathObject b) {
         return resultClass.and(a, b);
     }
@@ -81,6 +81,22 @@ public class SimpleFunctions {
 
     public static MathObject xor(MathObject resultClass, MathObject a, MathObject b) {
         return resultClass.xor(a, b);
+    }
+
+    public static MathObject min(MathObject resultClass, MathObject a, MathObject b) {
+        return resultClass.min(a, b);
+    }
+
+    public static MathObject max(MathObject resultClass, MathObject a, MathObject b) {
+        return resultClass.max(a, b);
+    }
+
+    public static MathObject sign(MathObject resultClass, MathObject a) {
+        return resultClass.sign(a);
+    }
+
+    public static MathObject not(MathObject resultClass, MathObject a) {
+        return resultClass.not(a);
     }
 
     public static MathObject conj(MathObject resultClass, MathObject a) {

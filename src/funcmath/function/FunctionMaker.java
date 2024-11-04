@@ -50,9 +50,9 @@ public class FunctionMaker {
         System.out.println("В выражении могут присутствовать: простейшие функции (sum, sub, div и т.д.), аргументы (x0, x1, x2, ...) и числа (1, -2, 1/5, 4.23, -7-5i, ...)");
         System.out.println("Все виды простейших функций (название и аргументы):");
         System.out.println("sum x0 x1       sub x0 x1       mul x0 x1       div x0 x1       mod x0 x1       pow x0 x1");
-        System.out.println("root x0 x1      log x0 x1       gcd x0 x1       fact x0         rand x0 x1      abs x0");
-        System.out.println("not x0          and x0 x1       or x0 x1        xor x0 x1       conj x0         arg x0");
-        System.out.println("ignore x0");
+        System.out.println("root x0 x1      log x0 x1       gcd x0 x1       lcm x0 x1       fact x0         rand x0 x1");
+        System.out.println("abs x0          and x0 x1       or x0 x1        xor x0 x1       min x0 x1       max x0 x1");
+        System.out.println("sign x0         not x0          conj x0         arg x0          ignore x0");
         System.out.println("(Функция ignore предназначена для игнорирования какого-либо аргумента и ничего не возвращает.)");
         scanner.nextLine();
 
@@ -92,7 +92,9 @@ public class FunctionMaker {
         if (functionMakerTutorial) {
             System.out.print("Хотите ли вы прочитать туториал? y/n ");
             String input = scanner.nextLine();
-            if (input.equals("y") || input.equals("у")) tutorial();
+            if (input.equals("y") || input.equals("у")) {
+                tutorial();
+            }
         }
 
         System.out.print("Введите название функции: ");
@@ -116,8 +118,11 @@ public class FunctionMaker {
 
         Function function = new Function(name, definition, resultClassName, description, uses);
         HashMap<Integer, Function> functions;
-        if (!Helper.isFileExists("data\\functions.dat")) functions = new HashMap<>();
-        else functions = (HashMap<Integer, Function>) Helper.read("data\\functions.dat");
+        if (!Helper.isFileExists("data\\functions.dat")) {
+            functions = new HashMap<>();
+        } else {
+            functions = (HashMap<Integer, Function>) Helper.read("data\\functions.dat");
+        }
         functions.put(function.hashCode(), function);
         Helper.write(functions, "data\\functions.dat");
         System.out.println("Ваша функция теперь имеет ID: " + function.hashCode());

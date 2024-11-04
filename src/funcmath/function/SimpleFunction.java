@@ -30,7 +30,11 @@ public class SimpleFunction {
     }
 
     public Object use(MathObject... args) {
-        if (numberOfArgs != args.length) throw new IllegalArgumentException("Не совпадает число аргументов функции: должно быть " + numberOfArgs + ", есть: " + args.length);
+        if (numberOfArgs != args.length) {
+            throw new IllegalArgumentException(
+                    "Не совпадает число аргументов функции: должно быть " + numberOfArgs + ", есть: " + args.length
+            );
+        }
 
         MathObject[] newArgs = new MathObject[args.length + 1];
         System.arraycopy(args, 0, newArgs, 1, args.length);

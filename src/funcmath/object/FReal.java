@@ -29,7 +29,11 @@ public class FReal implements MathObject {
     }
 
     public FReal(String s) {
-        this.number = new BigDecimal(s);
+        this.number = switch (s) {
+            case "e", "E", "е", "Е" -> BigDecimalMath.exp(new MathContext(5));
+            case "pi", "PI", "Pi", "pI", "π", "пи", "ПИ", "Пи", "пИ" -> BigDecimalMath.pi(new MathContext(5));
+            default -> new BigDecimal(s);
+        };
     }
 
     public FReal(MathObject number) {
@@ -129,6 +133,11 @@ public class FReal implements MathObject {
     }
 
     @Override
+    public MathObject lcm(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция lcm не определена для действительных чисел.");
+    }
+
+    @Override
     public MathObject fact(MathObject a) {
         FReal an = new FReal(a);
         return new FReal(BigDecimalMath.Gamma(an.get()));
@@ -154,11 +163,6 @@ public class FReal implements MathObject {
     }
 
     @Override
-    public MathObject not(MathObject a) {
-        throw new ArithmeticException("Функция not не определена для действительных чисел.");
-    }
-
-    @Override
     public MathObject and(MathObject a, MathObject b) {
         throw new ArithmeticException("Функция and не определена для действительных чисел.");
     }
@@ -171,6 +175,35 @@ public class FReal implements MathObject {
     @Override
     public MathObject xor(MathObject a, MathObject b) {
         throw new ArithmeticException("Функция xor не определена для действительных чисел.");
+    }
+
+    @Override
+    public FReal min(MathObject a, MathObject b) {
+        FReal an = new FReal(a);
+        FReal bn = new FReal(b);
+        FReal c = this.sub(an, bn);
+        if (c.get().compareTo(BigDecimal.ZERO) <= 0) return an;
+        else return bn;
+    }
+
+    @Override
+    public FReal max(MathObject a, MathObject b) {
+        FReal an = new FReal(a);
+        FReal bn = new FReal(b);
+        FReal c = this.sub(an, bn);
+        if (c.get().compareTo(BigDecimal.ZERO) <= 0) return bn;
+        else return an;
+    }
+
+    @Override
+    public FReal sign(MathObject a) {
+        FReal an = new FReal(a);
+        return new FReal(an.get().compareTo(BigDecimal.ZERO));
+    }
+
+    @Override
+    public MathObject not(MathObject a) {
+        throw new ArithmeticException("Функция not не определена для действительных чисел.");
     }
 
     @Override

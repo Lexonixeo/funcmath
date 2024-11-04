@@ -161,9 +161,17 @@ public class FNatural implements MathObject {
     public FNatural gcd(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
+        return new FNatural(an.get().gcd(bn.get()));
+        /*
         if (an.get().compareTo(bn.get()) < 0) return this.gcd(bn, an);
         else if (bn.get().equals(BigInteger.ZERO)) return an;
         else return this.gcd(bn, this.mod(an, bn));
+         */
+    }
+
+    @Override
+    public FNatural lcm(MathObject a, MathObject b) {
+        return this.div(this.mul(a, b), this.gcd(a, b));
     }
 
     @Override
@@ -203,11 +211,6 @@ public class FNatural implements MathObject {
     }
 
     @Override
-    public MathObject not(MathObject a) {
-        throw new ArithmeticException("Функция not не определена для натуральных чисел.");
-    }
-
-    @Override
     public FNatural and(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
@@ -226,6 +229,33 @@ public class FNatural implements MathObject {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
         return new FNatural(an.get().xor(bn.get()));
+    }
+
+    @Override
+    public FNatural min(MathObject a, MathObject b) {
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (an.get().compareTo(bn.get()) <= 0) return an;
+        else return bn;
+    }
+
+    @Override
+    public FNatural max(MathObject a, MathObject b) {
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (an.get().compareTo(bn.get()) <= 0) return bn;
+        else return an;
+    }
+
+    @Override
+    public FNatural sign(MathObject a) {
+        FNatural an = new FNatural(a);
+        return new FNatural(an.get().compareTo(BigInteger.ZERO));
+    }
+
+    @Override
+    public MathObject not(MathObject a) {
+        throw new ArithmeticException("Функция not не определена для натуральных чисел.");
     }
 
     @Override

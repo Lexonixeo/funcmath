@@ -25,7 +25,9 @@ public class Function implements Serializable {
         } catch (RuntimeException e) {
             functions = new HashMap<>();
         }
-        if (!functions.containsKey(hashCode)) throw new NullPointerException("В functions.dat отсуствует функция: " + hashCode);
+        if (!functions.containsKey(hashCode)) {
+            throw new NullPointerException("В functions.dat отсуствует функция: " + hashCode);
+        }
         Function f = functions.get(hashCode);
         this.name = f.name;
         this.description = f.description;
@@ -82,10 +84,14 @@ public class Function implements Serializable {
     }
 
     public ArrayList<MathObject> use(int mode, MathObject... x) {
-        if (mode == 0 && this.uses == 0) throw new RuntimeException("У функции закончилось число использований.");
-        if (x.length != numberOfArgs) throw new IllegalArgumentException(
-                "Не совпадает число аргументов функции: должно быть " + numberOfArgs + ", есть: " + x.length
-        );
+        if (mode == 0 && this.uses == 0) {
+            throw new RuntimeException("У функции закончилось число использований.");
+        }
+        if (x.length != numberOfArgs) {
+            throw new IllegalArgumentException(
+                    "Не совпадает число аргументов функции: должно быть " + numberOfArgs + ", есть: " + x.length
+            );
+        }
 
         MathObject resultClass = switch (resultClassName) {
             case "integer" -> new FInteger(0);
@@ -148,7 +154,12 @@ public class Function implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Function function = (Function) o;
-        return numberOfArgs == function.numberOfArgs && uses == function.uses && Objects.equals(name, function.name) && Objects.equals(description, function.description) && Objects.equals(definition, function.definition) && Objects.equals(resultClassName, function.resultClassName);
+        return numberOfArgs == function.numberOfArgs
+                && uses == function.uses
+                && Objects.equals(name, function.name)
+                && Objects.equals(description, function.description)
+                && Objects.equals(definition, function.definition)
+                && Objects.equals(resultClassName, function.resultClassName);
     }
 
     @Override

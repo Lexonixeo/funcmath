@@ -121,12 +121,41 @@ public class FInteger implements MathObject {
     }
 
     @Override
-    public MathObject root(MathObject a, MathObject b) {
-        throw new NullPointerException("Функция root временно не введена для целых чисел.");
+    public FInteger root(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        if (bn.get().compareTo(BigInteger.ZERO) < 0)
+            return this.root(this.pow(an, new FInteger(-1)), this.mul(bn, new FInteger(-1)));
+        if (bn.get().equals(BigInteger.ZERO))
+            throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "^(1/" + bn + ")");
+        if (an.get().compareTo(BigInteger.ZERO) < 0 && bn.get().mod(BigInteger.TWO).equals(BigInteger.ZERO))
+            throw new ArithmeticException("Корни степени, делящейся на 2, не определены для отрицательных чисел");
+
+        if (an.get().compareTo(BigInteger.ZERO) < 0) {
+            FInteger l = new FInteger(this.sub(an, new FInteger(1)));
+            FInteger r = new FInteger(0);
+            while (this.sub(r, l).get().compareTo(BigInteger.ONE) > 0) {
+                FInteger m = this.div(this.sum(r, l), new FInteger(2));
+                FInteger res = this.pow(m, bn);
+                if (res.get().compareTo(an.get()) > 0) r = m;
+                else l = m;
+            }
+            return l;
+        } else {
+            FInteger l = new FInteger(-1);
+            FInteger r = new FInteger(this.sum(an, new FInteger(1)));
+            while (this.sub(r, l).get().compareTo(BigInteger.ONE) > 0) {
+                FInteger m = this.div(this.sum(r, l), new FInteger(2));
+                FInteger res = this.pow(m, bn);
+                if (res.get().compareTo(an.get()) > 0) r = m;
+                else l = m;
+            }
+            return l;
+        }
     }
 
     @Override
-    public MathObject log(MathObject a, MathObject b) {
+    public FInteger log(MathObject a, MathObject b) {
         throw new NullPointerException("Функция log временно не введена для целых чисел.");
     }
 
@@ -134,9 +163,17 @@ public class FInteger implements MathObject {
     public FInteger gcd(MathObject a, MathObject b) {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
+        return new FInteger(an.get().gcd(bn.get()));
+        /*
         if (an.get().compareTo(bn.get()) < 0) return this.gcd(bn, an);
         else if (bn.get().equals(BigInteger.ZERO)) return an;
         else return this.gcd(bn, this.mod(an, bn));
+         */
+    }
+
+    @Override
+    public FInteger lcm(MathObject a, MathObject b) {
+        return this.div(this.mul(a, b), this.gcd(a, b));
     }
 
     @Override
@@ -181,12 +218,6 @@ public class FInteger implements MathObject {
     }
 
     @Override
-    public FInteger not(MathObject a) {
-        FInteger an = new FInteger(a);
-        return new FInteger(an.get().not());
-    }
-
-    @Override
     public FInteger and(MathObject a, MathObject b) {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
@@ -205,6 +236,34 @@ public class FInteger implements MathObject {
         FInteger an = new FInteger(a);
         FInteger bn = new FInteger(b);
         return new FInteger(an.get().xor(bn.get()));
+    }
+
+    @Override
+    public FInteger min(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        if (an.get().compareTo(bn.get()) <= 0) return an;
+        else return bn;
+    }
+
+    @Override
+    public FInteger max(MathObject a, MathObject b) {
+        FInteger an = new FInteger(a);
+        FInteger bn = new FInteger(b);
+        if (an.get().compareTo(bn.get()) <= 0) return bn;
+        else return an;
+    }
+
+    @Override
+    public FInteger sign(MathObject a) {
+        FInteger an = new FInteger(a);
+        return new FInteger(an.get().compareTo(BigInteger.ZERO));
+    }
+
+    @Override
+    public FInteger not(MathObject a) {
+        FInteger an = new FInteger(a);
+        return new FInteger(an.get().not());
     }
 
     @Override
