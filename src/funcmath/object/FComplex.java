@@ -150,6 +150,11 @@ public class FComplex implements MathObject {
     }
 
     @Override
+    public MathObject lcm(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция lcm не определена для комплексных чисел.");
+    }
+
+    @Override
     public MathObject fact(MathObject a) {
         throw new NullPointerException("Функция fact временно не введена для комплексных чисел.");
     }
@@ -165,11 +170,6 @@ public class FComplex implements MathObject {
     }
 
     @Override
-    public MathObject not(MathObject a) {
-        throw new ArithmeticException("Функция not не определена для комплексных чисел.");
-    }
-
-    @Override
     public MathObject and(MathObject a, MathObject b) {
         throw new ArithmeticException("Функция and не определена для комплексных чисел.");
     }
@@ -182,6 +182,63 @@ public class FComplex implements MathObject {
     @Override
     public MathObject xor(MathObject a, MathObject b) {
         throw new ArithmeticException("Функция xor не определена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject min(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция min не определена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject max(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция max не определена для комплексных чисел.");
+    }
+
+    @Override
+    public FComplex sign(MathObject a) {
+        FComplex an = new FComplex(a);
+        if (this.abs(an).get(0).get().equals(BigDecimal.ZERO)) return new FComplex(0, 0);
+        return this.div(this, this.abs(an));
+    }
+
+    @Override
+    public MathObject[] primes(MathObject a) {
+        throw new ArithmeticException("Функция primes не определена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject not(MathObject a) {
+        throw new ArithmeticException("Функция not не определена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject sin(MathObject a) {
+        throw new NullPointerException("Функция sin временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject cos(MathObject a) {
+        throw new NullPointerException("Функция cos временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject tan(MathObject a) {
+        throw new NullPointerException("Функция tan временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject arcsin(MathObject a) {
+        throw new NullPointerException("Функция arcsin временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject arccos(MathObject a) {
+        throw new NullPointerException("Функция arccos временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject arctan(MathObject a) {
+        throw new NullPointerException("Функция arctan временно не введена для комплексных чисел.");
     }
 
     @Override

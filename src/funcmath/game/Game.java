@@ -46,7 +46,9 @@ public class Game {
         Level l = new Level(level, tutorial, 0);
         boolean[] result = l.game();
         tutorial = result[0];
-        if (result[1]) completedLevels.add(level);
+        if (result[1]) {
+            completedLevels.add(level);
+        }
         Helper.write(completedLevels, "data\\players\\" + hashedName + ".dat");
     }
 
@@ -60,7 +62,9 @@ public class Game {
         Level l = new Level(level, tutorial, 1);
         boolean[] result = l.game();
         tutorial = result[0];
-        if (result[1]) completedLevels.add(level);
+        if (result[1]) {
+            completedLevels.add(level);
+        }
         Helper.write(completedLevels, "data\\players\\" + hashedName + ".dat");
     }
 

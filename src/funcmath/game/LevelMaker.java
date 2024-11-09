@@ -59,22 +59,18 @@ public class LevelMaker {
 
         HashMap<String, Function> originalFunctions = new HashMap<>();
 
-        System.out.print("Введите ID функций через пробел: ");
-        ArrayList<Integer> ids = Helper.integersFromWords(Helper.wordsFromString(scanner.nextLine()));
-        String resultClassName = "";
+        System.out.print("Введите область определения уровня: ");
+        String resultClassName = scanner.nextLine();
 
-        for (int id : ids) {
-            Function f = new Function(id);
-            if (!resultClassName.isEmpty() && !f.getResultClassName().equals(resultClassName)) {
-                throw new IllegalArgumentException(
-                        "Функции должны иметь одинаковую область определения. " +
-                                "Должно: " + resultClassName + ", есть: " + f.getResultClassName()
-                );
-            }
+        System.out.print("Введите ID функций через пробел: ");
+        ArrayList<String> ids = Helper.wordsFromString(scanner.nextLine());
+
+        for (String id : ids) {
+            Function f = new Function(resultClassName, id);
             if (originalFunctions.containsKey(f.getName())) {
-                throw new IllegalArgumentException("Названия функций не должны повторяться: " + f.getName());
+                System.out.println("Названия функций не должны повторяться: " + f.getName());
+                return true;
             }
-            resultClassName = f.getResultClassName();
             originalFunctions.put(f.getName(), f);
         }
 
@@ -85,8 +81,12 @@ public class LevelMaker {
             originalNumbers.add(MathObject.parseMathObject(number, resultClassName));
         }
 
-        System.out.print("Введите ответ: ");
-        MathObject ans = MathObject.parseMathObject(scanner.nextLine(), resultClassName);
+        System.out.print("Введите ответ (необходимое(ые) число(а)): ");
+        ArrayList<String> ansnumbers = Helper.wordsFromString(scanner.nextLine());
+        ArrayList<MathObject> answers = new ArrayList<>();
+        for (String ansnum : ansnumbers) {
+            answers.add(MathObject.parseMathObject(ansnum, resultClassName));
+        }
 
         ArrayList<String> hints = new ArrayList<>();
         System.out.print("Введите кол-во подсказок: ");
@@ -99,13 +99,13 @@ public class LevelMaker {
         ArrayList<Object> generated = new ArrayList<>();
         generated.add(originalNumbers);
         generated.add(originalFunctions);
-        generated.add(ans);
+        generated.add(answers);
         generated.add(hints);
         generated.add(resultClassName);
         generated.add(cutscene);
         generated.add(name);
 
-        int levelHash = Objects.hash(originalNumbers, originalFunctions, hints, ans, resultClassName);
+        int levelHash = Objects.hash(originalNumbers, originalFunctions, hints, answers, resultClassName);
         String level = "level" + levelHash + ".dat";
         while (!universalMode && Helper.getFileNames(normalPath).contains(level)) {
             levelHash += mode.hashCode();

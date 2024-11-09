@@ -82,10 +82,9 @@ public class FRational implements MathObject {
     }
 
     public FRational(String s) {
-        ArrayList<Integer> numbers = Helper.integersFromWords(
-                Helper.wordsFromString(s.replace('/', ' '))
-        );
-        FRational num = new FRational(numbers.get(0), numbers.get(1));
+        ArrayList<String> numbers = Helper.wordsFromString(s.replace('/', ' '));
+        if (numbers.size() == 1) numbers.add("1");
+        FRational num = new FRational(new BigInteger(numbers.get(0)), new BigInteger(numbers.get(1)));
         this.numerator = new FInteger(num.get()[0]);
         this.denominator = new FNatural(num.get()[1]);
     }
@@ -171,28 +170,56 @@ public class FRational implements MathObject {
     }
 
     @Override
-    public MathObject pow(MathObject a, MathObject b) {
-        throw new NullPointerException("Функция pow временно не введена для целых чисел.");
+    public FRational pow(MathObject a, MathObject b) {
+        FRational an = new FRational(a);
+        FRational bn = new FRational(b);
+        if (new FInteger(bn.get(0)).get().compareTo(BigInteger.ZERO) < 0)
+            return this.pow(
+                    this.div(new FRational(1, 1), an),
+                    this.mul(bn, new FRational(-1, 1))
+            );
+
+        return new FRational(
+                fint.root(fint.pow(
+                        this.mul(an.get(0), fint.pow(new FInteger(10), bn.get(1))),
+                        bn.get(0)), bn.get(1)),
+                fint.root(fint.pow(
+                        this.mul(an.get(1), fint.pow(new FInteger(10), bn.get(1))),
+                        bn.get(0)), bn.get(1))
+        );
     }
 
     @Override
-    public MathObject root(MathObject a, MathObject b) {
-        throw new NullPointerException("Функция root временно не введена для рациональных чисел.");
+    public FRational root(MathObject a, MathObject b) {
+        FRational an = new FRational(a);
+        FRational bn = new FRational(b);
+        return this.pow(an, this.div(new FRational(1, 1), bn));
     }
 
     @Override
-    public MathObject log(MathObject a, MathObject b) {
+    public FRational log(MathObject a, MathObject b) {
         throw new NullPointerException("Функция log временно не введена для рациональных чисел.");
     }
 
     @Override
-    public MathObject gcd(MathObject a, MathObject b) {
-        throw new ArithmeticException("Функция gcd временно не введена для рациональных чисел.");
-        // или умножаем дроби на НОК знаменателей, находим НОД, делим на НОК знаменателей?
+    public FRational gcd(MathObject a, MathObject b) {
+        FRational an = new FRational(a);
+        FRational bn = new FRational(b);
+        FNatural lcm = fnat.div(fnat.mul(an.get(1), bn.get(1)), fnat.gcd(an.get(1), bn.get(1)));
+        FInteger ann = this.mul(an, lcm).getInteger();
+        FInteger bnn = this.mul(bn, lcm).getInteger();
+        FInteger gcd = fint.gcd(ann, bnn);
+        return new FRational(gcd, lcm);
+        // умножаем дроби на НОК знаменателей, находим НОД, делим на НОК знаменателей
     }
 
     @Override
-    public MathObject fact(MathObject a) {
+    public FRational lcm(MathObject a, MathObject b) {
+        return this.div(this.mul(a, b), this.gcd(a, b));
+    }
+
+    @Override
+    public FRational fact(MathObject a) {
         throw new NullPointerException("Функция fact временно не введена для рациональных чисел.");
     }
 
@@ -202,7 +229,7 @@ public class FRational implements MathObject {
     }
 
     @Override
-    public MathObject rand(MathObject a, MathObject b) {
+    public FRational rand(MathObject a, MathObject b) {
         throw new NullPointerException("Функция rand временно не введена для рациональных чисел.");
     }
 
@@ -210,11 +237,6 @@ public class FRational implements MathObject {
     public FRational abs(MathObject a) {
         FRational an = new FRational(a);
         return new FRational(fint.abs(an.get(0)), fnat.abs(an.get(1)));
-    }
-
-    @Override
-    public MathObject not(MathObject a) {
-        throw new ArithmeticException("Функция not не определена для рациональных чисел.");
     }
 
     @Override
@@ -230,6 +252,70 @@ public class FRational implements MathObject {
     @Override
     public MathObject xor(MathObject a, MathObject b) {
         throw new ArithmeticException("Функция xor не определена для рациональных чисел.");
+    }
+
+    @Override
+    public FRational min(MathObject a, MathObject b) {
+        FRational an = new FRational(a);
+        FRational bn = new FRational(b);
+        FRational c = this.sub(an, bn);
+        if (c.get(0).getInteger().get().compareTo(BigInteger.ZERO) <= 0) return an;
+        else return bn;
+    }
+
+    @Override
+    public FRational max(MathObject a, MathObject b) {
+        FRational an = new FRational(a);
+        FRational bn = new FRational(b);
+        FRational c = this.sub(an, bn);
+        if (c.get(0).getInteger().get().compareTo(BigInteger.ZERO) <= 0) return bn;
+        else return an;
+    }
+
+    @Override
+    public FRational sign(MathObject a) {
+        FRational an = new FRational(a);
+        return new FRational(an.get(0).getInteger().get().compareTo(BigInteger.ZERO), 1);
+    }
+
+    @Override
+    public MathObject[] primes(MathObject a) {
+        throw new ArithmeticException("Функция primes не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject not(MathObject a) {
+        throw new ArithmeticException("Функция not не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject sin(MathObject a) {
+        throw new ArithmeticException("Функция sin не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject cos(MathObject a) {
+        throw new ArithmeticException("Функция cos не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject tan(MathObject a) {
+        throw new ArithmeticException("Функция tan не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject arcsin(MathObject a) {
+        throw new ArithmeticException("Функция arcsin не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject arccos(MathObject a) {
+        throw new ArithmeticException("Функция arccos не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject arctan(MathObject a) {
+        throw new ArithmeticException("Функция arctan не определена для рациональных чисел.");
     }
 
     @Override
@@ -252,6 +338,6 @@ public class FRational implements MathObject {
 
     @Override
     public String toString() {
-        return this.numerator + "/" + this.denominator;
+        return this.numerator + (this.denominator.get().equals(BigInteger.ONE) ? "" : "/" + this.denominator);
     }
 }

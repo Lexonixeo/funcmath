@@ -3,6 +3,7 @@ package funcmath.object;
 import java.io.Serial;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 
 public class FNatural implements MathObject {
     @Serial
@@ -161,9 +162,17 @@ public class FNatural implements MathObject {
     public FNatural gcd(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
+        return new FNatural(an.get().gcd(bn.get()));
+        /*
         if (an.get().compareTo(bn.get()) < 0) return this.gcd(bn, an);
         else if (bn.get().equals(BigInteger.ZERO)) return an;
         else return this.gcd(bn, this.mod(an, bn));
+         */
+    }
+
+    @Override
+    public FNatural lcm(MathObject a, MathObject b) {
+        return this.div(this.mul(a, b), this.gcd(a, b));
     }
 
     @Override
@@ -203,11 +212,6 @@ public class FNatural implements MathObject {
     }
 
     @Override
-    public MathObject not(MathObject a) {
-        throw new ArithmeticException("Функция not не определена для натуральных чисел.");
-    }
-
-    @Override
     public FNatural and(MathObject a, MathObject b) {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
@@ -226,6 +230,85 @@ public class FNatural implements MathObject {
         FNatural an = new FNatural(a);
         FNatural bn = new FNatural(b);
         return new FNatural(an.get().xor(bn.get()));
+    }
+
+    @Override
+    public FNatural min(MathObject a, MathObject b) {
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (an.get().compareTo(bn.get()) <= 0) return an;
+        else return bn;
+    }
+
+    @Override
+    public FNatural max(MathObject a, MathObject b) {
+        FNatural an = new FNatural(a);
+        FNatural bn = new FNatural(b);
+        if (an.get().compareTo(bn.get()) <= 0) return bn;
+        else return an;
+    }
+
+    @Override
+    public FNatural sign(MathObject a) {
+        FNatural an = new FNatural(a);
+        return new FNatural(an.get().compareTo(BigInteger.ZERO));
+    }
+
+    @Override
+    public FNatural[] primes(MathObject a) {
+        ArrayList<FNatural> factor = new ArrayList<>();
+        FNatural an = new FNatural(a);
+        while (an.get().compareTo(BigInteger.ONE) > 0) {
+            FNatural bn = new FNatural(2);
+            while (bn.get().compareTo(this.root(an, new FNatural(2)).get()) <= 0) {
+                if (this.mod(an, bn).equals(new FNatural(0))) {
+                    factor.add(bn);
+                    an = this.div(an, bn);
+                } else {
+                    bn = this.sum(bn, new FNatural(1));
+                }
+            }
+            if (!an.get().equals(BigInteger.ONE)) {
+                factor.add(an);
+                an = new FNatural(1);
+            }
+        }
+        return factor.toArray(new FNatural[]{});
+    }
+
+    @Override
+    public MathObject not(MathObject a) {
+        throw new ArithmeticException("Функция not не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject sin(MathObject a) {
+        throw new ArithmeticException("Функция sin не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject cos(MathObject a) {
+        throw new ArithmeticException("Функция cos не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject tan(MathObject a) {
+        throw new ArithmeticException("Функция tan не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject arcsin(MathObject a) {
+        throw new ArithmeticException("Функция arcsin не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject arccos(MathObject a) {
+        throw new ArithmeticException("Функция arccos не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject arctan(MathObject a) {
+        throw new ArithmeticException("Функция arctan не определена для натуральных чисел.");
     }
 
     @Override

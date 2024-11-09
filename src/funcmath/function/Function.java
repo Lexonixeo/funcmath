@@ -1,6 +1,9 @@
 package funcmath.function;
 
 import funcmath.Helper;
+import funcmath.exceptions.IllegalNumberOfArgumentsException;
+import funcmath.exceptions.NoDomainOfDefinitionException;
+import funcmath.exceptions.NoFunctionUsesException;
 import funcmath.object.*;
 
 import java.io.Serial;
@@ -18,20 +21,13 @@ public class Function implements Serializable {
     int uses;
     String resultClassName;
 
-    public Function(int hashCode) {
-        HashMap<Integer, Function> functions;
-        try {
-            functions = (HashMap<Integer, Function>) Helper.read("data\\functions.dat");
-        } catch (RuntimeException e) {
-            functions = new HashMap<>();
-        }
-        if (!functions.containsKey(hashCode)) throw new NullPointerException("В functions.dat отсуствует функция: " + hashCode);
-        Function f = functions.get(hashCode);
+    public Function(String resultClassName, String hashCode) {
+        Function f = (Function) Helper.read("data/functions/" + resultClassName + "/f" + hashCode + ".dat");
         this.name = f.name;
         this.description = f.description;
         this.definition = f.definition;
         this.numberOfArgs = f.numberOfArgs;
-        this.resultClassName = f.resultClassName;
+        this.resultClassName = resultClassName;
         this.uses = f.uses;
     }
 
@@ -82,10 +78,12 @@ public class Function implements Serializable {
     }
 
     public ArrayList<MathObject> use(int mode, MathObject... x) {
-        if (mode == 0 && this.uses == 0) throw new RuntimeException("У функции закончилось число использований.");
-        if (x.length != numberOfArgs) throw new IllegalArgumentException(
-                "Не совпадает число аргументов функции: должно быть " + numberOfArgs + ", есть: " + x.length
-        );
+        if (mode == 0 && this.uses == 0) {
+            throw new NoFunctionUsesException();
+        }
+        if (x.length != numberOfArgs) {
+            throw new IllegalNumberOfArgumentsException(numberOfArgs, x.length);
+        }
 
         MathObject resultClass = switch (resultClassName) {
             case "integer" -> new FInteger(0);
@@ -93,42 +91,37 @@ public class Function implements Serializable {
             case "rational" -> new FRational(0, 1);
             case "real" -> new FReal(0);
             case "complex" -> new FComplex(0, 0);
-            default -> throw new IllegalArgumentException("Не существует такой области определения");
+            default -> throw new NoDomainOfDefinitionException(resultClassName);
         };
         ArrayList<String> sfNames = SimpleFunctions.names;
         Stack<SimpleFunction> sfStack = new Stack<>();
         Stack<ArrayList<MathObject>> nums = new Stack<>();
         nums.push(new ArrayList<>()); // конечный
 
+        LinkedList<MathObject> timed = new LinkedList<>();
         for (String word : definition) {
             if (sfNames.contains(word)) {
                 sfStack.push(new SimpleFunction(word, resultClass));
                 nums.push(new ArrayList<>());
-            } else if (word.charAt(0) == 'x') {
-                int j = Integer.parseInt(word.substring(1));
-                nums.peek().add(x[j]);
-                while (!sfStack.isEmpty() && nums.peek().size() == sfStack.peek().getNumberOfArgs()) {
-                    MathObject[] args = new MathObject[nums.peek().size()];
-                    Object ans = sfStack.peek().use(nums.peek().toArray(args));
-                    sfStack.pop();
-                    nums.pop();
-                    try {
-                        nums.peek().add((MathObject) ans);
-                    } catch (RuntimeException e) {
-                        nums.peek().addAll(List.of((MathObject[]) ans));
-                    }
-                }
             } else {
-                nums.peek().add(MathObject.parseMathObject(word, resultClassName));
-                while (!sfStack.isEmpty() && nums.peek().size() == sfStack.peek().getNumberOfArgs()) {
-                    MathObject[] args = new MathObject[nums.peek().size()];
-                    Object ans = sfStack.peek().use(nums.peek().toArray(args));
-                    sfStack.pop();
-                    nums.pop();
-                    try {
-                        nums.peek().add((MathObject) ans);
-                    } catch (RuntimeException e) {
-                        nums.peek().addAll(List.of((MathObject[]) ans));
+                if (word.charAt(0) == 'x') {
+                    int j = Integer.parseInt(word.substring(1));
+                    timed.add(x[j]);
+                } else {
+                    timed.add(MathObject.parseMathObject(word, resultClassName));
+                }
+                while (!timed.isEmpty()) {
+                    nums.peek().add(timed.pop());
+                    while (!sfStack.isEmpty() && nums.peek().size() == sfStack.peek().getNumberOfArgs()) {
+                        MathObject[] args = new MathObject[nums.peek().size()];
+                        Object ans = sfStack.peek().use(nums.peek().toArray(args));
+                        sfStack.pop();
+                        nums.pop();
+                        try {
+                            timed.add((MathObject) ans);
+                        } catch (RuntimeException e) {
+                            timed.addAll(List.of((MathObject[]) ans));
+                        }
                     }
                 }
             }
@@ -148,7 +141,12 @@ public class Function implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Function function = (Function) o;
-        return numberOfArgs == function.numberOfArgs && uses == function.uses && Objects.equals(name, function.name) && Objects.equals(description, function.description) && Objects.equals(definition, function.definition) && Objects.equals(resultClassName, function.resultClassName);
+        return numberOfArgs == function.numberOfArgs
+                && uses == function.uses
+                && Objects.equals(name, function.name)
+                && Objects.equals(description, function.description)
+                && Objects.equals(definition, function.definition)
+                && Objects.equals(resultClassName, function.resultClassName);
     }
 
     @Override
