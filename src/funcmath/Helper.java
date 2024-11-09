@@ -1,5 +1,7 @@
 package funcmath;
 
+import funcmath.object.MathObject;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -156,6 +158,17 @@ public class Helper {
         new File("data/levels").mkdirs();
         new File("data/players").mkdirs();
         new File("data/preLevels").mkdirs();
+        new File("data/locales").mkdirs();
+    }
+
+    public static String arrayListToString(ArrayList<MathObject> nums) {
+        StringBuilder sb = new StringBuilder();
+        for (MathObject num : nums) {
+            sb.append(num);
+            sb.append(" ");
+        }
+        sb.deleteCharAt(sb.lastIndexOf(" "));
+        return sb.toString();
     }
 
     // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ

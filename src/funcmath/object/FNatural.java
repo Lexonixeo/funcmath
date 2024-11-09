@@ -3,6 +3,7 @@ package funcmath.object;
 import java.io.Serial;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 
 public class FNatural implements MathObject {
     @Serial
@@ -254,8 +255,60 @@ public class FNatural implements MathObject {
     }
 
     @Override
+    public FNatural[] primes(MathObject a) {
+        ArrayList<FNatural> factor = new ArrayList<>();
+        FNatural an = new FNatural(a);
+        while (an.get().compareTo(BigInteger.ONE) > 0) {
+            FNatural bn = new FNatural(2);
+            while (bn.get().compareTo(this.root(an, new FNatural(2)).get()) <= 0) {
+                if (this.mod(an, bn).equals(new FNatural(0))) {
+                    factor.add(bn);
+                    an = this.div(an, bn);
+                } else {
+                    bn = this.sum(bn, new FNatural(1));
+                }
+            }
+            if (!an.get().equals(BigInteger.ONE)) {
+                factor.add(an);
+                an = new FNatural(1);
+            }
+        }
+        return factor.toArray(new FNatural[]{});
+    }
+
+    @Override
     public MathObject not(MathObject a) {
         throw new ArithmeticException("Функция not не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject sin(MathObject a) {
+        throw new ArithmeticException("Функция sin не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject cos(MathObject a) {
+        throw new ArithmeticException("Функция cos не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject tan(MathObject a) {
+        throw new ArithmeticException("Функция tan не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject arcsin(MathObject a) {
+        throw new ArithmeticException("Функция arcsin не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject arccos(MathObject a) {
+        throw new ArithmeticException("Функция arccos не определена для натуральных чисел.");
+    }
+
+    @Override
+    public MathObject arctan(MathObject a) {
+        throw new ArithmeticException("Функция arctan не определена для натуральных чисел.");
     }
 
     @Override

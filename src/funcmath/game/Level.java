@@ -1,6 +1,8 @@
 package funcmath.game;
 
 import funcmath.Helper;
+import funcmath.exceptions.IllegalLevelFlagException;
+import funcmath.exceptions.NoDomainOfDefinitionException;
 import funcmath.function.Function;
 import funcmath.object.*;
 
@@ -21,7 +23,7 @@ public class Level implements Serializable {
     Stack<HashMap<String, Function>> functionsStack = new Stack<>();
     ArrayList<String> hints;
     ArrayList<String> cutscene;
-    MathObject ans;
+    ArrayList<MathObject> answers;
     int level;
     int hint = 0;
     // int difficulty;
@@ -35,7 +37,7 @@ public class Level implements Serializable {
             case 0 -> "l";
             case 1 -> "customL";
             case 2 -> "preL";
-            default -> throw new IllegalArgumentException("Такого флага нет: " + customFlag);
+            default -> throw new IllegalLevelFlagException(customFlag);
         };
 
         this.tutorial = tutorial;
@@ -50,7 +52,12 @@ public class Level implements Serializable {
         functions = Helper.deepClone(originalFunctions);
         functionsStack.push(Helper.deepClone(functions));
 
-        ans = (MathObject) generated.get(2);
+        try {
+            answers = (ArrayList<MathObject>) generated.get(2);
+        } catch (RuntimeException e) {
+            answers = new ArrayList<>();
+            answers.add((MathObject) generated.get(2));
+        }
         hints = (ArrayList<String>) generated.get(3);
         resultClassName = (String) generated.get(4);
         cutscene = (ArrayList<String>) generated.get(5);
@@ -68,9 +75,11 @@ public class Level implements Serializable {
         scanner.nextLine();
     }
 
+    /*
     private void winCheck(MathObject newNumber) {
         completed |= ans.equals(newNumber);
     }
+     */
 
     private boolean numsCheck(ArrayList<MathObject> args) {
         ArrayList<MathObject> nums = Helper.deepClone(numbers);
@@ -124,7 +133,7 @@ public class Level implements Serializable {
             case "rational" -> "рациональных";
             case "real" -> "действительных";
             case "complex" -> "комплексных";
-            default -> throw new IllegalArgumentException("Не существует такого числа");
+            default -> throw new NoDomainOfDefinitionException(resultClassName);
         };
         System.out.println("В данном уровне все вычисления происходят в " + mathObjectType + " числах.\n");
 
@@ -138,7 +147,7 @@ public class Level implements Serializable {
             System.out.println(function);
         }
 
-        System.out.println("\nВам нужно из данных чисел, используя данные функции, получить число " + ans + ".\n");
+        System.out.println("\nВам нужно из данных чисел, используя данные функции, получить число(а) " + Helper.arrayListToString(answers) + ".\n");
         if (tutorial) this.tutorial();
     }
 
@@ -239,13 +248,13 @@ public class Level implements Serializable {
         for (MathObject answerNum : nums.peek()) {
             if (mode == 0) {
                 numbers.add(answerNum);
-                winCheck(answerNum);
             }
             System.out.print(" " + answerNum);
         }
         System.out.println();
 
         if (mode == 0) {
+            completed = numsCheck(answers);
             numbersStack.push(Helper.deepClone(numbers));
             functionsStack.push(Helper.deepClone(functions));
         }
@@ -309,7 +318,7 @@ public class Level implements Serializable {
             if (check == -1) break;
         }
         if (completed) {
-            System.out.println("Поздравляем! Вы получили число " + ans + " и прошли уровень!");
+            System.out.println("Поздравляем! Вы получили число(а) " + Helper.arrayListToString(answers) + " и прошли уровень!");
         }
         return new boolean[]{tutorial, completed};
     }
@@ -319,12 +328,12 @@ public class Level implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Level level = (Level) o;
-        return Objects.equals(originalNumbers, level.originalNumbers) && Objects.equals(originalFunctions, level.originalFunctions) && Objects.equals(hints, level.hints) && Objects.equals(ans, level.ans) && Objects.equals(resultClassName, level.resultClassName);
+        return Objects.equals(originalNumbers, level.originalNumbers) && Objects.equals(originalFunctions, level.originalFunctions) && Objects.equals(hints, level.hints) && Objects.equals(answers, level.answers) && Objects.equals(resultClassName, level.resultClassName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originalNumbers, originalFunctions, hints, ans, resultClassName);
+        return Objects.hash(originalNumbers, originalFunctions, hints, answers, resultClassName);
     }
 
     @Override

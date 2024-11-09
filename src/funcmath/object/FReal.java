@@ -202,8 +202,49 @@ public class FReal implements MathObject {
     }
 
     @Override
+    public MathObject[] primes(MathObject a) {
+        throw new ArithmeticException("Функция primes не определена для действительных чисел.");
+    }
+
+    @Override
     public MathObject not(MathObject a) {
         throw new ArithmeticException("Функция not не определена для действительных чисел.");
+    }
+
+    @Override
+    public FReal sin(MathObject a) {
+        FReal an = new FReal(a);
+        return new FReal(BigDecimalMath.sin(an.get()));
+    }
+
+    @Override
+    public FReal cos(MathObject a) {
+        FReal an = new FReal(a);
+        return new FReal(BigDecimalMath.cos(an.get()));
+    }
+
+    @Override
+    public FReal tan(MathObject a) {
+        FReal an = new FReal(a);
+        return new FReal(BigDecimalMath.tan(an.get()));
+    }
+
+    @Override
+    public FReal arcsin(MathObject a) {
+        FReal an = new FReal(a);
+        return new FReal(BigDecimalMath.asin(an.get()));
+    }
+
+    @Override
+    public FReal arccos(MathObject a) {
+        FReal an = new FReal(a);
+        return new FReal(BigDecimalMath.acos(an.get()));
+    }
+
+    @Override
+    public FReal arctan(MathObject a) {
+        FReal an = new FReal(a);
+        return new FReal(BigDecimalMath.atan(an.get()));
     }
 
     @Override

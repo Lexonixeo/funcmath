@@ -279,8 +279,43 @@ public class FRational implements MathObject {
     }
 
     @Override
+    public MathObject[] primes(MathObject a) {
+        throw new ArithmeticException("Функция primes не определена для рациональных чисел.");
+    }
+
+    @Override
     public MathObject not(MathObject a) {
         throw new ArithmeticException("Функция not не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject sin(MathObject a) {
+        throw new ArithmeticException("Функция sin не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject cos(MathObject a) {
+        throw new ArithmeticException("Функция cos не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject tan(MathObject a) {
+        throw new ArithmeticException("Функция tan не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject arcsin(MathObject a) {
+        throw new ArithmeticException("Функция arcsin не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject arccos(MathObject a) {
+        throw new ArithmeticException("Функция arccos не определена для рациональных чисел.");
+    }
+
+    @Override
+    public MathObject arctan(MathObject a) {
+        throw new ArithmeticException("Функция arctan не определена для рациональных чисел.");
     }
 
     @Override

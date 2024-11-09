@@ -202,8 +202,43 @@ public class FComplex implements MathObject {
     }
 
     @Override
+    public MathObject[] primes(MathObject a) {
+        throw new ArithmeticException("Функция primes не определена для комплексных чисел.");
+    }
+
+    @Override
     public MathObject not(MathObject a) {
         throw new ArithmeticException("Функция not не определена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject sin(MathObject a) {
+        throw new NullPointerException("Функция sin временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject cos(MathObject a) {
+        throw new NullPointerException("Функция cos временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject tan(MathObject a) {
+        throw new NullPointerException("Функция tan временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject arcsin(MathObject a) {
+        throw new NullPointerException("Функция arcsin временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject arccos(MathObject a) {
+        throw new NullPointerException("Функция arccos временно не введена для комплексных чисел.");
+    }
+
+    @Override
+    public MathObject arctan(MathObject a) {
+        throw new NullPointerException("Функция arctan временно не введена для комплексных чисел.");
     }
 
     @Override

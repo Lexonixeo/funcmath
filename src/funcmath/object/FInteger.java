@@ -3,6 +3,7 @@ package funcmath.object;
 import java.io.Serial;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 
 public class FInteger implements MathObject {
     @Serial
@@ -261,9 +262,58 @@ public class FInteger implements MathObject {
     }
 
     @Override
+    public FInteger[] primes(MathObject a) {
+        ArrayList<FInteger> factor = new ArrayList<>();
+        FInteger an = this.abs(new FInteger(a));
+        while (an.get().compareTo(BigInteger.ONE) > 0) {
+            FInteger bn = new FInteger(2);
+            while (bn.get().compareTo(this.root(an, new FInteger(2)).get()) <= 0) {
+                if (this.mod(an, bn).equals(new FInteger(0))) {
+                    factor.add(bn);
+                    an = this.div(an, bn);
+                } else {
+                    bn = this.sum(bn, new FInteger(1));
+                }
+            }
+            if (!an.get().equals(BigInteger.ONE)) factor.add(an);
+        }
+        return factor.toArray(new FInteger[]{});
+    }
+
+    @Override
     public FInteger not(MathObject a) {
         FInteger an = new FInteger(a);
         return new FInteger(an.get().not());
+    }
+
+    @Override
+    public MathObject sin(MathObject a) {
+        throw new ArithmeticException("Функция sin не определена для целых чисел.");
+    }
+
+    @Override
+    public MathObject cos(MathObject a) {
+        throw new ArithmeticException("Функция cos не определена для целых чисел.");
+    }
+
+    @Override
+    public MathObject tan(MathObject a) {
+        throw new ArithmeticException("Функция tan не определена для целых чисел.");
+    }
+
+    @Override
+    public MathObject arcsin(MathObject a) {
+        throw new ArithmeticException("Функция arcsin не определена для целых чисел.");
+    }
+
+    @Override
+    public MathObject arccos(MathObject a) {
+        throw new ArithmeticException("Функция arccos не определена для целых чисел.");
+    }
+
+    @Override
+    public MathObject arctan(MathObject a) {
+        throw new ArithmeticException("Функция arctan не определена для целых чисел.");
     }
 
     @Override

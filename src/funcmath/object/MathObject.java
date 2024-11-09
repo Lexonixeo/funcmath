@@ -35,7 +35,7 @@ public interface MathObject extends Serializable {
     MathObject max(MathObject a, MathObject b);
     MathObject sign(MathObject a);
     // MathObject phi(MathObject a); // функция Эйлера
-    // MathObject primes(MathObject a); // разложение на простые множители
+    MathObject[] primes(MathObject a); // разложение на простые множители
     // MathObject A(MathObject a, MathObject b); // функция Аккермана
 
     // Функции целых чисел
@@ -44,16 +44,17 @@ public interface MathObject extends Serializable {
     // Функции рациональных чисел
 
     // Функции действительных чисел
-    // MathObject sin(MathObject a);
-    // MathObject cos(MathObject a);
-    // MathObject tan(MathObject a);
-    // MathObject arcsin(MathObject a);
-    // MathObject arccos(MathObject a);
-    // MathObject arctan2(MathObject a, MathObject b);
+    MathObject sin(MathObject a);
+    MathObject cos(MathObject a);
+    MathObject tan(MathObject a);
+    MathObject arcsin(MathObject a);
+    MathObject arccos(MathObject a);
+    MathObject arctan(MathObject a);
 
     // Функции комплексных чисел
     MathObject conj(MathObject a);
     MathObject arg(MathObject a);
+    // MathObject norm(MathObject a);
 
     static MathObject parseMathObject(String s, String resultClassName) {
         return switch (resultClassName) {
@@ -78,9 +79,11 @@ public interface MathObject extends Serializable {
     FVector
     FMatrix
     FTensor
+    FGroup
     FTriangle и т.д.
     FString
     FColor
+    FPicture
     FFile
     FMoney (деньги с разными валютами - курсы валют меняются с каждым ходом)
     FMeasure (физическая величина с размерностью)
