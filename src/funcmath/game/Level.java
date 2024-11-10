@@ -39,29 +39,37 @@ public class Level implements Serializable {
             case 2 -> "preL";
             default -> throw new IllegalLevelFlagException(customFlag);
         };
+        int add = 0;
+        if (customFlag == 2) {
+            add = 1;
+        }
 
         this.tutorial = tutorial;
         this.level = level;
         ArrayList<Object> generated = (ArrayList<Object>) Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat");
 
-        originalNumbers = (ArrayList<MathObject>) generated.get(0);
+        if (generated.get(0).equals("nothing :)") && add == 0) {
+            throw new RuntimeException("Уровень " + level + " ещё не пройден создателем!");
+        }
+
+        originalNumbers = (ArrayList<MathObject>) generated.get(0 + add);
         numbers = Helper.deepClone(originalNumbers);
         numbersStack.push(Helper.deepClone(numbers));
 
-        originalFunctions = (HashMap<String, Function>) generated.get(1);
+        originalFunctions = (HashMap<String, Function>) generated.get(1 + add);
         functions = Helper.deepClone(originalFunctions);
         functionsStack.push(Helper.deepClone(functions));
 
         try {
-            answers = (ArrayList<MathObject>) generated.get(2);
+            answers = (ArrayList<MathObject>) generated.get(2 + add);
         } catch (RuntimeException e) {
             answers = new ArrayList<>();
-            answers.add((MathObject) generated.get(2));
+            answers.add((MathObject) generated.get(2 + add));
         }
-        hints = (ArrayList<String>) generated.get(3);
-        resultClassName = (String) generated.get(4);
-        cutscene = (ArrayList<String>) generated.get(5);
-        name = (String) generated.get(6);
+        hints = (ArrayList<String>) generated.get(3 + add);
+        resultClassName = (String) generated.get(4 + add);
+        cutscene = (ArrayList<String>) generated.get(5 + add);
+        name = (String) generated.get(6 + add);
     }
 
     private void playCutscene() {

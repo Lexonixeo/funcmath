@@ -163,6 +163,9 @@ public class LevelMaker {
         }
 
         ArrayList<Object> generated = new ArrayList<>();
+        if (!universalMode) {
+            generated.add("nothing :)");
+        }
         generated.add(originalNumbers);
         generated.add(originalFunctions);
         generated.add(answers);
@@ -189,6 +192,7 @@ public class LevelMaker {
                 Level l = new Level(levelHash, tutorial, 2);
                 boolean[] result = l.game();
                 if (result[1]) {
+                    generated.remove(0);
                     Helper.write(generated, normalPath + level);
                 }
             }
