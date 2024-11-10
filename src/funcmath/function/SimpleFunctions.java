@@ -103,6 +103,10 @@ public class SimpleFunctions {
         return resultClass.not(a);
     }
 
+    public static MathObject med(MathObject resultClass, MathObject a, MathObject b) {
+        return resultClass.med(a, b);
+    }
+
     public static MathObject sin(MathObject resultClass, MathObject a) {
         return resultClass.sin(a);
     }
@@ -133,6 +137,10 @@ public class SimpleFunctions {
 
     public static MathObject arg(MathObject resultClass, MathObject a) {
         return resultClass.arg(a);
+    }
+
+    public static MathObject norm(MathObject resultClass, MathObject a) {
+        return resultClass.norm(a);
     }
 
     public static MathObject[] ignore(MathObject ignoredResultClass, MathObject ignoredA) {

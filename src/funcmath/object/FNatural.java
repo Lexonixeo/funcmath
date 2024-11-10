@@ -109,12 +109,20 @@ public class FNatural implements MathObject {
         if (bn.get().equals(BigInteger.ZERO)) return new FNatural(1);
         else if (bn.get().mod(BigInteger.TWO).equals(BigInteger.ZERO)) {
             FNatural cn = this.div(bn, new FNatural(2));
-            FNatural dn = this.pow(an, cn);
-            return this.mul(dn, dn);
+            try {
+                FNatural dn = this.pow(an, cn);
+                return this.mul(dn, dn);
+            } catch (StackOverflowError e) {
+                throw new RuntimeException("Стек вызова функций переполнился для функции pow.");
+            }
         } else {
             FNatural cn = this.div(bn, new FNatural(2));
-            FNatural dn = this.pow(an, cn);
-            return this.mul(this.mul(dn, dn), an);
+            try {
+                FNatural dn = this.pow(an, cn);
+                return this.mul(this.mul(dn, dn), an);
+            } catch (StackOverflowError e) {
+                throw new RuntimeException("Стек вызова функций переполнился для функции pow.");
+            }
         }
     }
 
@@ -179,7 +187,11 @@ public class FNatural implements MathObject {
     public FNatural fact(MathObject a) {
         FNatural an = new FNatural(a);
         if (an.get().equals(BigInteger.ZERO)) return new FNatural(1);
-        return this.mul(fact(sub(a, new FNatural(1))), a);
+        try {
+            return this.mul(fact(sub(a, new FNatural(1))), a);
+        } catch (StackOverflowError e) {
+            throw new RuntimeException("Стек вызова функций переполнился для функции fact.");
+        }
     }
 
     @Override
@@ -282,6 +294,11 @@ public class FNatural implements MathObject {
     }
 
     @Override
+    public MathObject med(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция med не определена для натуральных чисел.");
+    }
+
+    @Override
     public MathObject sin(MathObject a) {
         throw new ArithmeticException("Функция sin не определена для натуральных чисел.");
     }
@@ -319,6 +336,12 @@ public class FNatural implements MathObject {
     @Override
     public FNatural arg(MathObject a) {
         return this.mul(a, new FNatural(0));
+    }
+
+    @Override
+    public FNatural norm(MathObject a) {
+        FNatural an = new FNatural(a);
+        return this.mul(an, an);
     }
 
     @Override

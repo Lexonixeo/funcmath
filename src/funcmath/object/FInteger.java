@@ -112,12 +112,20 @@ public class FInteger implements MathObject {
         if (bn.get().equals(BigInteger.ZERO)) return new FInteger(1);
         else if (this.mod(bn, new FInteger(2)).get().equals(BigInteger.ZERO)) {
             FInteger cn = this.div(bn, new FInteger(2));
-            FInteger dn = this.pow(an, cn);
-            return this.mul(dn, dn);
+            try {
+                FInteger dn = this.pow(an, cn);
+                return this.mul(dn, dn);
+            } catch (StackOverflowError e) {
+                throw new RuntimeException("Стек вызова функций переполнился для функции pow.");
+            }
         } else {
             FInteger cn = this.div(bn, new FInteger(2));
-            FInteger dn = this.pow(an, cn);
-            return this.mul(this.mul(dn, dn), an);
+            try {
+                FInteger dn = this.pow(an, cn);
+                return this.mul(this.mul(dn, dn), an);
+            } catch (StackOverflowError e) {
+                throw new RuntimeException("Стек вызова функций переполнился для функции pow.");
+            }
         }
     }
 
@@ -183,7 +191,11 @@ public class FInteger implements MathObject {
         if (an.get().compareTo(BigInteger.ZERO) < 0)
             throw new ArithmeticException("Факториал для отрицательных целых чисел не определен.");
         else if (an.get().equals(BigInteger.ZERO)) return new FInteger(1);
-        return this.mul(fact(sub(a, new FInteger(1))), a);
+        try {
+            return this.mul(fact(sub(a, new FInteger(1))), a);
+        } catch (StackOverflowError e) {
+            throw new RuntimeException("Стек вызова функций переполнился для функции fact.");
+        }
     }
 
     @Override
@@ -287,6 +299,11 @@ public class FInteger implements MathObject {
     }
 
     @Override
+    public MathObject med(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция med не определена для целых чисел.");
+    }
+
+    @Override
     public MathObject sin(MathObject a) {
         throw new ArithmeticException("Функция sin не определена для целых чисел.");
     }
@@ -325,6 +342,12 @@ public class FInteger implements MathObject {
     public FInteger arg(MathObject a) {
         FInteger an = new FInteger(a);
         return new FInteger(an.get().compareTo(BigInteger.ZERO) >= 0 ? 0 : -4);
+    }
+
+    @Override
+    public FInteger norm(MathObject a) {
+        FInteger an = new FInteger(a);
+        return this.mul(an, an);
     }
 
     @Override

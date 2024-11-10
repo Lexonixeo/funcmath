@@ -261,6 +261,9 @@ public class Level implements Serializable {
     }
 
     private void hint() {
+        if (hints.isEmpty()) {
+            System.out.println("В этом уровне нет подсказок :(");
+        }
         hint++;
         if (hint >= hints.size()) {
             hint = hints.size();
