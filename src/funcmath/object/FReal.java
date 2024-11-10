@@ -212,6 +212,11 @@ public class FReal implements MathObject {
     }
 
     @Override
+    public MathObject med(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция med не определена для действительных чисел.");
+    }
+
+    @Override
     public FReal sin(MathObject a) {
         FReal an = new FReal(a);
         return new FReal(BigDecimalMath.sin(an.get()));
@@ -248,13 +253,20 @@ public class FReal implements MathObject {
     }
 
     @Override
-    public MathObject conj(MathObject a) {
-        return null;
+    public FReal conj(MathObject a) {
+        return new FReal(a);
     }
 
     @Override
-    public MathObject arg(MathObject a) {
-        return null;
+    public FReal arg(MathObject a) {
+        FReal an = new FReal(a);
+        return new FReal(an.get().compareTo(BigDecimal.ZERO) >= 0 ? BigDecimal.ZERO : BigDecimalMath.pi(new MathContext(5)));
+    }
+
+    @Override
+    public FReal norm(MathObject a) {
+        FReal an = new FReal(a);
+        return this.mul(an, an);
     }
 
     @Override

@@ -35,6 +35,9 @@ public interface MathObject extends Serializable {
     MathObject max(MathObject a, MathObject b);
     MathObject sign(MathObject a);
     // MathObject phi(MathObject a); // функция Эйлера
+    // MathObject tau(MathObject a); // кол-во делителей числа
+    // MathObject sigma(MathObject a); // сумма натуральных делителей числа
+    // MathObject pi(MathObject a);
     MathObject[] primes(MathObject a); // разложение на простые множители
     // MathObject A(MathObject a, MathObject b); // функция Аккермана
 
@@ -42,6 +45,9 @@ public interface MathObject extends Serializable {
     MathObject not(MathObject a);
 
     // Функции рациональных чисел
+    MathObject med(MathObject a, MathObject b); // медианта (a + b) / (c + d)
+    // MathObject mink(MathObject a); // функция Минковского (непрерывно отображает рациональные числа на отрезке [0,1] в двоичные рациональные на этом же отрезке)
+    // MathObject[] contfrac(MathObject a); // разложение дроби в цепную дробь
 
     // Функции действительных чисел
     MathObject sin(MathObject a);
@@ -54,7 +60,7 @@ public interface MathObject extends Serializable {
     // Функции комплексных чисел
     MathObject conj(MathObject a);
     MathObject arg(MathObject a);
-    // MathObject norm(MathObject a);
+    MathObject norm(MathObject a);
 
     static MathObject parseMathObject(String s, String resultClassName) {
         return switch (resultClassName) {
@@ -79,6 +85,7 @@ public interface MathObject extends Serializable {
     FVector
     FMatrix
     FTensor
+    FContinuedFraction (число в виде цепной дроби)
     FGroup
     FTriangle и т.д.
     FString

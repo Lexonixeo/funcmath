@@ -49,8 +49,9 @@ public class FunctionMaker {
         System.out.println("sum x0 x1       sub x0 x1       mul x0 x1       div x0 x1       mod x0 x1       pow x0 x1");
         System.out.println("root x0 x1      log x0 x1       gcd x0 x1       lcm x0 x1       fact x0         rand x0 x1");
         System.out.println("abs x0          and x0 x1       or x0 x1        xor x0 x1       min x0 x1       max x0 x1");
-        System.out.println("sign x0         primes x0       not x0          sin x0          cos x0          tan x0");
-        System.out.println("arcsin x0       arccos x0       arctan x0       conj x0         arg x0          ignore x0");
+        System.out.println("sign x0         primes x0       not x0          med x0 x1       sin x0          cos x0");
+        System.out.println("tan x0          arcsin x0       arccos x0       arctan x0       conj x0         arg x0");
+        System.out.println("ignore x0");
         System.out.println("(Функция ignore предназначена для игнорирования какого-либо аргумента и ничего не возвращает.)");
         scanner.nextLine();
 
@@ -74,7 +75,7 @@ public class FunctionMaker {
         scanner.nextLine();
 
         System.out.println("После данных действий вам выдадут ID вашей функции и вы сможете добавлять вашу функцию в любой ваш уровень.");
-        System.out.println("Обратите внимание: данный ID функции действителен только на вашем компьютере.");
+        System.out.println("Функция будет сохранена в файле, который находится в папке data/functions/(область определения)/ и будет иметь название в виде ID.");
         System.out.println("Ваша функция теперь имеет ID: 12345abc        (он недействительный, написал в качестве примера)");
         scanner.nextLine();
 
@@ -103,7 +104,7 @@ public class FunctionMaker {
         String name = scanner.nextLine();
         System.out.print("Введите описание функции: ");
         String description = scanner.nextLine();
-        System.out.print("Введите область опредения функции: ");
+        System.out.print("Введите область определения функции: ");
         String resultClassName = scanner.nextLine();
         if (!resultClassNames.contains(resultClassName)) {
             System.out.println("Неверная область определения!");
@@ -122,16 +123,17 @@ public class FunctionMaker {
             }
         }
 
+
         Function function = new Function(name, definition, resultClassName, description, uses);
         int functionHash = function.hashCode();
-        String functionFileName = "f" + Integer.toHexString(functionHash) + ".dat";
+        String functionFileName = name + Integer.toHexString((functionHash % 256 + 256) % 256) + ".dat";
         while (Helper.getFileNames("data/functions/" + resultClassName + "/").contains(functionFileName)) {
             functionHash += functionFileName.hashCode();
-            functionFileName = "f" + Integer.toHexString(functionHash) + ".dat";
+            functionFileName = name + Integer.toHexString((functionHash % 256 + 256) % 256) + ".dat";
         }
         Helper.write(function, "data/functions/" + resultClassName + "/" + functionFileName);
 
-        System.out.println("Ваша функция теперь имеет ID: " + Integer.toHexString(functionHash));
+        System.out.println("Ваша функция теперь имеет ID: " + name + Integer.toHexString((functionHash % 256 + 256) % 256));
 
         return false;
     }

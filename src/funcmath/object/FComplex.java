@@ -212,6 +212,11 @@ public class FComplex implements MathObject {
     }
 
     @Override
+    public MathObject med(MathObject a, MathObject b) {
+        throw new ArithmeticException("Функция med не определена для комплексных чисел.");
+    }
+
+    @Override
     public MathObject sin(MathObject a) {
         throw new NullPointerException("Функция sin временно не введена для комплексных чисел.");
     }
@@ -243,8 +248,9 @@ public class FComplex implements MathObject {
 
     @Override
     public FComplex abs(MathObject a) {
+        FComplex an = new FComplex(a);
         return new FComplex(freal.root(
-                freal.sum(freal.mul(this.real, this.real), freal.mul(this.imaginary, this.imaginary)),
+                freal.sum(freal.mul(an.real, an.real), freal.mul(an.imaginary, an.imaginary)),
                 new FReal(2)
         ));
     }
@@ -260,6 +266,12 @@ public class FComplex implements MathObject {
         FComplex an = new FComplex(a);
         return new FComplex(Math.atan2(an.get()[1].doubleValue(), an.get()[0].doubleValue()), 0);
         // потом исправить с .doubleValue() на что-то иное, в BigDecimalMath нет atan2 :(
+    }
+
+    @Override
+    public FComplex norm(MathObject a) {
+        FComplex an = new FComplex(a);
+        return this.sum(this.mul(an.real, an.real), this.mul(an.imaginary, an.imaginary));
     }
 
     @Override

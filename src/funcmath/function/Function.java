@@ -22,7 +22,7 @@ public class Function implements Serializable {
     String resultClassName;
 
     public Function(String resultClassName, String hashCode) {
-        Function f = (Function) Helper.read("data/functions/" + resultClassName + "/f" + hashCode + ".dat");
+        Function f = (Function) Helper.read("data/functions/" + resultClassName + "/" + hashCode + ".dat");
         this.name = f.name;
         this.description = f.description;
         this.definition = f.definition;
@@ -71,10 +71,6 @@ public class Function implements Serializable {
 
     public String getName() {
         return name;
-    }
-
-    public String getResultClassName() {
-        return resultClassName;
     }
 
     public ArrayList<MathObject> use(int mode, MathObject... x) {

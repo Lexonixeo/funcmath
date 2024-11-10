@@ -289,6 +289,16 @@ public class FRational implements MathObject {
     }
 
     @Override
+    public FRational med(MathObject a, MathObject b) {
+        FRational an = new FRational(a);
+        FRational bn = new FRational(b);
+        return new FRational(
+                fint.sum(an.get(0), bn.get(0)),
+                fnat.sum(an.get(1), bn.get(1))
+        );
+    }
+
+    @Override
     public MathObject sin(MathObject a) {
         throw new ArithmeticException("Функция sin не определена для рациональных чисел.");
     }
@@ -327,6 +337,12 @@ public class FRational implements MathObject {
     public FRational arg(MathObject a) {
         FRational an = new FRational(a);
         return new FRational(((BigInteger) an.get(0).get()).compareTo(BigInteger.ZERO) >= 0 ? new FReal(0) : (new FReal(Math.PI)).getRational());
+    }
+
+    @Override
+    public FRational norm(MathObject a) {
+        FRational an = new FRational(a);
+        return this.mul(an, an);
     }
 
     @Override
