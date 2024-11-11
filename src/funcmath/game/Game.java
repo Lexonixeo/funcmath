@@ -1,6 +1,10 @@
 package funcmath.game;
 
 import funcmath.Helper;
+import funcmath.exceptions.InvalidPasswordException;
+import funcmath.exceptions.NoRegisteredPlayerException;
+import funcmath.exceptions.PlayerIsRegisteredException;
+import funcmath.exceptions.WrongPasswordsException;
 import funcmath.function.FunctionMaker;
 
 import java.nio.charset.StandardCharsets;
@@ -275,6 +279,44 @@ public class Game {
                 default -> System.out.println("Неизвестная команда :( Введите help, чтобы узнать список команд.");
             }
         }
+    }
+
+    public static Game login(String name, String password) {
+        HashMap<Integer, String> players;
+        if (!Helper.isFileExists("data\\players\\players.dat")) {
+            players = new HashMap<>();
+        } else {
+            players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
+        }
+
+        if (!players.containsValue(name)) {
+            throw new NoRegisteredPlayerException(name);
+        } else if (!players.containsKey(password.hashCode()) || !players.get(password.hashCode()).equals(name)) {
+            throw new InvalidPasswordException();
+        }
+
+        return new Game(name);
+    }
+
+    public static Game register(String name, String password1, String password2) {
+        if (!password1.equals(password2)) {
+            throw new WrongPasswordsException();
+        }
+
+        HashMap<Integer, String> players;
+        if (!Helper.isFileExists("data\\players\\players.dat")) {
+            players = new HashMap<>();
+        } else {
+            players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
+        }
+
+        if (players.containsValue(name)) {
+            throw new PlayerIsRegisteredException(name);
+        }
+
+        players.put(password1.hashCode(), name);
+        Helper.write(players, "data\\players\\players.dat");
+        return new Game(name);
     }
 
     public static Game login() {
