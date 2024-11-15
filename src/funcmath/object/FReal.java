@@ -11,10 +11,10 @@ import org.nevec.rjm.BigDecimalMath;
 public class FReal implements MathObject {
   @Serial private static final long serialVersionUID = -1314616813911607893L;
 
-  public static final FReal EPS = new FReal(BigDecimal.valueOf(0.001));
-  public static final FReal ZERO = new FReal(BigDecimal.ZERO);
-  public static final FReal ONE = new FReal(BigDecimal.ONE);
-  public static final FReal TWO = new FReal(BigDecimal.valueOf(2));
+  public static final FReal EPS = new FReal(new BigDecimal("0.001"));
+  public static final FReal ZERO = new FReal(0);
+  public static final FReal ONE = new FReal(1);
+  public static final FReal TWO = new FReal(2);
   public static final FReal E = new FReal(BigDecimalMath.exp(new MathContext(5)));
   public static final FReal PI = new FReal(BigDecimalMath.pi(new MathContext(5)));
 

@@ -1,9 +1,7 @@
 package funcmath.function;
 
 import funcmath.Helper;
-import funcmath.exceptions.IllegalNumberOfArgumentsException;
-import funcmath.exceptions.NoDomainOfDefinitionException;
-import funcmath.exceptions.NoFunctionUsesException;
+import funcmath.exceptions.FunctionException;
 import funcmath.object.*;
 import java.io.Serial;
 import java.io.Serializable;
@@ -77,12 +75,20 @@ public class Function implements Serializable {
     return name;
   }
 
+  public int getUses() {
+    return uses;
+  }
+
   public ArrayList<MathObject> use(int mode, MathObject... x) {
     if (mode == 0 && this.uses == 0) {
-      throw new NoFunctionUsesException();
+      throw new FunctionException("У функции " + name + " закончилось число использований.");
     }
     if (x.length != numberOfArgs) {
-      throw new IllegalNumberOfArgumentsException(numberOfArgs, x.length);
+      throw new FunctionException(
+          "Не совпадает число аргументов функции: должно быть "
+              + numberOfArgs
+              + ", есть: "
+              + x.length);
     }
 
     MathObject resultClass =
@@ -92,7 +98,9 @@ public class Function implements Serializable {
           case "rational" -> new FRational(0, 1);
           case "real" -> new FReal(0);
           case "complex" -> new FComplex(0, 0);
-          default -> throw new NoDomainOfDefinitionException(resultClassName);
+          default ->
+              throw new FunctionException(
+                  "Не существует такой области определения: " + resultClassName);
         };
     ArrayList<String> sfNames = SimpleFunctions.names;
     Stack<SimpleFunction> sfStack = new Stack<>();

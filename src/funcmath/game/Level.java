@@ -1,8 +1,7 @@
 package funcmath.game;
 
 import funcmath.Helper;
-import funcmath.exceptions.IllegalLevelFlagException;
-import funcmath.exceptions.NoDomainOfDefinitionException;
+import funcmath.exceptions.LevelException;
 import funcmath.function.Function;
 import funcmath.object.*;
 import java.io.Serial;
@@ -24,6 +23,8 @@ public class Level implements Serializable {
   ArrayList<MathObject> answers;
   int level;
   int hint = 0;
+  long startTime;
+  int fuses;
   // int difficulty;
   boolean tutorial;
   String resultClassName;
@@ -36,7 +37,7 @@ public class Level implements Serializable {
           case 0 -> "l";
           case 1 -> "customL";
           case 2 -> "preL";
-          default -> throw new IllegalLevelFlagException(customFlag);
+          default -> throw new LevelException("Несуществующий уровневый флаг: " + customFlag);
         };
     int add = 0;
     if (customFlag == 2) {
@@ -49,7 +50,7 @@ public class Level implements Serializable {
         (ArrayList<Object>) Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat");
 
     if (generated.get(0).equals("nothing :)") && add == 0) {
-      throw new RuntimeException("Уровень " + level + " ещё не пройден создателем!");
+      throw new LevelException("Уровень " + level + " ещё не пройден создателем!");
     }
 
     originalNumbers = (ArrayList<MathObject>) generated.get(add);
@@ -70,6 +71,10 @@ public class Level implements Serializable {
     resultClassName = (String) generated.get(4 + add);
     cutscene = (ArrayList<String>) generated.get(5 + add);
     name = (String) generated.get(6 + add);
+
+    for (Function f : functions.values()) {
+      fuses += f.getUses();
+    }
   }
 
   private void playCutscene() {
@@ -149,7 +154,9 @@ public class Level implements Serializable {
           case "rational" -> "рациональных";
           case "real" -> "действительных";
           case "complex" -> "комплексных";
-          default -> throw new NoDomainOfDefinitionException(resultClassName);
+          default ->
+              throw new LevelException(
+                  "Не существует такой области определения: " + resultClassName);
         };
     System.out.println(
         "В данном уровне все вычисления происходят в " + mathObjectType + " числах.\n");
@@ -317,7 +324,7 @@ public class Level implements Serializable {
     ArrayList<String> command = Helper.wordsFromString(scanner.nextLine());
     String first_command = command.get(0);
     switch (first_command) {
-      case "exit" -> {
+      case "exit", "menu", "stop" -> {
         return -1;
       }
       case "nums" -> nums();
@@ -335,20 +342,27 @@ public class Level implements Serializable {
     return 0;
   }
 
-  public boolean[] game() {
+  public int[] game() {
     if (!cutscene.isEmpty()) playCutscene();
+    startTime = System.currentTimeMillis() / 1000;
     start();
     while (!completed) {
       int check = turn();
       if (check == -1) break;
     }
+    int time = Math.toIntExact(System.currentTimeMillis() / 1000 - startTime);
+    int newFuses = 0;
+    for (Function f : functions.values()) {
+      newFuses += f.getUses();
+    }
+    int dFuses = fuses - newFuses;
     if (completed) {
       System.out.println(
           "Поздравляем! Вы получили число(а) "
               + Helper.arrayListToString(answers)
               + " и прошли уровень!");
     }
-    return new boolean[] {tutorial, completed};
+    return new int[] {(tutorial ? 1 : 0), (completed ? 1 : 0), dFuses, time};
   }
 
   @Override

@@ -1,42 +1,19 @@
 package funcmath.game;
 
 import funcmath.Helper;
-import funcmath.exceptions.InvalidPasswordException;
-import funcmath.exceptions.NoRegisteredPlayerException;
-import funcmath.exceptions.PlayerIsRegisteredException;
-import funcmath.exceptions.WrongPasswordsException;
 import funcmath.function.FunctionMaker;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Scanner;
 
 public class Game {
-  String name;
-  String hashedName;
-  HashSet<Integer> completedLevels;
-  int lastLevel;
+  Player player;
   boolean tutorial = true;
   boolean levelMakerTutorial = true;
   boolean functionMakerTutorial = true;
 
-  Game(String name) {
-    this.name = name;
-    this.hashedName = Integer.toHexString(name.hashCode());
-    try {
-      this.completedLevels =
-          (HashSet<Integer>) Helper.read("data\\players\\" + hashedName + ".dat");
-    } catch (Exception e) {
-      this.completedLevels = new HashSet<>();
-      Helper.write(completedLevels, "data\\players\\" + hashedName + ".dat");
-    }
-    try {
-      this.lastLevel = (Integer) Helper.read("data\\players\\" + hashedName + "s.dat");
-    } catch (Exception e) {
-      this.lastLevel = 0;
-      Helper.write(lastLevel, "data\\players\\" + hashedName + "s.dat");
-    }
+  Game(Player player) {
+    this.player = player;
   }
 
   private void level(int level) {
@@ -45,15 +22,10 @@ public class Game {
       System.out.println("Такого уровня не существует!");
       return;
     }
-    lastLevel = level;
-    Helper.write(lastLevel, "data\\players\\" + hashedName + "s.dat");
     Level l = new Level(level, tutorial, 0);
-    boolean[] result = l.game();
-    tutorial = result[0];
-    if (result[1]) {
-      completedLevels.add(level);
-    }
-    Helper.write(completedLevels, "data\\players\\" + hashedName + ".dat");
+    int[] result = l.game();
+    tutorial = (result[0] == 1);
+    player.addLevel((result[1] == 1), level, result[2], result[3]);
   }
 
   private void customLevel(int level) {
@@ -61,22 +33,17 @@ public class Game {
       System.out.println("Такого уровня не существует!");
       return;
     }
-    lastLevel = -level;
-    Helper.write(lastLevel, "data\\players\\" + hashedName + "s.dat");
     Level l = new Level(level, tutorial, 1);
-    boolean[] result = l.game();
-    tutorial = result[0];
-    if (result[1]) {
-      completedLevels.add(level);
-    }
-    Helper.write(completedLevels, "data\\players\\" + hashedName + ".dat");
+    int[] result = l.game();
+    tutorial = (result[0] == 1);
+    player.addLevel((result[1] == 1), level, result[2], result[3]);
   }
 
   private void play() {
     int levels = Helper.filesCount("data\\levels");
     boolean isAnyNotCompletedLevel = false;
     for (int level = 1; level <= levels; level++) {
-      if (!completedLevels.contains(level)) {
+      if (!player.getCompletedLevels().contains(level)) {
         this.level(level);
         isAnyNotCompletedLevel = true;
         break;
@@ -88,6 +55,7 @@ public class Game {
   }
 
   private void last() {
+    int lastLevel = player.getLastLevel();
     if (lastLevel == 0) {
       System.out.println("Вы ещё не заходили в какой-либо уровень!");
       return;
@@ -100,6 +68,7 @@ public class Game {
   }
 
   private void next() {
+    int lastLevel = player.getLastLevel();
     if (lastLevel == 0) {
       System.out.println(
           "Вы ещё не заходили в какой-либо уровень!"); // переформулировать когда добавлю случайные
@@ -114,6 +83,7 @@ public class Game {
   }
 
   private void prev() {
+    int lastLevel = player.getLastLevel();
     if (lastLevel == 0) {
       System.out.println(
           "Вы ещё не заходили в какой-либо уровень!"); // переформулировать когда добавлю случайные
@@ -150,7 +120,7 @@ public class Game {
   private void menu() {
     Helper.clear();
     int levels = Helper.filesCount("data\\levels");
-    System.out.println("Добро пожаловать, " + name + "!");
+    System.out.println("Добро пожаловать, " + player.getName() + "!");
     System.out.println("Вы сейчас играете в III прототип игры func(math).");
     System.out.println("Он написан для реализации новых фич в игре и вашего оценивания.");
     System.out.println();
@@ -158,7 +128,7 @@ public class Game {
     System.out.println("Игра начинается с 1-ого уровня. Всего в игре " + levels + " уровней.");
     System.out.println(
         "Чтобы "
-            + (completedLevels.isEmpty()
+            + (player.getCompletedLevels().isEmpty()
                 ? "начать игру"
                 : "продолжить игру с первого непройденного уровня")
             + ", введите команду play.");
@@ -194,7 +164,26 @@ public class Game {
   }
 
   private void stats() {
-    // to do...
+    Helper.clear();
+    System.out.println("Статистика игрока " + player.getName() + ":");
+    System.out.println("Пройденные уровни:");
+    int i = 0;
+    for (int level : player.getCompletedLevels()) {
+      i++;
+      int fuses =
+          (player.getMinFunctionUsesInLevel().get(level) != null
+              ? player.getMinFunctionUsesInLevel().get(level)
+              : 10000);
+      int time =
+          (player.getMinTimeInLevel().get(level) != null
+              ? player.getMinTimeInLevel().get(level)
+              : 10000);
+      System.out.print(level + "/" + fuses + "/" + time + "\t\t");
+      if (i % 5 == 0) System.out.println();
+    }
+    System.out.println("\n");
+    System.out.println("(уровень/минимальное число использованных функций/минимальное время (с))");
+    System.out.println("(10000 - значит то, что эти данные не сохранились)");
   }
 
   private void random() {
@@ -207,7 +196,7 @@ public class Game {
     menu();
     boolean running = true;
     while (running) {
-      Helper.write(completedLevels, "data\\players\\" + hashedName + ".dat");
+      player.writePlayerInfo();
       System.out.println();
       System.out.print("[Commander] Введите команду: ");
       ArrayList<String> command = Helper.wordsFromString(scanner.nextLine());
@@ -286,7 +275,7 @@ public class Game {
           }
         }
         case "next" -> next();
-        case "stats" -> System.out.println("Скоро будет, но не щас.");
+        case "stats" -> stats();
         case "exit" -> running = false;
         default ->
             System.out.println("Неизвестная команда :( Введите help, чтобы узнать список команд.");
@@ -294,85 +283,46 @@ public class Game {
     }
   }
 
-  public static Game login(String name, String password) {
-    HashMap<Integer, String> players;
-    if (!Helper.isFileExists("data\\players\\players.dat")) {
-      players = new HashMap<>();
-    } else {
-      players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
-    }
-
-    if (!players.containsValue(name)) {
-      throw new NoRegisteredPlayerException(name);
-    } else if (!players.containsKey(password.hashCode())
-        || !players.get(password.hashCode()).equals(name)) {
-      throw new InvalidPasswordException();
-    }
-
-    return new Game(name);
-  }
-
-  public static Game register(String name, String password1, String password2) {
-    if (!password1.equals(password2)) {
-      throw new WrongPasswordsException();
-    }
-
-    HashMap<Integer, String> players;
-    if (!Helper.isFileExists("data\\players\\players.dat")) {
-      players = new HashMap<>();
-    } else {
-      players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
-    }
-
-    if (players.containsValue(name)) {
-      throw new PlayerIsRegisteredException(name);
-    }
-
-    players.put(password1.hashCode(), name);
-    Helper.write(players, "data\\players\\players.dat");
-    return new Game(name);
-  }
-
   public static Game login() {
-    HashMap<Integer, String> players;
-    if (!Helper.isFileExists("data\\players\\players.dat")) players = new HashMap<>();
-    else players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-    System.out.print("Введите ваш логин: ");
-    String name = scanner.nextLine();
-    if (!players.containsValue(name)) {
-      String password1, password2;
-      while (true) {
+    Player player;
+
+    do {
+      System.out.print("\nВведите ваш логин: ");
+      String name = scanner.nextLine();
+      if (!Authorization.isPlayerExists(name)) {
+        String password1, password2;
         System.out.print("Придумайте пароль: ");
         password1 = scanner.nextLine();
         System.out.print("Повторите пароль: ");
         password2 = scanner.nextLine();
         if (!password1.equals(password2)) {
-          System.out.println("Пароли отличаются!\n");
+          System.out.println("Пароли отличаются!");
         } else {
-          break;
+          try {
+            player = Authorization.register(name, password1);
+            break;
+          } catch (Exception e) {
+            System.out.println(e.getMessage());
+          }
         }
-      }
-      players.put(password1.hashCode(), name);
-    } else {
-      String password;
-      while (true) {
+      } else {
+        String password;
         System.out.print("Введите пароль: ");
         password = scanner.nextLine();
-        if (!players.containsKey(password.hashCode())
-            || !players.get(password.hashCode()).equals(name)) {
-          System.out.println("Неверный пароль! Если вы перепутали логин, перезапустите игру.\n");
-        } else {
+        try {
+          player = Authorization.login(name, password);
           break;
+        } catch (Exception e) {
+          System.out.println(e.getMessage());
         }
       }
-    }
-    Helper.write(players, "data\\players\\players.dat");
-    return new Game(name);
+    } while (true);
+    return new Game(player);
   }
 
   @Override
   public String toString() {
-    return "Game. Player " + name;
+    return "Game. " + player;
   }
 }

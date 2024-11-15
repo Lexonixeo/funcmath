@@ -201,8 +201,8 @@ public class LevelMaker {
       String answer = scanner.nextLine();
       if (answer.equals("y") || answer.equals("у")) {
         Level l = new Level(levelHash, tutorial, 2);
-        boolean[] result = l.game();
-        if (result[1]) {
+        int[] result = l.game();
+        if (result[1] == 1) {
           generated.remove(0);
           Helper.write(generated, normalPath + level);
         }

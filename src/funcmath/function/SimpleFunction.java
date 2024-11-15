@@ -1,6 +1,6 @@
 package funcmath.function;
 
-import funcmath.exceptions.IllegalNumberOfArgumentsException;
+import funcmath.exceptions.FunctionException;
 import funcmath.object.MathObject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,7 +31,11 @@ public class SimpleFunction {
 
   public Object use(MathObject... args) {
     if (numberOfArgs != args.length) {
-      throw new IllegalNumberOfArgumentsException(numberOfArgs, args.length);
+      throw new FunctionException(
+          "Не совпадает число аргументов функции: должно быть "
+              + numberOfArgs
+              + ", есть: "
+              + args.length);
     }
 
     MathObject[] newArgs = new MathObject[args.length + 1];
