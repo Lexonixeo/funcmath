@@ -1,5 +1,7 @@
 package funcmath.object;
 
+import funcmath.exceptions.FunctionException;
+
 import java.io.Serializable;
 
 public interface MathObject extends Serializable {
@@ -74,7 +76,9 @@ public interface MathObject extends Serializable {
       case "rational" -> new FRational(s);
       case "real" -> new FReal(s);
       case "complex" -> new FComplex(s);
-      default -> throw new IllegalArgumentException("Не существует такой области определения");
+      default ->
+          throw new FunctionException(
+              "Не существует такой области определения: " + resultClassName);
     };
   }
 

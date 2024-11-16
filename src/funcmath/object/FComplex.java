@@ -272,7 +272,7 @@ public class FComplex implements MathObject {
 
   @Override
   public int compareTo(MathObject a) {
-    return 0;
+    throw new ArithmeticException("Функция compareTo не определена для комплексных чисел.");
   }
 
   @Override

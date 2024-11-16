@@ -381,7 +381,8 @@ public class FInteger implements MathObject {
 
   @Override
   public int compareTo(MathObject a) {
-    return 0;
+    FInteger an = new FInteger(a);
+    return this.get().compareTo(an.get());
   }
 
   @Override

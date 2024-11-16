@@ -111,7 +111,7 @@ public class Game {
     System.out.println("last          - Перейти к последнему уровню");
     System.out.println("prev          - Перейти к предыдущему уровню");
     System.out.println("next          - Перейти к следующему уровню");
-    System.out.println("stats         - Узнать свою статистику (НЕ РАБОТАЕТ)");
+    System.out.println("stats         - Узнать свою статистику");
     System.out.println("make level    - Создать свой уровень");
     System.out.println("make function - Создать свою функцию");
     System.out.println("exit          - Выйти из игры");
@@ -202,7 +202,7 @@ public class Game {
       ArrayList<String> command = Helper.wordsFromString(scanner.nextLine());
       String first_command = command.get(0);
       switch (first_command) {
-        case "menu" -> menu();
+        case "menu", "clear" -> menu();
         case "help" -> help();
         case "play" -> play();
         case "level" -> {
@@ -239,7 +239,7 @@ public class Game {
           }
           customLevel(level);
         }
-        case "list" -> {
+        case "list", "levels" -> {
           int page;
           try {
             page = Integer.parseInt(command.get(1));
@@ -250,7 +250,7 @@ public class Game {
             list(1);
           }
         }
-        case "clist" -> {
+        case "clist", "clevels" -> {
           int page;
           try {
             page = Integer.parseInt(command.get(1));
@@ -276,7 +276,7 @@ public class Game {
         }
         case "next" -> next();
         case "stats" -> stats();
-        case "exit" -> running = false;
+        case "exit", "quit", "stop" -> running = false;
         default ->
             System.out.println("Неизвестная команда :( Введите help, чтобы узнать список команд.");
       }
