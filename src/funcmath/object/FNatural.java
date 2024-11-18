@@ -293,7 +293,7 @@ public class FNatural implements MathObject {
     FNatural an = new FNatural(n);
     FNatural bn = TWO;
 
-    while (bn.compareTo(this.root(an, TWO)) <= 0) {
+    while (mul(bn, bn).compareTo(an) <= 0) {
       if (this.mod(an, bn).equals(ZERO)) {
         factor.add(bn);
         an = this.div(an, bn);

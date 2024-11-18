@@ -18,30 +18,7 @@ public class Player {
     this.ID = Integer.toHexString(name.hashCode());
 
     if (registered) {
-      try {
-        ArrayList<Object> playerInfo =
-            (ArrayList<Object>) Helper.read("data\\players\\" + ID + ".dat");
-        this.completedLevels = (HashSet<Integer>) playerInfo.get(0);
-        this.minFunctionUsesInLevel = (HashMap<Integer, Integer>) playerInfo.get(1);
-        this.minTimeInLevel = (HashMap<Integer, Integer>) playerInfo.get(2);
-        this.lastLevel = (int) playerInfo.get(3);
-      } catch (Exception e) {
-        try {
-          this.completedLevels = (HashSet<Integer>) Helper.read("data\\players\\" + ID + ".dat");
-        } catch (Exception ee) {
-          this.completedLevels = new HashSet<>();
-        }
-        minFunctionUsesInLevel = new HashMap<>();
-        minTimeInLevel = new HashMap<>();
-
-        try {
-          this.lastLevel = (Integer) Helper.read("data\\players\\" + ID + "s.dat");
-        } catch (Exception ee) {
-          this.lastLevel = 0;
-        }
-
-        writePlayerInfo();
-      }
+      readPlayerInfo();
     } else {
       this.completedLevels = new HashSet<>();
       this.minFunctionUsesInLevel = new HashMap<>();
@@ -61,6 +38,34 @@ public class Player {
     playerInfo.add(lastLevel);
 
     Helper.write(playerInfo, "data/players/" + ID + ".dat");
+  }
+
+  public void readPlayerInfo() {
+    try {
+      ArrayList<Object> playerInfo =
+          Helper.cast(Helper.read("data\\players\\" + ID + ".dat"), new ArrayList<>());
+      this.completedLevels = Helper.cast(playerInfo.get(0), new HashSet<>());
+      this.minFunctionUsesInLevel = Helper.cast(playerInfo.get(1), new HashMap<>());
+      this.minTimeInLevel = Helper.cast(playerInfo.get(2), new HashMap<>());
+      this.lastLevel = (int) playerInfo.get(3);
+    } catch (Exception e) {
+      try {
+        this.completedLevels =
+            Helper.cast(Helper.read("data\\players\\" + ID + ".dat"), new HashSet<>());
+      } catch (Exception ee) {
+        this.completedLevels = new HashSet<>();
+      }
+      minFunctionUsesInLevel = new HashMap<>();
+      minTimeInLevel = new HashMap<>();
+
+      try {
+        this.lastLevel = (Integer) Helper.read("data\\players\\" + ID + "s.dat");
+      } catch (Exception ee) {
+        this.lastLevel = 0;
+      }
+
+      writePlayerInfo();
+    }
   }
 
   public void addLevel(boolean completed, int level, int functionUses, int time) {

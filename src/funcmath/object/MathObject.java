@@ -1,7 +1,6 @@
 package funcmath.object;
 
 import funcmath.exceptions.FunctionException;
-
 import java.io.Serializable;
 
 public interface MathObject extends Serializable {
@@ -23,7 +22,7 @@ public interface MathObject extends Serializable {
   MathObject pow(MathObject base, MathObject power);
   MathObject root(MathObject radicand, MathObject degree);
   MathObject log(MathObject base, MathObject antilogarithm);
-  // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гипер-функция подобно sum, mul, pow...
+  // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция подобно sum, mul, pow...
   // MathObject hroot(MathObject radicand, MathObject degree, MathObject grade);
   // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
   MathObject gcd(MathObject a, MathObject b);

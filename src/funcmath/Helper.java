@@ -4,6 +4,7 @@ import funcmath.object.MathObject;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class Helper {
   public static Object read(String pathname) {
@@ -90,7 +91,7 @@ public class Helper {
   }
 
   public static int filesCount(String pathname) {
-    return new File(pathname.replace('\\', '/')).listFiles().length;
+    return Objects.requireNonNull(new File(pathname.replace('\\', '/')).listFiles()).length;
   }
 
   public static void clear() {
@@ -111,14 +112,14 @@ public class Helper {
       out.writeObject(o);
       out.flush();
       ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray()));
-      return (T) o.getClass().cast(in.readObject());
+      return Helper.cast(o.getClass().cast(in.readObject()), o);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  public static boolean isFileExists(String pathname) {
-    return (new File(pathname.replace('\\', '/'))).exists();
+  public static boolean isNotFileExists(String pathname) {
+    return !(new File(pathname.replace('\\', '/'))).exists();
   }
 
   public static ArrayList<String> getFileNames(String pathname) {
@@ -168,6 +169,10 @@ public class Helper {
     }
     sb.deleteCharAt(sb.lastIndexOf(" "));
     return sb.toString();
+  }
+
+  public static <T> T cast(Object obj, T resultClass) {
+    return (T) obj;
   }
 
   // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ

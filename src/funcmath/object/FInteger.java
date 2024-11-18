@@ -300,7 +300,7 @@ public class FInteger implements MathObject {
     FInteger an = this.abs(new FInteger(n));
     FInteger bn = TWO;
 
-    while (bn.compareTo(this.root(an, TWO)) <= 0) {
+    while (mul(bn, bn).compareTo(an) <= 0) {
       if (this.mod(an, bn).equals(ZERO)) {
         factor.add(bn);
         an = this.div(an, bn);

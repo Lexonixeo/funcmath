@@ -29,7 +29,7 @@ public class Game {
   }
 
   private void customLevel(int level) {
-    if (!Helper.isFileExists("data\\customLevels\\level" + level + ".dat")) {
+    if (Helper.isNotFileExists("data\\customLevels\\level" + level + ".dat")) {
       System.out.println("Такого уровня не существует!");
       return;
     }

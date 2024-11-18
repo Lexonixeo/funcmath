@@ -128,7 +128,8 @@ public class Function implements Serializable {
             nums.pop();
             try {
               timed.add((MathObject) ans);
-            } catch (RuntimeException e) {
+            } catch (ClassCastException e) {
+              assert ans.getClass().equals(MathObject[].class);
               timed.addAll(List.of((MathObject[]) ans));
             }
           }

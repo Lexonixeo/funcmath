@@ -7,10 +7,10 @@ import java.util.HashMap;
 public class Authorization {
   public static Player login(String name, String password) {
     HashMap<Integer, String> players;
-    if (!Helper.isFileExists("data\\players\\players.dat")) {
+    if (Helper.isNotFileExists("data\\players\\players.dat")) {
       players = new HashMap<>();
     } else {
-      players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
+      players = Helper.cast(Helper.read("data\\players\\players.dat"), new HashMap<>());
     }
 
     if (!players.containsValue(name)) {
@@ -25,10 +25,10 @@ public class Authorization {
 
   public static Player register(String name, String password) {
     HashMap<Integer, String> players;
-    if (!Helper.isFileExists("data\\players\\players.dat")) {
+    if (Helper.isNotFileExists("data\\players\\players.dat")) {
       players = new HashMap<>();
     } else {
-      players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
+      players = Helper.cast(Helper.read("data\\players\\players.dat"), new HashMap<>());
     }
 
     if (players.containsValue(name)) {
@@ -43,10 +43,10 @@ public class Authorization {
 
   public static boolean isPlayerExists(String name) {
     HashMap<Integer, String> players;
-    if (!Helper.isFileExists("data\\players\\players.dat")) {
+    if (Helper.isNotFileExists("data\\players\\players.dat")) {
       players = new HashMap<>();
     } else {
-      players = (HashMap<Integer, String>) Helper.read("data\\players\\players.dat");
+      players = Helper.cast(Helper.read("data\\players\\players.dat"), new HashMap<>());
     }
     return players.containsValue(name);
   }

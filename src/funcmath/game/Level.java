@@ -47,29 +47,31 @@ public class Level implements Serializable {
     this.tutorial = tutorial;
     this.level = level;
     ArrayList<Object> generated =
-        (ArrayList<Object>) Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat");
+        Helper.cast(
+            Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat"),
+            new ArrayList<>());
 
     if (generated.get(0).equals("nothing :)") && add == 0) {
       throw new LevelException("Уровень " + level + " ещё не пройден создателем!");
     }
 
-    originalNumbers = (ArrayList<MathObject>) generated.get(add);
+    originalNumbers = Helper.cast(generated.get(add), new ArrayList<>());
     numbers = Helper.deepClone(originalNumbers);
     numbersStack.push(Helper.deepClone(numbers));
 
-    originalFunctions = (HashMap<String, Function>) generated.get(1 + add);
+    originalFunctions = Helper.cast(generated.get(1 + add), new HashMap<>());
     functions = Helper.deepClone(originalFunctions);
     functionsStack.push(Helper.deepClone(functions));
 
     try {
-      answers = (ArrayList<MathObject>) generated.get(2 + add);
+      answers = Helper.cast(generated.get(2 + add), new ArrayList<>());
     } catch (RuntimeException e) {
       answers = new ArrayList<>();
       answers.add((MathObject) generated.get(2 + add));
     }
-    hints = (ArrayList<String>) generated.get(3 + add);
+    hints = Helper.cast(generated.get(3 + add), new ArrayList<>());
     resultClassName = (String) generated.get(4 + add);
-    cutscene = (ArrayList<String>) generated.get(5 + add);
+    cutscene = Helper.cast(generated.get(5 + add), new ArrayList<>());
     name = (String) generated.get(6 + add);
 
     for (Function f : functions.values()) {

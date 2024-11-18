@@ -15,10 +15,7 @@ public class MainFrame extends JFrame implements MouseListener {
     this.setVisible(true);
   }
 
-  public void changePanel(String newPanel) {
-    switch (newPanel) {
-    }
-  }
+  public void changePanel(String newPanel) {}
 
   @Override
   public void mouseClicked(MouseEvent e) {}
