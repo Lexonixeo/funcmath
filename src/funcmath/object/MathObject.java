@@ -1,10 +1,18 @@
 package funcmath.object;
 
-import funcmath.exceptions.FunctionException;
 import java.io.Serializable;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
-public interface MathObject extends Serializable {
-  Object get();
+public class MathObject implements Serializable {
+  protected static final MathContext DEFAULT_MATHCONTEXT =
+      new MathContext(10, RoundingMode.HALF_UP);
+
+  // ArrayList для хранения видов mathobject
+  Object get() {
+    return null;
+  }
+  /*
 
   // для поддержки модов их нужно убрать
   FNatural getNatural();
@@ -80,7 +88,7 @@ public interface MathObject extends Serializable {
               "Не существует такой области определения: " + resultClassName);
     };
   }
-
+   */
   /*
   В будущем добавить:
   FUnknownInteger (мы не видим число, но оно есть)
@@ -108,5 +116,7 @@ public interface MathObject extends Serializable {
   FMinecraftItem
   FWord (это то, из-за чего я придумал эту игру)
   FNumeral (число в виде слова)
+  FMonomial
+  FPolynomial
    */
 }

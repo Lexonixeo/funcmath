@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/</output-path>
     <root id="archive" name="funcmath.jar">
       <element id="module-output" name="funcmath" />
+      <element id="library" level="project" name="big-math-2.3.2" />
     </root>
   </artifact>
 </component>

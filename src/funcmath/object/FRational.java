@@ -1,12 +1,12 @@
 package funcmath.object;
 
 import funcmath.Helper;
+import funcmath.exceptions.FunctionException;
 import java.io.Serial;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-public class FRational implements MathObject {
+public class FRational extends MathObject {
   @Serial private static final long serialVersionUID = 8367368182099731988L;
 
   public static final FRational NEGATIVE_ONE = new FRational(-1, 1);
@@ -15,9 +15,7 @@ public class FRational implements MathObject {
   public static final FRational TWO = new FRational(2, 1);
 
   protected FInteger numerator;
-  protected FNatural denominator;
-  private final FInteger fint = new FInteger(0);
-  private final FNatural fnat = new FNatural(0);
+  protected FInteger denominator;
 
   public FRational(long numerator, long denominator) {
     if (denominator < 0) {
@@ -30,42 +28,29 @@ public class FRational implements MathObject {
     }
 
     this.numerator = new FInteger(numerator);
-    this.denominator = new FNatural(denominator);
+    this.denominator = new FInteger(denominator);
 
-    FInteger gcd = fint.gcd(this.numerator, this.denominator);
-    this.numerator = fint.div(this.numerator, gcd);
-    this.denominator = fnat.div(this.denominator, gcd);
+    FInteger gcd = FInteger.gcd(this.numerator, this.denominator);
+    this.numerator = FInteger.div(this.numerator, gcd);
+    this.denominator = FInteger.div(this.denominator, gcd);
   }
 
   public FRational(FInteger numerator, FInteger denominator) {
     if (denominator.compareTo(FInteger.ZERO) < 0) {
-      numerator = fint.mul(numerator, FInteger.NEGATIVE_ONE);
-      denominator = fint.mul(denominator, FInteger.NEGATIVE_ONE);
+      numerator = FInteger.mul(numerator, FInteger.NEGATIVE_ONE);
+      denominator = FInteger.mul(denominator, FInteger.NEGATIVE_ONE);
     }
     if (denominator.equals(FInteger.ZERO)) {
       throw new ArithmeticException(
           "Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
     }
 
-    this.numerator = new FInteger(numerator);
-    this.denominator = new FNatural(denominator);
-
-    FInteger gcd = fint.gcd(this.numerator, this.denominator);
-    this.numerator = fint.div(this.numerator, gcd);
-    this.denominator = fnat.div(this.denominator, gcd);
-  }
-
-  public FRational(FInteger numerator, FNatural denominator) {
     this.numerator = numerator;
     this.denominator = denominator;
-    if (denominator.equals(FNatural.ZERO)) {
-      throw new ArithmeticException(
-          "Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
-    }
 
-    FInteger gcd = fint.gcd(this.numerator, this.denominator);
-    this.numerator = fint.div(this.numerator, gcd);
-    this.denominator = fnat.div(this.denominator, gcd);
+    FInteger gcd = FInteger.gcd(this.numerator, this.denominator);
+    this.numerator = FInteger.div(this.numerator, gcd);
+    this.denominator = FInteger.div(this.denominator, gcd);
   }
 
   public FRational(BigInteger numerator, BigInteger denominator) {
@@ -79,17 +64,11 @@ public class FRational implements MathObject {
     }
 
     this.numerator = new FInteger(numerator);
-    this.denominator = new FNatural(denominator);
+    this.denominator = new FInteger(denominator);
 
-    FInteger gcd = fint.gcd(this.numerator, this.denominator);
-    this.numerator = fint.div(this.numerator, gcd);
-    this.denominator = fnat.div(this.denominator, gcd);
-  }
-
-  public FRational(MathObject number) {
-    FRational num = number.getRational();
-    this.numerator = num.getNum();
-    this.denominator = num.getDen();
+    FInteger gcd = FInteger.gcd(this.numerator, this.denominator);
+    this.numerator = FInteger.div(this.numerator, gcd);
+    this.denominator = FInteger.div(this.denominator, gcd);
   }
 
   public FRational(String s) {
@@ -107,254 +86,138 @@ public class FRational implements MathObject {
     return new BigInteger[] {this.numerator.get(), this.denominator.get()};
   }
 
-  @Override
-  public FNatural getNatural() {
-    return this.getInteger().getNatural();
-  }
-
-  @Override
-  public FInteger getInteger() {
-    return fint.div(this.numerator, this.denominator);
-  }
-
-  @Override
-  public FRational getRational() {
-    return this;
-  }
-
-  @Override
-  public FReal getReal() {
-    return (new FReal(0)).div(this.numerator, this.denominator);
-  }
-
-  @Override
-  public FComplex getComplex() {
-    return new FComplex(this.getReal().get(), BigDecimal.ZERO);
-  }
-
   public FInteger getNum() { // сокращено из-за длинных выражений
     return numerator;
   }
 
-  public FNatural getDen() { // сокращено из-за длинных выражений
+  public FInteger getDen() { // сокращено из-за длинных выражений
     return denominator;
   }
 
-  @Override
-  public FRational sum(MathObject addend1, MathObject addend2) {
-    FRational an = new FRational(addend1);
-    FRational bn = new FRational(addend2);
+  public static FRational sum(FRational addend1, FRational addend2) {
     return new FRational(
-        fint.sum(fint.mul(an.getNum(), bn.getDen()), fint.mul(an.getDen(), bn.getNum())),
-        fnat.mul(an.getDen(), bn.getDen()));
+        FInteger.sum(
+            FInteger.mul(addend1.getNum(), addend2.getDen()),
+            FInteger.mul(addend1.getDen(), addend2.getNum())),
+        FInteger.mul(addend1.getDen(), addend2.getDen()));
   }
 
-  @Override
-  public FRational sub(MathObject minuend, MathObject subtrahend) {
-    FRational an = new FRational(minuend);
-    FRational bn = new FRational(subtrahend);
+  public static FRational sub(FRational minuend, FRational subtrahend) {
     return new FRational(
-        fint.sub(fint.mul(an.getNum(), bn.getDen()), fint.mul(an.getDen(), bn.getNum())),
-        fnat.mul(an.getDen(), bn.getDen()));
+        FInteger.sub(
+            FInteger.mul(minuend.getNum(), subtrahend.getDen()),
+            FInteger.mul(minuend.getDen(), subtrahend.getNum())),
+        FInteger.mul(minuend.getDen(), subtrahend.getDen()));
   }
 
-  @Override
-  public FRational mul(MathObject multiplicand, MathObject multiplier) {
-    FRational an = new FRational(multiplicand);
-    FRational bn = new FRational(multiplier);
-    return new FRational(fint.mul(an.getNum(), bn.getNum()), fnat.mul(an.getDen(), bn.getDen()));
+  public static FRational mul(FRational multiplicand, FRational multiplier) {
+    return new FRational(
+        FInteger.mul(multiplicand.getNum(), multiplier.getNum()),
+        FInteger.mul(multiplicand.getDen(), multiplier.getDen()));
   }
 
-  @Override
-  public FRational div(MathObject dividend, MathObject divisor) {
-    FRational an = new FRational(dividend);
-    FRational bn = new FRational(divisor);
-    return new FRational(fint.mul(an.getNum(), bn.getDen()), fint.mul(an.getDen(), bn.getNum()));
+  public static FRational div(FRational dividend, FRational divisor) {
+    return new FRational(
+        FInteger.mul(dividend.getNum(), divisor.getDen()),
+        FInteger.mul(dividend.getDen(), divisor.getNum()));
   }
 
-  @Override
-  public MathObject mod(MathObject dividend, MathObject divisor) {
-    throw new ArithmeticException("Функция mod не определена для рациональных чисел.");
-  }
-
-  @Override
-  public FRational pow(MathObject base, MathObject power) {
-    FRational an = new FRational(base);
-    FRational bn = new FRational(power);
-    if (new FInteger(bn.getNum()).get().compareTo(BigInteger.ZERO) < 0) {
-      return this.pow(this.div(new FRational(1, 1), an), this.mul(bn, new FRational(-1, 1)));
+  public static FRational pow(FRational base, FRational power) {
+    if (power.getNum().compareTo(FInteger.ZERO) < 0) {
+      return pow(div(ONE, base), mul(power, NEGATIVE_ONE));
     }
 
     return new FRational(
-        fint.root(
-            fint.pow(this.mul(an.getNum(), fint.pow(new FInteger(10), bn.getDen())), bn.getNum()),
-            bn.getDen()),
-        fint.root(
-            fint.pow(this.mul(an.getDen(), fint.pow(new FInteger(10), bn.getDen())), bn.getNum()),
-            bn.getDen()));
+        FInteger.root(
+            FInteger.pow(
+                FInteger.mul(base.getNum(), FInteger.pow(FInteger.TEN, power.getDen())),
+                power.getNum()),
+            power.getDen()),
+        FInteger.root(
+            FInteger.pow(
+                FInteger.mul(base.getDen(), FInteger.pow(FInteger.TEN, power.getDen())),
+                power.getNum()),
+            power.getDen()));
   }
 
-  @Override
-  public FRational root(MathObject radicand, MathObject degree) {
-    FRational an = new FRational(radicand);
-    FRational bn = new FRational(degree);
-    return this.pow(an, this.div(ONE, bn));
+  public static FRational root(FRational radicand, FRational degree) {
+    return pow(radicand, div(ONE, degree));
   }
 
-  @Override
-  public FRational log(MathObject base, MathObject antilogarithm) {
-    throw new NullPointerException("Функция log временно не введена для рациональных чисел.");
+  public static FRational log(FRational base, FRational antilogarithm) {
+    throw new FunctionException("Функция log временно не введена для рациональных чисел.");
   }
 
-  @Override
-  public FRational gcd(MathObject a, MathObject b) {
-    FRational an = new FRational(a);
-    FRational bn = new FRational(b);
-    FNatural lcm = fnat.div(fnat.mul(an.getDen(), bn.getDen()), fnat.gcd(an.getDen(), bn.getDen()));
-    FInteger ann = this.mul(an, lcm).getInteger();
-    FInteger bnn = this.mul(bn, lcm).getInteger();
-    FInteger gcd = fint.gcd(ann, bnn);
+  // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция
+  // подобно sum, mul, pow...
+  // MathObject hroot(MathObject radicand, MathObject degree, MathObject grade);
+  // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
+
+  public static FRational gcd(FRational number1, FRational number2) {
+    FInteger lcm = FInteger.lcm(number1.getDen(), number2.getDen());
+    FInteger updatedNumber1 = mul(number1, new FRational(lcm, FInteger.ONE)).getNum();
+    FInteger updatedNumber2 = mul(number2, new FRational(lcm, FInteger.ONE)).getNum();
+    FInteger gcd = FInteger.gcd(updatedNumber1, updatedNumber2);
     return new FRational(gcd, lcm);
     // умножаем дроби на НОК знаменателей, находим НОД, делим на НОК знаменателей
   }
 
-  @Override
-  public FRational lcm(MathObject a, MathObject b) {
-    return this.div(this.mul(a, b), this.gcd(a, b));
+  public static FRational lcm(FRational number1, FRational number2) {
+    return div(mul(number1, number2), gcd(number1, number2));
   }
 
-  @Override
-  public FRational fact(MathObject a) {
+  public static FRational fact(FRational number) {
     throw new NullPointerException("Функция fact временно не введена для рациональных чисел.");
   }
 
-  @Override
-  public MathObject conc(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция conc не определена для рациональных чисел.");
-  }
-
-  @Override
-  public FRational rand(MathObject a, MathObject b) {
+  public static FRational rand(FRational number1, FRational number2) {
     throw new NullPointerException("Функция rand временно не введена для рациональных чисел.");
   }
 
-  @Override
-  public MathObject and(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция and не определена для рациональных чисел.");
-  }
-
-  @Override
-  public MathObject or(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция or не определена для рациональных чисел.");
-  }
-
-  @Override
-  public MathObject xor(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция xor не определена для рациональных чисел.");
-  }
-
-  @Override
-  public FRational min(MathObject a, MathObject b) {
-    FRational an = new FRational(a);
-    FRational bn = new FRational(b);
-    if (this.sub(an, bn).getNum().compareTo(FInteger.ZERO) <= 0) {
-      return an;
+  public static FRational min(FRational number1, FRational number2) {
+    if (number1.compareTo(number2) <= 0) {
+      return number1;
     } else {
-      return bn;
+      return number2;
     }
   }
 
-  @Override
-  public FRational max(MathObject a, MathObject b) {
-    FRational an = new FRational(a);
-    FRational bn = new FRational(b);
-    if (this.sub(an, bn).getNum().compareTo(FInteger.ZERO) <= 0) {
-      return bn;
+  public static FRational max(FRational number1, FRational number2) {
+    if (number1.compareTo(number2) >= 0) {
+      return number1;
     } else {
-      return an;
+      return number2;
     }
   }
 
-  @Override
-  public FRational sign(MathObject a) {
-    FRational an = new FRational(a);
-    return new FRational(an.getNum().compareTo(FInteger.ZERO), 1);
+  public static FRational sign(FRational number) {
+    return new FRational(number.compareTo(ZERO), 1);
   }
 
-  @Override
-  public MathObject[] primes(MathObject n) {
-    throw new ArithmeticException("Функция primes не определена для рациональных чисел.");
+  public static FRational abs(FRational number) {
+    return new FRational(FInteger.abs(number.getNum()), FInteger.abs(number.getDen()));
   }
 
-  @Override
-  public FRational abs(MathObject a) {
-    FRational an = new FRational(a);
-    return new FRational(fint.abs(an.getNum()), fnat.abs(an.getDen()));
+  public static FRational med(FRational number1, FRational number2) {
+    return new FRational(
+        FInteger.sum(number1.getNum(), number2.getNum()),
+        FInteger.sum(number1.getDen(), number2.getDen()));
   }
 
-  @Override
-  public MathObject not(MathObject a) {
-    throw new ArithmeticException("Функция not не определена для рациональных чисел.");
+  // MathObject mink(MathObject a); // функция Минковского (непрерывно отображает рациональные числа
+  // на отрезке [0,1] в двоичные рациональные на этом же отрезке)
+  // MathObject[] contfrac(MathObject a); // разложение дроби в цепную дробь
+
+  public static FRational conj(FRational number) {
+    return number;
   }
 
-  @Override
-  public FRational med(MathObject a, MathObject b) {
-    FRational an = new FRational(a);
-    FRational bn = new FRational(b);
-    return new FRational(fint.sum(an.getNum(), bn.getNum()), fnat.sum(an.getDen(), bn.getDen()));
+  public static FRational norm(FRational number) {
+    return mul(number, number);
   }
 
-  @Override
-  public MathObject sin(MathObject a) {
-    throw new ArithmeticException("Функция sin не определена для рациональных чисел.");
-  }
-
-  @Override
-  public MathObject cos(MathObject a) {
-    throw new ArithmeticException("Функция cos не определена для рациональных чисел.");
-  }
-
-  @Override
-  public MathObject tan(MathObject a) {
-    throw new ArithmeticException("Функция tan не определена для рациональных чисел.");
-  }
-
-  @Override
-  public MathObject arcsin(MathObject a) {
-    throw new ArithmeticException("Функция arcsin не определена для рациональных чисел.");
-  }
-
-  @Override
-  public MathObject arccos(MathObject a) {
-    throw new ArithmeticException("Функция arccos не определена для рациональных чисел.");
-  }
-
-  @Override
-  public MathObject arctan(MathObject a) {
-    throw new ArithmeticException("Функция arctan не определена для рациональных чисел.");
-  }
-
-  @Override
-  public FRational conj(MathObject a) {
-    return new FRational(a);
-  }
-
-  @Override
-  public FRational arg(MathObject a) {
-    FRational an = new FRational(a);
-    return an.getNum().compareTo(FInteger.ZERO) >= 0 ? ZERO : FReal.PI.getRational();
-  }
-
-  @Override
-  public FRational norm(MathObject a) {
-    FRational an = new FRational(a);
-    return this.mul(an, an);
-  }
-
-  @Override
-  public int compareTo(MathObject a) {
-    FRational an = new FRational(a);
-    return this.sub(this, an).getNum().compareTo(FInteger.ZERO);
+  public int compareTo(FRational number) {
+    return sub(this, number).getNum().compareTo(FInteger.ZERO);
   }
 
   @Override
@@ -366,6 +229,6 @@ public class FRational implements MathObject {
 
   @Override
   public String toString() {
-    return this.numerator + (this.denominator.equals(FNatural.ONE) ? "" : "/" + this.denominator);
+    return this.numerator + (this.denominator.equals(FInteger.ONE) ? "" : "/" + this.denominator);
   }
 }

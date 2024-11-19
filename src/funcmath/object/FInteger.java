@@ -1,17 +1,19 @@
 package funcmath.object;
 
+import funcmath.exceptions.FunctionException;
 import java.io.Serial;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
-public class FInteger implements MathObject {
+public class FInteger extends MathObject {
   @Serial private static final long serialVersionUID = 4465117069025671299L;
 
   public static final FInteger NEGATIVE_ONE = new FInteger(-1);
   public static final FInteger ZERO = new FInteger(0);
   public static final FInteger ONE = new FInteger(1);
   public static final FInteger TWO = new FInteger(2);
+  public static final FInteger TEN = new FInteger(10);
 
   protected BigInteger number;
 
@@ -23,10 +25,6 @@ public class FInteger implements MathObject {
     this.number = number;
   }
 
-  public FInteger(MathObject number) {
-    this.number = number.getInteger().get();
-  }
-
   public FInteger(String s) {
     this.number = new BigInteger(s);
   }
@@ -36,353 +34,236 @@ public class FInteger implements MathObject {
     return this.number;
   }
 
-  @Override
-  public FNatural getNatural() {
-    return new FNatural(this.number);
+  public static FInteger sum(FInteger addend1, FInteger addend2) {
+    return new FInteger(addend1.get().add(addend2.get()));
   }
 
-  @Override
-  public FInteger getInteger() {
-    return this;
+  public static FInteger sub(FInteger minuend, FInteger subtrahend) {
+    return new FInteger(minuend.get().add(subtrahend.get().negate()));
   }
 
-  @Override
-  public FRational getRational() {
-    return new FRational(this.number, BigInteger.ONE);
+  public static FInteger mul(FInteger multiplicand, FInteger multiplier) {
+    return new FInteger(multiplicand.get().multiply(multiplier.get()));
   }
 
-  @Override
-  public FReal getReal() {
-    return new FReal(this.number);
-  }
-
-  @Override
-  public FComplex getComplex() {
-    return new FComplex(this.number, BigInteger.ZERO);
-  }
-
-  @Override
-  public FInteger sum(MathObject addend1, MathObject addend2) {
-    FInteger an = new FInteger(addend1);
-    FInteger bn = new FInteger(addend2);
-    return new FInteger(an.get().add(bn.get()));
-  }
-
-  @Override
-  public FInteger sub(MathObject minuend, MathObject subtrahend) {
-    FInteger an = new FInteger(minuend);
-    FInteger bn = new FInteger(subtrahend);
-    return new FInteger(an.get().add(bn.get().negate()));
-  }
-
-  @Override
-  public FInteger mul(MathObject multiplicand, MathObject multiplier) {
-    FInteger an = new FInteger(multiplicand);
-    FInteger bn = new FInteger(multiplier);
-    return new FInteger(an.get().multiply(bn.get()));
-  }
-
-  @Override
-  public FInteger div(MathObject dividend, MathObject divisor) {
-    FInteger an = new FInteger(dividend);
-    FInteger bn = new FInteger(divisor);
-    if (bn.equals(ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
+  public static FInteger div(FInteger dividend, FInteger divisor) {
+    if (divisor.equals(ZERO)) {
+      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     } else {
-      return new FInteger(this.sub(an, this.mod(an, bn)).get().divide(bn.get()));
+      return new FInteger(sub(dividend, mod(dividend, divisor)).get().divide(dividend.get()));
     }
   }
 
-  @Override
-  public FInteger mod(MathObject dividend, MathObject divisor) {
-    FInteger an = new FInteger(dividend);
-    FInteger bn = new FInteger(divisor);
-    if (bn.equals(ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "%" + bn);
+  public static FInteger mod(FInteger dividend, FInteger divisor) {
+    if (divisor.equals(ZERO)) {
+      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "%" + divisor);
     } else {
-      return new FInteger(an.get().mod(bn.get().abs()));
+      return new FInteger(dividend.get().mod(divisor.get().abs()));
     }
   }
 
-  @Override
-  public FInteger pow(MathObject base, MathObject power) {
-    FInteger b = new FInteger(base);
-    FInteger p = new FInteger(power);
-    if (p.compareTo(ZERO) < 0 && b.compareTo(ZERO) == 0) {
+  public static FInteger pow(FInteger base, FInteger power) {
+    if (power.compareTo(ZERO) < 0 && base.compareTo(ZERO) == 0) {
       throw new ArithmeticException(
-          "Деление на ноль не имеет смысла: 1/(0^" + p.get().negate() + ")");
+          "Деление на ноль не имеет смысла: 1/(0^" + power.get().negate() + ")");
     }
 
-    if (p.compareTo(ZERO) < 0) {
-      return b.compareTo(ZERO) > 0 || this.mod(p, TWO).equals(ZERO) ? ZERO : NEGATIVE_ONE;
-    }
-
-    if (p.equals(ZERO)) {
+    if (power.equals(ZERO)) {
+      return ZERO;
+    } else if (base.equals(ONE) || base.equals(NEGATIVE_ONE) && mod(power, TWO).equals(ZERO)) {
       return ONE;
-    } else if (this.mod(p, TWO).equals(ZERO)) {
-      FInteger cn = this.div(p, TWO);
+    } else if (base.equals(NEGATIVE_ONE) && mod(power, TWO).equals(ONE)) {
+      return NEGATIVE_ONE;
+    } else if (power.compareTo(ZERO) < 0) {
+      return (base.compareTo(ZERO) > 1 || mod(power, TWO).equals(ZERO) ? ZERO : NEGATIVE_ONE);
+    } else if (mod(power, TWO).equals(ZERO)) {
+      FInteger tempPower = div(power, TWO);
       try {
-        FInteger dn = this.pow(b, cn);
-        return this.mul(dn, dn);
+        FInteger tempMultiplier = pow(base, tempPower);
+        return mul(tempMultiplier, tempMultiplier);
       } catch (StackOverflowError e) {
-        throw new RuntimeException("Стек вызова функций переполнился для функции pow.");
+        throw new FunctionException("Стек вызова функций переполнился для функции pow.");
       }
     } else {
-      FInteger cn = this.div(p, TWO);
+      FInteger tempPower = div(power, TWO);
       try {
-        FInteger dn = this.pow(b, cn);
-        return this.mul(this.mul(dn, dn), b);
+        FInteger tempMultiplier = pow(base, tempPower);
+        return mul(mul(tempMultiplier, tempMultiplier), base);
       } catch (StackOverflowError e) {
-        throw new RuntimeException("Стек вызова функций переполнился для функции pow.");
+        throw new FunctionException("Стек вызова функций переполнился для функции pow.");
       }
     }
   }
 
-  @Override
-  public FInteger root(MathObject radicand, MathObject degree) {
-    FInteger rad = new FInteger(radicand);
-    FInteger deg = new FInteger(degree);
-    if (deg.compareTo(ZERO) < 0) {
-      return this.root(this.pow(rad, NEGATIVE_ONE), this.mul(deg, NEGATIVE_ONE));
-    } else if (deg.equals(ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + rad + "^(1/" + deg + ")");
-    } else if (rad.compareTo(ZERO) < 0 && this.mod(deg, TWO).equals(ZERO)) {
+  public static FInteger root(FInteger radicand, FInteger degree) {
+    if (degree.compareTo(ZERO) < 0) {
+      return root(pow(radicand, NEGATIVE_ONE), mul(degree, NEGATIVE_ONE));
+    } else if (degree.equals(ZERO)) {
+      throw new ArithmeticException(
+          "Деление на ноль не имеет смысла: " + radicand + "^(1/" + degree + ")");
+    } else if (radicand.compareTo(ZERO) < 0 && mod(degree, TWO).equals(ZERO)) {
       throw new ArithmeticException(
           "Корни степени, делящейся на 2, не определены для отрицательных чисел");
-    }
-
-    if (rad.compareTo(ZERO) < 0) {
-      FInteger l = new FInteger(this.sub(rad, ONE));
-      FInteger r = ZERO;
-      while (this.sub(r, l).compareTo(ONE) > 0) {
-        FInteger m = this.div(this.sum(r, l), TWO);
-        FInteger res = this.pow(m, deg);
-        if (res.compareTo(rad) > 0) {
-          r = m;
+    } else if (radicand.compareTo(ZERO) < 0) {
+      FInteger left = sub(radicand, ONE);
+      FInteger right = ZERO;
+      while (sub(right, left).compareTo(ONE) > 0) {
+        FInteger medium = div(sum(right, left), TWO);
+        FInteger result = pow(medium, degree);
+        if (result.compareTo(radicand) > 0) {
+          right = medium;
         } else {
-          l = m;
+          left = medium;
         }
       }
-      return l;
+      return left;
     } else {
-      FInteger l = NEGATIVE_ONE;
-      FInteger r = this.sum(rad, ONE);
-      while (this.sub(r, l).compareTo(ONE) > 0) {
-        FInteger m = this.div(this.sum(r, l), TWO);
-        FInteger res = this.pow(m, deg);
-        if (res.compareTo(rad) > 0) {
-          r = m;
+      FInteger left = NEGATIVE_ONE;
+      FInteger right = sum(radicand, ONE);
+      while (sub(right, left).compareTo(ONE) > 0) {
+        FInteger medium = div(sum(right, left), TWO);
+        FInteger result = pow(medium, degree);
+        if (result.compareTo(radicand) > 0) {
+          right = medium;
         } else {
-          l = m;
+          left = medium;
         }
       }
-      return l;
+      return left;
     }
   }
 
-  @Override
-  public FInteger log(MathObject base, MathObject antilogarithm) {
+  public static FInteger log(FInteger base, FInteger antilogarithm) {
     throw new NullPointerException("Функция log временно не введена для целых чисел.");
   }
 
-  @Override
-  public FInteger gcd(MathObject a, MathObject b) {
-    FInteger an = new FInteger(a);
-    FInteger bn = new FInteger(b);
-    return new FInteger(an.get().gcd(bn.get()));
+  // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция
+  // подобно sum, mul, pow...
+  // MathObject hroot(MathObject radicand, MathObject degree, MathObject grade);
+  // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
+
+  public static FInteger gcd(FInteger number1, FInteger number2) {
+    return new FInteger(number1.get().gcd(number2.get()));
   }
 
-  @Override
-  public FInteger lcm(MathObject a, MathObject b) {
-    return this.div(this.mul(a, b), this.gcd(a, b));
+  public static FInteger lcm(FInteger number1, FInteger number2) {
+    return div(mul(number1, number2), gcd(number1, number2));
   }
 
-  @Override
-  public FInteger fact(MathObject a) {
-    FInteger an = new FInteger(a);
-    if (an.compareTo(ZERO) < 0) {
+  public static FInteger fact(FInteger number) {
+    if (number.compareTo(ZERO) < 0) {
       throw new ArithmeticException("Факториал для отрицательных целых чисел не определен.");
-    } else if (an.equals(ZERO)) {
+    } else if (number.equals(ZERO)) {
       return ONE;
     }
 
     try {
-      return this.mul(fact(sub(a, ONE)), a);
+      return mul(fact(sub(number, ONE)), number);
     } catch (StackOverflowError e) {
       throw new RuntimeException("Стек вызова функций переполнился для функции fact.");
     }
   }
 
-  @Override
-  public MathObject conc(MathObject a, MathObject b) {
-    FInteger an = new FInteger(a);
-    FInteger bn = new FInteger(b);
-    if (bn.compareTo(ZERO) < 0) {
+  public static FInteger concat(FInteger leftNumber, FInteger rightNumber) {
+    if (rightNumber.compareTo(ZERO) < 0) {
       throw new ArithmeticException(
           "Конкатенация для отрицательного второго аргумента не определена.");
     }
-    String as = an.get().toString();
-    String bs = bn.get().toString();
-    return new FInteger(as + bs);
+    String leftNumberString = leftNumber.get().toString();
+    String rightNumberString = rightNumber.get().toString();
+    return new FInteger(leftNumberString + rightNumberString);
   }
 
-  @Override
-  public FInteger rand(MathObject a, MathObject b) {
-    FInteger an = new FInteger(a);
-    FInteger bn = new FInteger(b);
-    if (an.compareTo(bn) > 0) {
-      return this.rand(b, a);
+  public static FInteger rand(FInteger min, FInteger max) {
+    if (min.compareTo(max) > 0) {
+      return rand(max, min);
     }
 
     SecureRandom random = new SecureRandom();
-    FInteger upperLimit = this.sum(this.sub(bn, an), ONE);
+    FInteger upperLimit = sum(sub(max, min), ONE);
 
     BigInteger randomNumber;
     do {
       randomNumber = new BigInteger(upperLimit.get().bitLength(), random);
     } while (randomNumber.compareTo(upperLimit.get()) >= 0);
 
-    return this.sum(new FInteger(randomNumber), an);
+    return sum(new FInteger(randomNumber), min);
   }
 
-  @Override
-  public FInteger and(MathObject a, MathObject b) {
-    FInteger an = new FInteger(a);
-    FInteger bn = new FInteger(b);
-    return new FInteger(an.get().and(bn.get()));
+  public static FInteger and(FInteger number1, FInteger number2) {
+    return new FInteger(number1.get().and(number2.get()));
   }
 
-  @Override
-  public FInteger or(MathObject a, MathObject b) {
-    FInteger an = new FInteger(a);
-    FInteger bn = new FInteger(b);
-    return new FInteger(an.get().or(bn.get()));
+  public static FInteger or(FInteger number1, FInteger number2) {
+    return new FInteger(number1.get().or(number2.get()));
   }
 
-  @Override
-  public FInteger xor(MathObject a, MathObject b) {
-    FInteger an = new FInteger(a);
-    FInteger bn = new FInteger(b);
-    return new FInteger(an.get().xor(bn.get()));
+  public static FInteger xor(FInteger number1, FInteger number2) {
+    return new FInteger(number1.get().xor(number2.get()));
   }
 
-  @Override
-  public FInteger min(MathObject a, MathObject b) {
-    FInteger an = new FInteger(a);
-    FInteger bn = new FInteger(b);
-    if (an.compareTo(bn) <= 0) {
-      return an;
+  public static FInteger min(FInteger number1, FInteger number2) {
+    if (number1.compareTo(number2) <= 0) {
+      return number1;
     } else {
-      return bn;
+      return number2;
     }
   }
 
-  @Override
-  public FInteger max(MathObject a, MathObject b) {
-    FInteger an = new FInteger(a);
-    FInteger bn = new FInteger(b);
-    if (an.compareTo(bn) <= 0) {
-      return bn;
+  public static FInteger max(FInteger number1, FInteger number2) {
+    if (number1.compareTo(number2) <= 0) {
+      return number2;
     } else {
-      return an;
+      return number1;
     }
   }
 
-  @Override
-  public FInteger sign(MathObject a) {
-    FInteger an = new FInteger(a);
-    return new FInteger(an.compareTo(ZERO));
+  public static FInteger sign(FInteger number) {
+    return new FInteger(number.compareTo(ZERO));
   }
 
-  @Override
-  public FInteger[] primes(MathObject n) {
+  public static FInteger[] primes(FInteger number) {
     ArrayList<FInteger> factor = new ArrayList<>();
-    FInteger an = this.abs(new FInteger(n));
-    FInteger bn = TWO;
+    FInteger tempMultiplier = TWO;
+    FInteger sqrt = root(number, TWO);
 
-    while (mul(bn, bn).compareTo(an) <= 0) {
-      if (this.mod(an, bn).equals(ZERO)) {
-        factor.add(bn);
-        an = this.div(an, bn);
+    while (tempMultiplier.compareTo(sqrt) <= 0) {
+      if (mod(number, tempMultiplier).equals(ZERO)) {
+        factor.add(tempMultiplier);
+        number = div(number, tempMultiplier);
       } else {
-        bn = this.sum(bn, ONE);
+        tempMultiplier = sum(tempMultiplier, ONE);
       }
     }
 
-    if (!an.equals(ONE)) {
-      factor.add(an);
+    if (!number.equals(ONE)) {
+      factor.add(number);
     }
     return factor.toArray(new FInteger[] {});
   }
 
-  @Override
-  public FInteger abs(MathObject a) {
-    FInteger an = new FInteger(a);
-    return new FInteger(an.get().abs());
+  public static FInteger abs(FInteger number) {
+    return new FInteger(number.get().abs());
   }
 
-  @Override
-  public FInteger not(MathObject a) {
-    FInteger an = new FInteger(a);
-    return new FInteger(an.get().not());
+  public static FInteger not(FInteger number) {
+    return new FInteger(number.get().not());
   }
 
-  @Override
-  public MathObject med(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция med не определена для целых чисел.");
+  public static FInteger conj(FInteger number) {
+    return number;
   }
 
-  @Override
-  public MathObject sin(MathObject a) {
-    throw new ArithmeticException("Функция sin не определена для целых чисел.");
+  public static FInteger arg(FInteger number) {
+    return new FInteger(number.compareTo(ZERO) >= 0 ? 0 : -4);
   }
 
-  @Override
-  public MathObject cos(MathObject a) {
-    throw new ArithmeticException("Функция cos не определена для целых чисел.");
+  public static FInteger norm(FInteger number) {
+    return mul(number, number);
   }
 
-  @Override
-  public MathObject tan(MathObject a) {
-    throw new ArithmeticException("Функция tan не определена для целых чисел.");
-  }
-
-  @Override
-  public MathObject arcsin(MathObject a) {
-    throw new ArithmeticException("Функция arcsin не определена для целых чисел.");
-  }
-
-  @Override
-  public MathObject arccos(MathObject a) {
-    throw new ArithmeticException("Функция arccos не определена для целых чисел.");
-  }
-
-  @Override
-  public MathObject arctan(MathObject a) {
-    throw new ArithmeticException("Функция arctan не определена для целых чисел.");
-  }
-
-  @Override
-  public FInteger conj(MathObject a) {
-    return new FInteger(a);
-  }
-
-  @Override
-  public FInteger arg(MathObject a) {
-    FInteger an = new FInteger(a);
-    return new FInteger(an.compareTo(ZERO) >= 0 ? 0 : -4);
-  }
-
-  @Override
-  public FInteger norm(MathObject a) {
-    FInteger an = new FInteger(a);
-    return this.mul(an, an);
-  }
-
-  @Override
-  public int compareTo(MathObject a) {
-    FInteger an = new FInteger(a);
-    return this.get().compareTo(an.get());
+  public int compareTo(FInteger number) {
+    return this.get().compareTo(number.get());
   }
 
   @Override

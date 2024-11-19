@@ -1,22 +1,21 @@
 package funcmath.object;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.security.SecureRandom;
-import org.nevec.rjm.BigDecimalMath;
 
-public class FReal implements MathObject {
+public class FReal extends MathObject {
   @Serial private static final long serialVersionUID = -1314616813911607893L;
 
-  public static final FReal EPS = new FReal(new BigDecimal("0.001"));
+  public static final FReal EPS = new FReal(new BigDecimal("0.0001"));
   public static final FReal ZERO = new FReal(0);
   public static final FReal ONE = new FReal(1);
   public static final FReal TWO = new FReal(2);
-  public static final FReal E = new FReal(BigDecimalMath.exp(new MathContext(5)));
-  public static final FReal PI = new FReal(BigDecimalMath.pi(new MathContext(5)));
+  public static final FReal E = new FReal(BigDecimalMath.e(DEFAULT_MATHCONTEXT));
+  public static final FReal PI = new FReal(BigDecimalMath.pi(DEFAULT_MATHCONTEXT));
 
   protected BigDecimal number;
 
@@ -25,7 +24,7 @@ public class FReal implements MathObject {
   }
 
   public FReal(BigInteger number) {
-    this.number = new BigDecimal(number);
+    this.number = new BigDecimal(number, DEFAULT_MATHCONTEXT);
   }
 
   public FReal(BigDecimal number) {
@@ -41,260 +40,135 @@ public class FReal implements MathObject {
         };
   }
 
-  public FReal(MathObject number) {
-    this.number = number.getReal().get();
-  }
-
   @Override
   public BigDecimal get() {
     return number;
   }
 
-  @Override
-  public FNatural getNatural() {
-    return this.getInteger().getNatural();
+  public static FReal sum(FReal addend1, FReal addend2) {
+    return new FReal(addend1.get().add(addend2.get()));
   }
 
-  @Override
-  public FInteger getInteger() {
-    return new FInteger(this.number.round(new MathContext(5, RoundingMode.HALF_UP)).toBigInteger());
+  public static FReal sub(FReal minuend, FReal subtrahend) {
+    return new FReal(minuend.get().add(subtrahend.get().negate()));
   }
 
-  @Override
-  public FRational getRational() {
-    FInteger den = new FInteger(239);
-    return new FRational(this.mul(this, den).getInteger().get(), den.get());
+  public static FReal mul(FReal multiplicand, FReal multiplier) {
+    return new FReal(multiplicand.get().multiply(multiplier.get()));
   }
 
-  @Override
-  public FReal getReal() {
-    return this;
-  }
-
-  @Override
-  public FComplex getComplex() {
-    return new FComplex(this.number, BigDecimal.ZERO); // to do...
-  }
-
-  @Override
-  public FReal sum(MathObject addend1, MathObject addend2) {
-    FReal an = new FReal(addend1);
-    FReal bn = new FReal(addend2);
-    return new FReal(an.get().add(bn.get()));
-  }
-
-  @Override
-  public FReal sub(MathObject minuend, MathObject subtrahend) {
-    FReal an = new FReal(minuend);
-    FReal bn = new FReal(subtrahend);
-    return new FReal(an.get().add(bn.get().negate()));
-  }
-
-  @Override
-  public FReal mul(MathObject multiplicand, MathObject multiplier) {
-    FReal an = new FReal(multiplicand);
-    FReal bn = new FReal(multiplier);
-    return new FReal(an.get().multiply(bn.get()));
-  }
-
-  @Override
-  public FReal div(MathObject dividend, MathObject divisor) {
-    FReal an = new FReal(dividend);
-    FReal bn = new FReal(divisor);
-    if (bn.get().equals(BigDecimal.ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
+  public static FReal div(FReal dividend, FReal divisor) {
+    if (divisor.get().equals(BigDecimal.ZERO)) {
+      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     }
-    return new FReal(an.get().divide(bn.get(), RoundingMode.HALF_UP));
+    return new FReal(dividend.get().divide(divisor.get(), RoundingMode.HALF_UP));
   }
 
-  @Override
-  public MathObject mod(MathObject dividend, MathObject divisor) {
-    throw new ArithmeticException("Функция mod не определена для действительных чисел.");
+  public static FReal pow(FReal base, FReal power) {
+    return new FReal(BigDecimalMath.pow(base.get(), power.get(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public FReal pow(MathObject base, MathObject power) {
-    FReal b = new FReal(base);
-    FReal p = new FReal(power);
-    return new FReal(BigDecimalMath.pow(b.get(), p.get()));
+  public static FReal root(FReal radicand, FReal degree) {
+    return pow(radicand, div(ONE, degree));
   }
 
-  @Override
-  public FReal root(MathObject radicand, MathObject degree) {
-    FReal r = new FReal(radicand);
-    FReal d = new FReal(degree);
-    return this.pow(r, this.div(ONE, d));
-  }
-
-  @Override
-  public FReal log(MathObject base, MathObject antilogarithm) {
-    FReal b = new FReal(base);
-    FReal a = new FReal(antilogarithm);
+  public static FReal log(FReal base, FReal antilogarithm) {
     return new FReal(
-        BigDecimalMath.log(a.get()).divide(BigDecimalMath.log(b.get()), RoundingMode.HALF_UP));
+        BigDecimalMath.log(antilogarithm.get(), DEFAULT_MATHCONTEXT)
+            .divide(BigDecimalMath.log(base.get(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject gcd(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция gcd не определена для действительных чисел.");
+  // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция
+  // подобно sum, mul, pow...
+  // MathObject hroot(MathObject radicand, MathObject degree, MathObject grade);
+  // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
+
+  public static FReal fact(FReal number) {
+    return new FReal(BigDecimalMath.factorial(number.get(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject lcm(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция lcm не определена для действительных чисел.");
-  }
-
-  @Override
-  public MathObject fact(MathObject a) {
-    FReal an = new FReal(a);
-    return new FReal(BigDecimalMath.Gamma(an.get()));
-  }
-
-  @Override
-  public MathObject conc(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция conc не определена для действительных чисел.");
-  }
-
-  @Override
-  public FReal rand(MathObject a, MathObject b) {
-    FReal an = new FReal(a);
-    FReal bn = new FReal(b);
-    if (an.compareTo(bn) > 0) {
-      return this.rand(b, a);
+  public static FReal rand(FReal min, FReal max) {
+    if (min.compareTo(max) > 0) {
+      return rand(max, min);
     }
     SecureRandom random = new SecureRandom();
     return new FReal(
-        random.nextDouble(an.get().doubleValue(), bn.get().doubleValue())); // потом исправить
+        random.nextDouble(min.get().doubleValue(), max.get().doubleValue())); // потом исправить
   }
 
-  @Override
-  public MathObject and(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция and не определена для действительных чисел.");
-  }
-
-  @Override
-  public MathObject or(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция or не определена для действительных чисел.");
-  }
-
-  @Override
-  public MathObject xor(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция xor не определена для действительных чисел.");
-  }
-
-  @Override
-  public FReal min(MathObject a, MathObject b) {
-    FReal an = new FReal(a);
-    FReal bn = new FReal(b);
-    if (an.compareTo(bn) <= 0) {
-      return an;
+  public static FReal min(FReal number1, FReal number2) {
+    if (number1.compareTo(number2) <= 0) {
+      return number1;
     } else {
-      return bn;
+      return number2;
     }
   }
 
-  @Override
-  public FReal max(MathObject a, MathObject b) {
-    FReal an = new FReal(a);
-    FReal bn = new FReal(b);
-    if (an.compareTo(bn) <= 0) {
-      return bn;
+  public static FReal max(FReal number1, FReal number2) {
+    if (number1.compareTo(number2) <= 0) {
+      return number2;
     } else {
-      return an;
+      return number1;
     }
   }
 
-  @Override
-  public FReal sign(MathObject a) {
-    FReal an = new FReal(a);
-    return new FReal(an.compareTo(ZERO));
+  public static FReal sign(FReal number) {
+    return new FReal(number.compareTo(ZERO));
   }
 
-  @Override
-  public MathObject[] primes(MathObject n) {
-    throw new ArithmeticException("Функция primes не определена для действительных чисел.");
+  public static FReal abs(FReal number) {
+    return new FReal(number.get().abs());
   }
 
-  @Override
-  public FReal abs(MathObject a) {
-    FReal an = new FReal(a);
-    return new FReal(an.get().abs());
+  public static FReal sin(FReal number) {
+    return new FReal(BigDecimalMath.sin(number.get(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject not(MathObject a) {
-    throw new ArithmeticException("Функция not не определена для действительных чисел.");
+  public static FReal cos(FReal number) {
+    return new FReal(BigDecimalMath.cos(number.get(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject med(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция med не определена для действительных чисел.");
+  public static FReal tan(FReal number) {
+    return new FReal(BigDecimalMath.tan(number.get(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public FReal sin(MathObject a) {
-    FReal an = new FReal(a);
-    return new FReal(BigDecimalMath.sin(an.get()));
+  public static FReal arcsin(FReal number) {
+    return new FReal(BigDecimalMath.asin(number.get(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public FReal cos(MathObject a) {
-    FReal an = new FReal(a);
-    return new FReal(BigDecimalMath.cos(an.get()));
+  public static FReal arccos(FReal number) {
+    return new FReal(BigDecimalMath.acos(number.get(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public FReal tan(MathObject a) {
-    FReal an = new FReal(a);
-    return new FReal(BigDecimalMath.tan(an.get()));
+  public static FReal arctan(FReal number) {
+    return new FReal(BigDecimalMath.atan(number.get(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public FReal arcsin(MathObject a) {
-    FReal an = new FReal(a);
-    return new FReal(BigDecimalMath.asin(an.get()));
+  public static FReal arctan2(FReal y, FReal x) {
+    return new FReal(BigDecimalMath.atan2(y.get(), x.get(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public FReal arccos(MathObject a) {
-    FReal an = new FReal(a);
-    return new FReal(BigDecimalMath.acos(an.get()));
+  public static FReal conj(FReal number) {
+    return number;
   }
 
-  @Override
-  public FReal arctan(MathObject a) {
-    FReal an = new FReal(a);
-    return new FReal(BigDecimalMath.atan(an.get()));
+  public static FReal arg(FReal number) {
+    return (number.compareTo(ZERO) >= 0 ? ZERO : sub(ZERO, PI));
   }
 
-  @Override
-  public FReal conj(MathObject a) {
-    return new FReal(a);
+  public static FReal norm(FReal number) {
+    return mul(number, number);
   }
 
-  @Override
-  public FReal arg(MathObject a) {
-    FReal an = new FReal(a);
-    return (an.compareTo(ZERO) >= 0 ? ZERO : this.sub(ZERO, PI));
-  }
-
-  @Override
-  public FReal norm(MathObject a) {
-    FReal an = new FReal(a);
-    return this.mul(an, an);
-  }
-
-  @Override
-  public int compareTo(MathObject a) {
-    FReal an = new FReal(a);
-    return this.get().compareTo(an.get());
+  public int compareTo(FReal number) {
+    return this.get().compareTo(number.get());
   }
 
   @Override
   public boolean equals(Object obj) {
     return obj.getClass() == FReal.class
-        && this.sub(this, EPS).compareTo((FReal) obj) < 0
-        && this.sum(this, EPS).compareTo((FReal) obj) > 0;
+        && sub(this, EPS).compareTo((FReal) obj) < 0
+        && sum(this, EPS).compareTo((FReal) obj) > 0;
   }
 
   @Override

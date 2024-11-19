@@ -1,12 +1,14 @@
 package funcmath.object;
 
+import ch.obermuhlner.math.big.BigComplex;
+import ch.obermuhlner.math.big.BigComplexMath;
 import funcmath.Helper;
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-public class FComplex implements MathObject {
+public class FComplex extends MathObject {
   @Serial private static final long serialVersionUID = -6539369190993703598L;
 
   public static final FComplex NEGATIVE_ONE = new FComplex(-1, 0);
@@ -16,7 +18,6 @@ public class FComplex implements MathObject {
   public static final FComplex IMAGINARY_UNIT = new FComplex(0, 1);
 
   protected FReal real, imaginary;
-  private final FReal freal = new FReal(0);
 
   public FComplex(double real, double imaginary) {
     this.real = new FReal(real);
@@ -33,6 +34,11 @@ public class FComplex implements MathObject {
     this.imaginary = new FReal(imaginary);
   }
 
+  public FComplex(BigComplex complex) {
+    this.real = new FReal(complex.re);
+    this.imaginary = new FReal(complex.im);
+  }
+
   public FComplex(FReal real, FReal imaginary) {
     this.real = real;
     this.imaginary = imaginary;
@@ -45,35 +51,9 @@ public class FComplex implements MathObject {
     this.imaginary = new FReal(snumbers.get(1));
   }
 
-  public FComplex(MathObject number) {
-    FComplex complex = number.getComplex();
-    this.real = complex.getRe();
-    this.imaginary = complex.getIm();
-  }
-
   @Override
   public BigDecimal[] get() {
     return new BigDecimal[] {this.real.get(), this.imaginary.get()};
-  }
-
-  @Override
-  public FNatural getNatural() {
-    return this.getReal().getNatural();
-  }
-
-  @Override
-  public FInteger getInteger() {
-    return this.getReal().getInteger();
-  }
-
-  @Override
-  public FRational getRational() {
-    return this.getReal().getRational();
-  }
-
-  @Override
-  public FReal getReal() {
-    return real;
   }
 
   public FReal getRe() {
@@ -84,195 +64,112 @@ public class FComplex implements MathObject {
     return imaginary;
   }
 
-  @Override
-  public FComplex getComplex() {
-    return this;
+  public BigComplex getBigComp() {
+    return BigComplex.valueOf(this.getRe().get(), this.getIm().get());
   }
 
-  @Override
-  public FComplex sum(MathObject addend1, MathObject addend2) {
-    FComplex an = new FComplex(addend1);
-    FComplex bn = new FComplex(addend2);
-    return new FComplex(freal.sum(an.getRe(), bn.getRe()), freal.sum(an.getIm(), bn.getIm()));
-  }
-
-  @Override
-  public FComplex sub(MathObject minuend, MathObject subtrahend) {
-    FComplex an = new FComplex(minuend);
-    FComplex bn = new FComplex(subtrahend);
-    return new FComplex(freal.sub(an.getRe(), bn.getRe()), freal.sub(an.getIm(), bn.getIm()));
-  }
-
-  @Override
-  public FComplex mul(MathObject multiplicand, MathObject multiplier) {
-    FComplex an = new FComplex(multiplicand);
-    FComplex bn = new FComplex(multiplier);
+  public static FComplex sum(FComplex addend1, FComplex addend2) {
     return new FComplex(
-        freal.sub(freal.mul(an.getRe(), bn.getRe()), freal.mul(an.getIm(), bn.getIm())),
-        freal.sum(freal.mul(an.getRe(), bn.getIm()), freal.mul(an.getIm(), bn.getRe())));
+        FReal.sum(addend1.getRe(), addend2.getRe()), FReal.sum(addend1.getIm(), addend2.getIm()));
   }
 
-  @Override
-  public FComplex div(MathObject dividend, MathObject divisor) {
-    FComplex an = new FComplex(dividend);
-    FComplex bn = new FComplex(divisor);
-    FReal mod = this.abs(bn).getRe();
-    if (mod.equals(FReal.ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + an + "/" + bn);
+  public static FComplex sub(FComplex minuend, FComplex subtrahend) {
+    return new FComplex(
+        FReal.sub(minuend.getRe(), subtrahend.getRe()),
+        FReal.sub(minuend.getIm(), subtrahend.getIm()));
+  }
+
+  public static FComplex mul(FComplex multiplicand, FComplex multiplier) {
+    return new FComplex(
+        FReal.sub(
+            FReal.mul(multiplicand.getRe(), multiplier.getRe()),
+            FReal.mul(multiplicand.getIm(), multiplier.getIm())),
+        FReal.sum(
+            FReal.mul(multiplicand.getRe(), multiplier.getIm()),
+            FReal.mul(multiplicand.getIm(), multiplier.getRe())));
+  }
+
+  public static FComplex div(FComplex dividend, FComplex divisor) {
+    FReal abs = abs(divisor).getRe();
+    if (abs(divisor).equals(ZERO)) {
+      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     }
-    FComplex c = this.mul(an, this.conj(bn));
-    return new FComplex(freal.div(c.getRe(), mod), freal.div(c.getIm(), mod));
+    FComplex temp = mul(dividend, conj(divisor));
+    return new FComplex(FReal.div(temp.getRe(), abs), FReal.div(temp.getIm(), abs));
   }
 
-  @Override
-  public MathObject mod(MathObject dividend, MathObject divisor) {
-    throw new ArithmeticException("Функция mod не определена для комплексных чисел.");
+  public static FComplex pow(FComplex base, FComplex power) {
+    return new FComplex(
+        BigComplexMath.pow(base.getBigComp(), power.getBigComp(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject pow(MathObject base, MathObject power) {
-    throw new NullPointerException("Функция pow временно не введена для комплексных чисел.");
+  public static FComplex root(FComplex radicand, FComplex degree) {
+    return new FComplex(
+        BigComplexMath.root(radicand.getBigComp(), degree.getBigComp(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject root(MathObject radicand, MathObject degree) {
-    throw new NullPointerException("Функция root временно не введена для комплексных чисел.");
+  public static FComplex log(FComplex base, FComplex antilogarithm) {
+    return new FComplex(
+        BigComplexMath.log(antilogarithm.getBigComp(), DEFAULT_MATHCONTEXT)
+            .divide(
+                BigComplexMath.log(base.getBigComp(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject log(MathObject base, MathObject antilogarithm) {
-    throw new NullPointerException("Функция log временно не введена для комплексных чисел.");
+  // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция
+  // подобно sum, mul, pow...
+  // MathObject hroot(MathObject radicand, MathObject degree, MathObject grade);
+  // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
+
+  public static FComplex fact(FComplex number) {
+    return new FComplex(BigComplexMath.factorial(number.getBigComp(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject gcd(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция gcd не определена для комплексных чисел.");
+  public static FComplex sign(FComplex number) {
+    if (abs(number).equals(ZERO)) return ZERO;
+    return div(number, abs(number));
   }
 
-  @Override
-  public MathObject lcm(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция lcm не определена для комплексных чисел.");
+  public static FComplex abs(FComplex number) {
+    return new FComplex(FReal.root(norm(number).getRe(), FReal.TWO), FReal.ZERO);
   }
 
-  @Override
-  public MathObject fact(MathObject a) {
-    throw new NullPointerException("Функция fact временно не введена для комплексных чисел.");
+  public static FComplex sin(FComplex number) {
+    return new FComplex(BigComplexMath.sin(number.getBigComp(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject conc(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция conc не определена для комплексных чисел.");
+  public static FComplex cos(FComplex number) {
+    return new FComplex(BigComplexMath.cos(number.getBigComp(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject rand(MathObject a, MathObject b) {
-    throw new NullPointerException("Функция rand временно не введена для комплексных чисел.");
+  public static FComplex tan(FComplex number) {
+    return new FComplex(BigComplexMath.tan(number.getBigComp(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject and(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция and не определена для комплексных чисел.");
+  public static FComplex arcsin(FComplex number) {
+    return new FComplex(BigComplexMath.asin(number.getBigComp(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject or(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция or не определена для комплексных чисел.");
+  public static FComplex arccos(FComplex number) {
+    return new FComplex(BigComplexMath.acos(number.getBigComp(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject xor(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция xor не определена для комплексных чисел.");
+  public static FComplex arctan(FComplex number) {
+    return new FComplex(BigComplexMath.atan(number.getBigComp(), DEFAULT_MATHCONTEXT));
   }
 
-  @Override
-  public MathObject min(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция min не определена для комплексных чисел.");
+  public static FComplex conj(FComplex number) {
+    return new FComplex(number.getRe(), FReal.sub(FReal.ZERO, number.getIm()));
   }
 
-  @Override
-  public MathObject max(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция max не определена для комплексных чисел.");
+  public static FComplex arg(FComplex number) {
+    return new FComplex(FReal.arctan2(number.getIm(), number.getRe()), FReal.ZERO);
   }
 
-  @Override
-  public FComplex sign(MathObject a) {
-    FComplex an = new FComplex(a);
-    if (this.abs(an).equals(ZERO)) return ZERO;
-    return this.div(this, this.abs(an));
-  }
-
-  @Override
-  public MathObject[] primes(MathObject n) {
-    throw new ArithmeticException("Функция primes не определена для комплексных чисел.");
-  }
-
-  @Override
-  public FComplex abs(MathObject a) {
-    FComplex an = new FComplex(a);
-    return new FComplex(freal.root(this.norm(an).getRe(), FReal.TWO));
-  }
-
-  @Override
-  public MathObject not(MathObject a) {
-    throw new ArithmeticException("Функция not не определена для комплексных чисел.");
-  }
-
-  @Override
-  public MathObject med(MathObject a, MathObject b) {
-    throw new ArithmeticException("Функция med не определена для комплексных чисел.");
-  }
-
-  @Override
-  public MathObject sin(MathObject a) {
-    throw new NullPointerException("Функция sin временно не введена для комплексных чисел.");
-  }
-
-  @Override
-  public MathObject cos(MathObject a) {
-    throw new NullPointerException("Функция cos временно не введена для комплексных чисел.");
-  }
-
-  @Override
-  public MathObject tan(MathObject a) {
-    throw new NullPointerException("Функция tan временно не введена для комплексных чисел.");
-  }
-
-  @Override
-  public MathObject arcsin(MathObject a) {
-    throw new NullPointerException("Функция arcsin временно не введена для комплексных чисел.");
-  }
-
-  @Override
-  public MathObject arccos(MathObject a) {
-    throw new NullPointerException("Функция arccos временно не введена для комплексных чисел.");
-  }
-
-  @Override
-  public MathObject arctan(MathObject a) {
-    throw new NullPointerException("Функция arctan временно не введена для комплексных чисел.");
-  }
-
-  @Override
-  public FComplex conj(MathObject a) {
-    FComplex an = new FComplex(a);
-    return new FComplex(an.getRe(), freal.sub(FReal.ZERO, an.getIm()));
-  }
-
-  @Override
-  public FComplex arg(MathObject a) {
-    FComplex an = new FComplex(a);
-    return new FComplex(freal.arctan(freal.div(an.getIm(), an.getRe())), FReal.ZERO);
-  }
-
-  @Override
-  public FComplex norm(MathObject a) {
-    FComplex an = new FComplex(a);
-    return this.sum(this.mul(an.getRe(), an.getRe()), this.mul(an.getIm(), an.getIm()));
-  }
-
-  @Override
-  public int compareTo(MathObject a) {
-    throw new ArithmeticException("Функция compareTo не определена для комплексных чисел.");
+  public static FComplex norm(FComplex number) {
+    return new FComplex(
+        FReal.sum(
+            FReal.mul(number.getRe(), number.getRe()), FReal.mul(number.getIm(), number.getIm())),
+        FReal.ZERO);
   }
 
   @Override
