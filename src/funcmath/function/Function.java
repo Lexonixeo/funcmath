@@ -5,6 +5,7 @@ import funcmath.exceptions.FunctionException;
 import funcmath.object.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class Function implements Serializable {
@@ -58,8 +59,14 @@ public class Function implements Serializable {
     this.description = description;
     this.uses = uses;
 
+    ArrayList<String> sfNames = new ArrayList<>();
+    MathObject resultClass = MathObject.getMathObject(resultClassName);
+    for (Method m : resultClass.getClass().getMethods()) {
+      sfNames.add(m.getName());
+    }
+    sfNames.add("ignore");
+
     this.numberOfArgs = 0;
-    ArrayList<String> sfNames = SimpleFunctions.names;
     for (String word : definition) {
       if (!sfNames.contains(word) && word.charAt(0) == 'x') {
         this.numberOfArgs = Math.max(this.numberOfArgs, Integer.parseInt(word.substring(1)) + 1);
@@ -91,18 +98,14 @@ public class Function implements Serializable {
               + x.length);
     }
 
-    MathObject resultClass =
-        switch (resultClassName) {
-          case "integer" -> new FInteger(0);
-          case "natural" -> new FNatural(0);
-          case "rational" -> new FRational(0, 1);
-          case "real" -> new FReal(0);
-          case "complex" -> new FComplex(0, 0);
-          default ->
-              throw new FunctionException(
-                  "Не существует такой области определения: " + resultClassName);
-        };
-    ArrayList<String> sfNames = SimpleFunctions.names;
+    MathObject resultClass = MathObject.getMathObject(resultClassName);
+
+    ArrayList<String> sfNames = new ArrayList<>();
+    for (Method m : resultClass.getClass().getMethods()) {
+      sfNames.add(m.getName());
+    }
+    sfNames.add("ignore");
+
     Stack<SimpleFunction> sfStack = new Stack<>();
     Stack<ArrayList<MathObject>> nums = new Stack<>();
     nums.push(new ArrayList<>()); // конечный

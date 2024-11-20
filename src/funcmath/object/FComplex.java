@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-public class FComplex extends MathObject {
+public class FComplex implements MathObject {
   @Serial private static final long serialVersionUID = -6539369190993703598L;
 
   public static final FComplex NEGATIVE_ONE = new FComplex(-1, 0);
@@ -18,6 +18,11 @@ public class FComplex extends MathObject {
   public static final FComplex IMAGINARY_UNIT = new FComplex(0, 1);
 
   protected FReal real, imaginary;
+
+  public FComplex() {
+    this.real = FReal.ZERO;
+    this.imaginary = FReal.ZERO;
+  }
 
   public FComplex(double real, double imaginary) {
     this.real = new FReal(real);
@@ -52,8 +57,18 @@ public class FComplex extends MathObject {
   }
 
   @Override
-  public BigDecimal[] get() {
-    return new BigDecimal[] {this.real.get(), this.imaginary.get()};
+  public BigComplex get() {
+    return BigComplex.valueOf(this.getRe().get(), this.getIm().get()); // мб это в get()?
+  }
+
+  @Override
+  public String getType() {
+    return "complex";
+  }
+
+  @Override
+  public String getTypeForLevel() {
+    return "комплексные числа";
   }
 
   public FReal getRe() {
@@ -62,10 +77,6 @@ public class FComplex extends MathObject {
 
   public FReal getIm() {
     return imaginary;
-  }
-
-  public BigComplex getBigComp() {
-    return BigComplex.valueOf(this.getRe().get(), this.getIm().get());
   }
 
   public static FComplex sum(FComplex addend1, FComplex addend2) {
@@ -100,19 +111,19 @@ public class FComplex extends MathObject {
 
   public static FComplex pow(FComplex base, FComplex power) {
     return new FComplex(
-        BigComplexMath.pow(base.getBigComp(), power.getBigComp(), DEFAULT_MATHCONTEXT));
+        BigComplexMath.pow(base.get(), power.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex root(FComplex radicand, FComplex degree) {
     return new FComplex(
-        BigComplexMath.root(radicand.getBigComp(), degree.getBigComp(), DEFAULT_MATHCONTEXT));
+        BigComplexMath.root(radicand.get(), degree.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex log(FComplex base, FComplex antilogarithm) {
     return new FComplex(
-        BigComplexMath.log(antilogarithm.getBigComp(), DEFAULT_MATHCONTEXT)
+        BigComplexMath.log(antilogarithm.get(), DEFAULT_MATHCONTEXT)
             .divide(
-                BigComplexMath.log(base.getBigComp(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT));
+                BigComplexMath.log(base.get(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT));
   }
 
   // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция
@@ -121,7 +132,7 @@ public class FComplex extends MathObject {
   // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
 
   public static FComplex fact(FComplex number) {
-    return new FComplex(BigComplexMath.factorial(number.getBigComp(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.factorial(number.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex sign(FComplex number) {
@@ -134,27 +145,27 @@ public class FComplex extends MathObject {
   }
 
   public static FComplex sin(FComplex number) {
-    return new FComplex(BigComplexMath.sin(number.getBigComp(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.sin(number.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex cos(FComplex number) {
-    return new FComplex(BigComplexMath.cos(number.getBigComp(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.cos(number.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex tan(FComplex number) {
-    return new FComplex(BigComplexMath.tan(number.getBigComp(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.tan(number.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex arcsin(FComplex number) {
-    return new FComplex(BigComplexMath.asin(number.getBigComp(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.asin(number.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex arccos(FComplex number) {
-    return new FComplex(BigComplexMath.acos(number.getBigComp(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.acos(number.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex arctan(FComplex number) {
-    return new FComplex(BigComplexMath.atan(number.getBigComp(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.atan(number.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex conj(FComplex number) {

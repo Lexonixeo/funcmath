@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
-public class FNatural extends MathObject {
+public class FNatural implements MathObject {
   @Serial private static final long serialVersionUID = -1322027344216575257L;
 
   public static final FNatural ZERO = new FNatural(0);
@@ -13,6 +13,10 @@ public class FNatural extends MathObject {
   public static final FNatural TWO = new FNatural(2);
 
   protected BigInteger number;
+
+  public FNatural(){
+    this.number = ZERO.get();
+  }
 
   public FNatural(long number) {
     if (number < 0) {
@@ -39,6 +43,16 @@ public class FNatural extends MathObject {
   @Override
   public BigInteger get() {
     return this.number;
+  }
+
+  @Override
+  public String getType() {
+    return "natural";
+  }
+
+  @Override
+  public String getTypeForLevel() {
+    return "натуральные числа";
   }
 
   public static FNatural sum(FNatural addend1, FNatural addend2) {

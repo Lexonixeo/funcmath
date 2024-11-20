@@ -149,19 +149,8 @@ public class Level implements Serializable {
     Helper.clear();
     System.out.println(this);
 
-    String mathObjectType =
-        switch (resultClassName) {
-          case "integer" -> "целых";
-          case "natural" -> "натуральных";
-          case "rational" -> "рациональных";
-          case "real" -> "действительных";
-          case "complex" -> "комплексных";
-          default ->
-              throw new LevelException(
-                  "Не существует такой области определения: " + resultClassName);
-        };
     System.out.println(
-        "В данном уровне все вычисления происходят в " + mathObjectType + " числах.\n");
+        "В данном уровне вычисления происходят на уровне объектов вида \"" + MathObject.getMathObject(resultClassName).getTypeForLevel() + "\".\n");
 
     System.out.println("У вас есть ограниченный набор чисел:");
     for (MathObject number : numbers) {

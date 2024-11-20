@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.security.SecureRandom;
 
-public class FReal extends MathObject {
+public class FReal implements MathObject {
   @Serial private static final long serialVersionUID = -1314616813911607893L;
 
   public static final FReal EPS = new FReal(new BigDecimal("0.0001"));
@@ -18,6 +18,10 @@ public class FReal extends MathObject {
   public static final FReal PI = new FReal(BigDecimalMath.pi(DEFAULT_MATHCONTEXT));
 
   protected BigDecimal number;
+
+  public FReal() {
+    this.number = ZERO.get();
+  }
 
   public FReal(double number) {
     this.number = BigDecimal.valueOf(number);
@@ -43,6 +47,16 @@ public class FReal extends MathObject {
   @Override
   public BigDecimal get() {
     return number;
+  }
+
+  @Override
+  public String getType() {
+    return "real";
+  }
+
+  @Override
+  public String getTypeForLevel() {
+    return "действительные числа";
   }
 
   public static FReal sum(FReal addend1, FReal addend2) {

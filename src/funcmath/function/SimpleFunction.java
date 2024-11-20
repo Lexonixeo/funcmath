@@ -13,15 +13,23 @@ public class SimpleFunction {
 
   public SimpleFunction(String name, MathObject resultClass) {
     this.name = name;
-    Method[] functions = SimpleFunctions.class.getMethods();
+    Method[] functions = resultClass.getClass().getMethods();
     for (Method f : functions) {
+      if (this.name.equals("ignore")) {
+          try {
+              function = MathObject.class.getMethod("ignore", MathObject.class);
+          } catch (NoSuchMethodException e) {
+            // как это произошло?
+              throw new RuntimeException(e);
+          }
+      }
       if (this.name.equals(f.getName())) {
         function = f;
         break;
       }
     }
     assert function != null;
-    numberOfArgs = function.getParameterCount() - 1;
+    numberOfArgs = function.getParameterCount();
     this.resultClass = resultClass;
   }
 
@@ -38,13 +46,9 @@ public class SimpleFunction {
               + args.length);
     }
 
-    MathObject[] newArgs = new MathObject[args.length + 1];
-    System.arraycopy(args, 0, newArgs, 1, args.length);
-    newArgs[0] = resultClass;
-
     Object ans;
     try {
-      ans = function.invoke(null, (Object[]) newArgs);
+      ans = function.invoke(null, (Object[]) args);
     } catch (InvocationTargetException | IllegalAccessException e) {
       throw new RuntimeException(e);
     }

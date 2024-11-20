@@ -6,7 +6,7 @@ import java.io.Serial;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-public class FRational extends MathObject {
+public class FRational implements MathObject {
   @Serial private static final long serialVersionUID = 8367368182099731988L;
 
   public static final FRational NEGATIVE_ONE = new FRational(-1, 1);
@@ -16,6 +16,11 @@ public class FRational extends MathObject {
 
   protected FInteger numerator;
   protected FInteger denominator;
+
+  public FRational() {
+    this.numerator = FInteger.ZERO;
+    this.denominator = FInteger.ONE;
+  }
 
   public FRational(long numerator, long denominator) {
     if (denominator < 0) {
@@ -84,6 +89,16 @@ public class FRational extends MathObject {
   @Override
   public BigInteger[] get() {
     return new BigInteger[] {this.numerator.get(), this.denominator.get()};
+  }
+
+  @Override
+  public String getType() {
+    return "rational";
+  }
+
+  @Override
+  public String getTypeForLevel() {
+    return "рациональные числа";
   }
 
   public FInteger getNum() { // сокращено из-за длинных выражений

@@ -1,16 +1,53 @@
 package funcmath.object;
 
+import funcmath.exceptions.MathObjectException;
+
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.HashMap;
 
-public class MathObject implements Serializable {
-  protected static final MathContext DEFAULT_MATHCONTEXT =
-      new MathContext(10, RoundingMode.HALF_UP);
+public interface MathObject extends Serializable {
+  MathContext DEFAULT_MATHCONTEXT = new MathContext(10, RoundingMode.HALF_UP);
+  HashMap<String, MathObject> MATH_OBJECT_HASH_MAP = new HashMap<>();
 
   // ArrayList для хранения видов mathobject
-  Object get() {
-    return null;
+  Object get();
+
+  String getType(); // вроде "natural", "integer"...
+
+  String getTypeForLevel(); // вроде "натуральных", "целых"...
+
+  static void loadMathObject(MathObject x) {
+    String type = x.getType();
+    MathObject typeInstance;
+    try {
+        typeInstance = x.getClass().getConstructor(new Class[]{}).newInstance();
+    } catch (NoSuchMethodException e) {
+      throw new MathObjectException(e.getMessage());
+    } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }
+    MATH_OBJECT_HASH_MAP.put(type, typeInstance);
+  }
+
+  static MathObject getMathObject(String type) {
+    return MATH_OBJECT_HASH_MAP.get(type);
+  }
+
+  static MathObject parseMathObject(String s, String type) {
+      try {
+          return MATH_OBJECT_HASH_MAP.get(type).getClass().getConstructor(new Class[]{String.class}).newInstance(s);
+      } catch (NoSuchMethodException e) {
+          throw new MathObjectException(e.getMessage());
+      } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+          throw new RuntimeException(e);
+      }
+  }
+
+  static MathObject[] ignore(MathObject ignoredA) {
+    return new MathObject[]{};
   }
   /*
 

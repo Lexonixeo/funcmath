@@ -1,6 +1,7 @@
 package funcmath;
 
-import funcmath.object.MathObject;
+import funcmath.object.*;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -172,7 +173,16 @@ public class Helper {
   }
 
   public static <T> T cast(Object obj, T resultClass) {
-    return (T) obj;
+      //noinspection unchecked
+      return (T) obj;
+  }
+
+  public static void loadMathObjects() {
+    MathObject.loadMathObject(new FNatural());
+    MathObject.loadMathObject(new FInteger());
+    MathObject.loadMathObject(new FRational());
+    MathObject.loadMathObject(new FReal());
+    MathObject.loadMathObject(new FComplex());
   }
 
   // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ

@@ -6,7 +6,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
-public class FInteger extends MathObject {
+public class FInteger implements MathObject {
   @Serial private static final long serialVersionUID = 4465117069025671299L;
 
   public static final FInteger NEGATIVE_ONE = new FInteger(-1);
@@ -16,6 +16,10 @@ public class FInteger extends MathObject {
   public static final FInteger TEN = new FInteger(10);
 
   protected BigInteger number;
+
+  public FInteger() {
+    this.number = ZERO.get();
+  }
 
   public FInteger(long number) {
     this.number = BigInteger.valueOf(number);
@@ -34,6 +38,16 @@ public class FInteger extends MathObject {
     return this.number;
   }
 
+  @Override
+  public String getType() {
+    return "integer";
+  }
+
+  @Override
+  public String getTypeForLevel() {
+    return "целые числа";
+  }
+
   public static FInteger sum(FInteger addend1, FInteger addend2) {
     return new FInteger(addend1.get().add(addend2.get()));
   }
@@ -50,7 +64,7 @@ public class FInteger extends MathObject {
     if (divisor.equals(ZERO)) {
       throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     } else {
-      return new FInteger(sub(dividend, mod(dividend, divisor)).get().divide(dividend.get()));
+      return new FInteger(sub(dividend, mod(dividend, divisor)).get().divide(divisor.get()));
     }
   }
 
