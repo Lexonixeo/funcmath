@@ -181,5 +181,13 @@ public class Helper {
     MathObject.loadMathObject(new FUnknown());
   }
 
+  public static <T> T chooseNotNull(T a, T b) {
+    if (a != null) {
+      return a;
+    } else {
+      return b;
+    }
+  }
+
   // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ
 }

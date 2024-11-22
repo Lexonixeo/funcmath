@@ -151,7 +151,7 @@ public class LevelMaker {
     ArrayList<String> numbers = Helper.wordsFromString(scanner.nextLine());
     ArrayList<MathObject> originalNumbers = new ArrayList<>();
     for (String number : numbers) {
-      originalNumbers.add(MathObject.parseMathObject(number, resultClassName));
+      originalNumbers.add(MathObject.parseMathObject(number, resultClassName, levelID));
     }
 
     System.out.print("Введите ID функций через пробел: ");
@@ -170,7 +170,7 @@ public class LevelMaker {
     ArrayList<String> ansnumbers = Helper.wordsFromString(scanner.nextLine());
     ArrayList<MathObject> answers = new ArrayList<>();
     for (String ansnum : ansnumbers) {
-      answers.add(MathObject.parseMathObject(ansnum, resultClassName));
+      answers.add(MathObject.parseMathObject(ansnum, resultClassName, levelID));
     }
 
     ArrayList<String> hints = new ArrayList<>();

@@ -86,7 +86,7 @@ public class Function implements Serializable {
     return uses;
   }
 
-  public ArrayList<MathObject> use(int mode, MathObject... x) {
+  public ArrayList<MathObject> use(int level, int mode, MathObject... x) {
     if (mode == 0 && this.uses == 0) {
       throw new FunctionException("У функции " + name + " закончилось число использований.");
     }
@@ -120,7 +120,7 @@ public class Function implements Serializable {
           int j = Integer.parseInt(word.substring(1));
           timed.add(x[j]);
         } else {
-          timed.add(MathObject.parseMathObject(word, resultClassName));
+          timed.add(MathObject.parseMathObject(word, resultClassName, level));
         }
         while (!timed.isEmpty()) {
           nums.peek().add(timed.pop());

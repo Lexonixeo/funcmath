@@ -1,5 +1,6 @@
 package funcmath.object;
 
+import funcmath.Helper;
 import funcmath.exceptions.FunctionException;
 import java.io.Serial;
 import java.math.BigInteger;
@@ -16,6 +17,7 @@ public class FInteger implements MathObject {
   public static final FInteger TEN = new FInteger(10);
 
   protected BigInteger number;
+  protected Integer level;
 
   public FInteger() {
     this.number = ZERO.get();
@@ -25,12 +27,19 @@ public class FInteger implements MathObject {
     this.number = BigInteger.valueOf(number);
   }
 
-  public FInteger(BigInteger number) {
-    this.number = number;
+  public FInteger(long number, int level) {
+    this.number = BigInteger.valueOf(number);
+    this.level = level;
   }
 
-  public FInteger(String s) {
+  public FInteger(BigInteger number, int level) {
+    this.number = number;
+    this.level = level;
+  }
+
+  public FInteger(String s, int level) {
     this.number = new BigInteger(s);
+    this.level = level;
   }
 
   @Override
@@ -57,22 +66,22 @@ public class FInteger implements MathObject {
   public void setName(String name) {}
 
   public static FInteger sum(FInteger addend1, FInteger addend2) {
-    return new FInteger(addend1.get().add(addend2.get()));
+    return new FInteger(addend1.get().add(addend2.get()), Helper.chooseNotNull(addend1.level, addend2.level));
   }
 
   public static FInteger sub(FInteger minuend, FInteger subtrahend) {
-    return new FInteger(minuend.get().add(subtrahend.get().negate()));
+    return new FInteger(minuend.get().add(subtrahend.get().negate()), Helper.chooseNotNull(minuend.level, subtrahend.level));
   }
 
   public static FInteger mul(FInteger multiplicand, FInteger multiplier) {
-    return new FInteger(multiplicand.get().multiply(multiplier.get()));
+    return new FInteger(multiplicand.get().multiply(multiplier.get()), Helper.chooseNotNull(multiplicand.level, multiplier.level));
   }
 
   public static FInteger div(FInteger dividend, FInteger divisor) {
     if (divisor.equals(ZERO)) {
       throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     } else {
-      return new FInteger(sub(dividend, mod(dividend, divisor)).get().divide(divisor.get()));
+      return new FInteger(sub(dividend, mod(dividend, divisor)).get().divide(divisor.get()), Helper.chooseNotNull(dividend.level, divisor.level));
     }
   }
 
@@ -80,7 +89,7 @@ public class FInteger implements MathObject {
     if (divisor.equals(ZERO)) {
       throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "%" + divisor);
     } else {
-      return new FInteger(dividend.get().mod(divisor.get().abs()));
+      return new FInteger(dividend.get().mod(divisor.get().abs()), Helper.chooseNotNull(dividend.level, divisor.level));
     }
   }
 
@@ -165,7 +174,7 @@ public class FInteger implements MathObject {
   // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
 
   public static FInteger gcd(FInteger number1, FInteger number2) {
-    return new FInteger(number1.get().gcd(number2.get()));
+    return new FInteger(number1.get().gcd(number2.get()), Helper.chooseNotNull(number1.level, number2.level));
   }
 
   public static FInteger lcm(FInteger number1, FInteger number2) {
@@ -193,7 +202,7 @@ public class FInteger implements MathObject {
     }
     String leftNumberString = leftNumber.get().toString();
     String rightNumberString = rightNumber.get().toString();
-    return new FInteger(leftNumberString + rightNumberString);
+    return new FInteger(leftNumberString + rightNumberString, Helper.chooseNotNull(leftNumber.level, rightNumber.level));
   }
 
   public static FInteger rand(FInteger min, FInteger max) {
@@ -209,19 +218,19 @@ public class FInteger implements MathObject {
       randomNumber = new BigInteger(upperLimit.get().bitLength(), random);
     } while (randomNumber.compareTo(upperLimit.get()) >= 0);
 
-    return sum(new FInteger(randomNumber), min);
+    return sum(new FInteger(randomNumber, Helper.chooseNotNull(min.level, max.level)), min);
   }
 
   public static FInteger and(FInteger number1, FInteger number2) {
-    return new FInteger(number1.get().and(number2.get()));
+    return new FInteger(number1.get().and(number2.get()), Helper.chooseNotNull(number1.level, number2.level));
   }
 
   public static FInteger or(FInteger number1, FInteger number2) {
-    return new FInteger(number1.get().or(number2.get()));
+    return new FInteger(number1.get().or(number2.get()), Helper.chooseNotNull(number1.level, number2.level));
   }
 
   public static FInteger xor(FInteger number1, FInteger number2) {
-    return new FInteger(number1.get().xor(number2.get()));
+    return new FInteger(number1.get().xor(number2.get()), Helper.chooseNotNull(number1.level, number2.level));
   }
 
   public static FInteger min(FInteger number1, FInteger number2) {
@@ -241,7 +250,7 @@ public class FInteger implements MathObject {
   }
 
   public static FInteger sign(FInteger number) {
-    return new FInteger(number.compareTo(ZERO));
+    return new FInteger(number.compareTo(ZERO), number.level);
   }
 
   public static FInteger[] primes(FInteger number) {
@@ -265,11 +274,11 @@ public class FInteger implements MathObject {
   }
 
   public static FInteger abs(FInteger number) {
-    return new FInteger(number.get().abs());
+    return new FInteger(number.get().abs(), number.level);
   }
 
   public static FInteger not(FInteger number) {
-    return new FInteger(number.get().not());
+    return new FInteger(number.get().not(), number.level);
   }
 
   public static FInteger conj(FInteger number) {
@@ -277,7 +286,7 @@ public class FInteger implements MathObject {
   }
 
   public static FInteger arg(FInteger number) {
-    return new FInteger(number.compareTo(ZERO) >= 0 ? 0 : -4);
+    return new FInteger(number.compareTo(ZERO) >= 0 ? 0 : -4, number.level);
   }
 
   public static FInteger norm(FInteger number) {

@@ -1,6 +1,8 @@
 package funcmath.object;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import funcmath.Helper;
+
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -18,6 +20,7 @@ public class FReal implements MathObject {
   public static final FReal PI = new FReal(BigDecimalMath.pi(DEFAULT_MATHCONTEXT));
 
   protected BigDecimal number;
+  protected Integer level;
 
   public FReal() {
     this.number = ZERO.get();
@@ -27,15 +30,26 @@ public class FReal implements MathObject {
     this.number = BigDecimal.valueOf(number);
   }
 
-  public FReal(BigInteger number) {
-    this.number = new BigDecimal(number, DEFAULT_MATHCONTEXT);
-  }
-
   public FReal(BigDecimal number) {
     this.number = number;
   }
 
-  public FReal(String s) {
+  public FReal(double number, int level) {
+    this.number = BigDecimal.valueOf(number);
+    this.level = level;
+  }
+
+  public FReal(BigInteger number, int level) {
+    this.number = new BigDecimal(number, DEFAULT_MATHCONTEXT);
+    this.level = level;
+  }
+
+  public FReal(BigDecimal number, int level) {
+    this.number = number;
+    this.level = level;
+  }
+
+  public FReal(String s, int level) {
     this.number =
         switch (s) {
           case "e", "E", "е", "Е" -> E.get();
@@ -68,26 +82,26 @@ public class FReal implements MathObject {
   public void setName(String name) {}
 
   public static FReal sum(FReal addend1, FReal addend2) {
-    return new FReal(addend1.get().add(addend2.get()));
+    return new FReal(addend1.get().add(addend2.get()), Helper.chooseNotNull(addend1.level, addend2.level));
   }
 
   public static FReal sub(FReal minuend, FReal subtrahend) {
-    return new FReal(minuend.get().add(subtrahend.get().negate()));
+    return new FReal(minuend.get().add(subtrahend.get().negate()), Helper.chooseNotNull(minuend.level, subtrahend.level));
   }
 
   public static FReal mul(FReal multiplicand, FReal multiplier) {
-    return new FReal(multiplicand.get().multiply(multiplier.get()));
+    return new FReal(multiplicand.get().multiply(multiplier.get()), Helper.chooseNotNull(multiplicand.level, multiplier.level));
   }
 
   public static FReal div(FReal dividend, FReal divisor) {
     if (divisor.get().equals(BigDecimal.ZERO)) {
       throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     }
-    return new FReal(dividend.get().divide(divisor.get(), RoundingMode.HALF_UP));
+    return new FReal(dividend.get().divide(divisor.get(), RoundingMode.HALF_UP), Helper.chooseNotNull(dividend.level, divisor.level));
   }
 
   public static FReal pow(FReal base, FReal power) {
-    return new FReal(BigDecimalMath.pow(base.get(), power.get(), DEFAULT_MATHCONTEXT));
+    return new FReal(BigDecimalMath.pow(base.get(), power.get(), DEFAULT_MATHCONTEXT), Helper.chooseNotNull(base.level, power.level));
   }
 
   public static FReal root(FReal radicand, FReal degree) {
@@ -97,7 +111,8 @@ public class FReal implements MathObject {
   public static FReal log(FReal base, FReal antilogarithm) {
     return new FReal(
         BigDecimalMath.log(antilogarithm.get(), DEFAULT_MATHCONTEXT)
-            .divide(BigDecimalMath.log(base.get(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT));
+            .divide(BigDecimalMath.log(base.get(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT),
+            Helper.chooseNotNull(base.level, antilogarithm.level));
   }
 
   // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция
@@ -106,7 +121,7 @@ public class FReal implements MathObject {
   // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
 
   public static FReal fact(FReal number) {
-    return new FReal(BigDecimalMath.factorial(number.get(), DEFAULT_MATHCONTEXT));
+    return new FReal(BigDecimalMath.factorial(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FReal rand(FReal min, FReal max) {
@@ -115,7 +130,7 @@ public class FReal implements MathObject {
     }
     SecureRandom random = new SecureRandom();
     return new FReal(
-        random.nextDouble(min.get().doubleValue(), max.get().doubleValue())); // потом исправить
+        random.nextDouble(min.get().doubleValue(), max.get().doubleValue()), Helper.chooseNotNull(min.level, max.level)); // потом исправить
   }
 
   public static FReal min(FReal number1, FReal number2) {
@@ -135,39 +150,39 @@ public class FReal implements MathObject {
   }
 
   public static FReal sign(FReal number) {
-    return new FReal(number.compareTo(ZERO));
+    return new FReal(number.compareTo(ZERO), number.level);
   }
 
   public static FReal abs(FReal number) {
-    return new FReal(number.get().abs());
+    return new FReal(number.get().abs(), number.level);
   }
 
   public static FReal sin(FReal number) {
-    return new FReal(BigDecimalMath.sin(number.get(), DEFAULT_MATHCONTEXT));
+    return new FReal(BigDecimalMath.sin(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FReal cos(FReal number) {
-    return new FReal(BigDecimalMath.cos(number.get(), DEFAULT_MATHCONTEXT));
+    return new FReal(BigDecimalMath.cos(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FReal tan(FReal number) {
-    return new FReal(BigDecimalMath.tan(number.get(), DEFAULT_MATHCONTEXT));
+    return new FReal(BigDecimalMath.tan(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FReal arcsin(FReal number) {
-    return new FReal(BigDecimalMath.asin(number.get(), DEFAULT_MATHCONTEXT));
+    return new FReal(BigDecimalMath.asin(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FReal arccos(FReal number) {
-    return new FReal(BigDecimalMath.acos(number.get(), DEFAULT_MATHCONTEXT));
+    return new FReal(BigDecimalMath.acos(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FReal arctan(FReal number) {
-    return new FReal(BigDecimalMath.atan(number.get(), DEFAULT_MATHCONTEXT));
+    return new FReal(BigDecimalMath.atan(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FReal arctan2(FReal y, FReal x) {
-    return new FReal(BigDecimalMath.atan2(y.get(), x.get(), DEFAULT_MATHCONTEXT));
+    return new FReal(BigDecimalMath.atan2(y.get(), x.get(), DEFAULT_MATHCONTEXT), Helper.chooseNotNull(y.level, x.level));
   }
 
   public static FReal conj(FReal number) {

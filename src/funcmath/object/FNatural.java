@@ -1,5 +1,7 @@
 package funcmath.object;
 
+import funcmath.Helper;
+
 import java.io.Serial;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -13,6 +15,7 @@ public class FNatural implements MathObject {
   public static final FNatural TWO = new FNatural(2);
 
   protected BigInteger number;
+  protected Integer level;
 
   public FNatural() {
     this.number = ZERO.get();
@@ -25,19 +28,29 @@ public class FNatural implements MathObject {
     this.number = BigInteger.valueOf(number);
   }
 
-  public FNatural(BigInteger number) {
+  public FNatural(long number, int level) {
+    if (number < 0) {
+      throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+    }
+    this.number = BigInteger.valueOf(number);
+    this.level = level;
+  }
+
+  public FNatural(BigInteger number, int level) {
     if (number.compareTo(BigInteger.ZERO) < 0) {
       throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
     }
     this.number = number;
+    this.level = level;
   }
 
-  public FNatural(String s) {
+  public FNatural(String s, int level) {
     BigInteger number = new BigInteger(s);
     if (number.compareTo(BigInteger.ZERO) < 0) {
       throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
     }
     this.number = number;
+    this.level = level;
   }
 
   @Override
@@ -64,22 +77,22 @@ public class FNatural implements MathObject {
   public void setName(String name) {}
 
   public static FNatural sum(FNatural addend1, FNatural addend2) {
-    return new FNatural(addend1.get().add(addend2.get()));
+    return new FNatural(addend1.get().add(addend2.get()), Helper.chooseNotNull(addend1.level, addend2.level));
   }
 
   public static FNatural sub(FNatural minuend, FNatural subtrahend) {
-    return new FNatural(minuend.get().add(subtrahend.get().negate()));
+    return new FNatural(minuend.get().add(subtrahend.get().negate()), Helper.chooseNotNull(minuend.level, subtrahend.level));
   }
 
   public static FNatural mul(FNatural multiplicand, FNatural multiplier) {
-    return new FNatural(multiplicand.get().multiply(multiplier.get()));
+    return new FNatural(multiplicand.get().multiply(multiplier.get()), Helper.chooseNotNull(multiplicand.level, multiplier.level));
   }
 
   public static FNatural div(FNatural dividend, FNatural divisor) {
     if (divisor.equals(ZERO)) {
       throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     } else {
-      return new FNatural(dividend.get().divide(divisor.get()));
+      return new FNatural(dividend.get().divide(divisor.get()), Helper.chooseNotNull(dividend.level, divisor.level));
     }
   }
 
@@ -87,7 +100,7 @@ public class FNatural implements MathObject {
     if (divisor.equals(ZERO)) {
       throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "%" + divisor);
     } else {
-      return new FNatural(dividend.get().mod(divisor.get()));
+      return new FNatural(dividend.get().mod(divisor.get()), Helper.chooseNotNull(dividend.level, divisor.level));
     }
   }
 
@@ -143,7 +156,7 @@ public class FNatural implements MathObject {
     }
 
     FNatural left = ZERO;
-    FNatural right = new FNatural(antilogarithm.get().bitLength() * 4L);
+    FNatural right = new FNatural(antilogarithm.get().bitLength() * 4L, Helper.chooseNotNull(base.level, antilogarithm.level));
     while (sub(right, left).compareTo(ONE) > 0) {
       FNatural medium = div(sum(right, left), TWO);
       FNatural result = pow(base, medium);
@@ -162,7 +175,7 @@ public class FNatural implements MathObject {
   // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
 
   public static FNatural gcd(FNatural number1, FNatural number2) {
-    return new FNatural(number1.get().gcd(number2.get()));
+    return new FNatural(number1.get().gcd(number2.get()), Helper.chooseNotNull(number1.level, number2.level));
   }
 
   public static FNatural lcm(FNatural number1, FNatural number2) {
@@ -184,7 +197,7 @@ public class FNatural implements MathObject {
   public static FNatural concat(FNatural leftNumber, FNatural rightNumber) {
     String leftNumberString = leftNumber.get().toString();
     String rightNumberString = rightNumber.get().toString();
-    return new FNatural(leftNumberString + rightNumberString);
+    return new FNatural(leftNumberString + rightNumberString, Helper.chooseNotNull(leftNumber.level, rightNumber.level));
   }
 
   // рандомные числа в [min, max]
@@ -201,19 +214,19 @@ public class FNatural implements MathObject {
       randomNumber = new BigInteger(upperLimit.get().bitLength(), random);
     } while (randomNumber.compareTo(upperLimit.get()) >= 0);
 
-    return sum(new FNatural(randomNumber), min);
+    return sum(new FNatural(randomNumber, Helper.chooseNotNull(min.level, max.level)), min);
   }
 
   public static FNatural and(FNatural number1, FNatural number2) {
-    return new FNatural(number1.get().and(number2.get()));
+    return new FNatural(number1.get().and(number2.get()), Helper.chooseNotNull(number1.level, number2.level));
   }
 
   public static FNatural or(FNatural number1, FNatural number2) {
-    return new FNatural(number1.get().or(number2.get()));
+    return new FNatural(number1.get().or(number2.get()), Helper.chooseNotNull(number1.level, number2.level));
   }
 
   public static FNatural xor(FNatural number1, FNatural number2) {
-    return new FNatural(number1.get().xor(number2.get()));
+    return new FNatural(number1.get().xor(number2.get()), Helper.chooseNotNull(number1.level, number2.level));
   }
 
   public static FNatural min(FNatural number1, FNatural number2) {
@@ -233,7 +246,7 @@ public class FNatural implements MathObject {
   }
 
   public static FNatural sign(FNatural number) {
-    return new FNatural(number.compareTo(ZERO));
+    return new FNatural(number.compareTo(ZERO), number.level);
   }
 
   // MathObject phi(MathObject n); // функция Эйлера

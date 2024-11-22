@@ -16,6 +16,7 @@ public class FRational implements MathObject {
 
   protected FInteger numerator;
   protected FInteger denominator;
+  protected Integer level;
 
   public FRational() {
     this.numerator = FInteger.ZERO;
@@ -40,7 +41,27 @@ public class FRational implements MathObject {
     this.denominator = FInteger.div(this.denominator, gcd);
   }
 
-  public FRational(FInteger numerator, FInteger denominator) {
+  public FRational(long numerator, long denominator, int level) {
+    if (denominator < 0) {
+      numerator *= -1;
+      denominator *= -1;
+    }
+    if (denominator == 0) {
+      throw new ArithmeticException(
+              "Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
+    }
+
+    this.numerator = new FInteger(numerator);
+    this.denominator = new FInteger(denominator);
+
+    FInteger gcd = FInteger.gcd(this.numerator, this.denominator);
+    this.numerator = FInteger.div(this.numerator, gcd);
+    this.denominator = FInteger.div(this.denominator, gcd);
+
+    this.level = level;
+  }
+
+  public FRational(FInteger numerator, FInteger denominator, int level) {
     if (denominator.compareTo(FInteger.ZERO) < 0) {
       numerator = FInteger.mul(numerator, FInteger.NEGATIVE_ONE);
       denominator = FInteger.mul(denominator, FInteger.NEGATIVE_ONE);
@@ -56,9 +77,10 @@ public class FRational implements MathObject {
     FInteger gcd = FInteger.gcd(this.numerator, this.denominator);
     this.numerator = FInteger.div(this.numerator, gcd);
     this.denominator = FInteger.div(this.denominator, gcd);
+    this.level = level;
   }
 
-  public FRational(BigInteger numerator, BigInteger denominator) {
+  public FRational(BigInteger numerator, BigInteger denominator, int level) {
     if (denominator.compareTo(BigInteger.ZERO) < 0) {
       numerator = numerator.multiply(BigInteger.ONE.negate());
       denominator = denominator.multiply(BigInteger.ONE.negate());
@@ -68,22 +90,24 @@ public class FRational implements MathObject {
           "Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
     }
 
-    this.numerator = new FInteger(numerator);
-    this.denominator = new FInteger(denominator);
+    this.numerator = new FInteger(numerator, level);
+    this.denominator = new FInteger(denominator, level);
 
     FInteger gcd = FInteger.gcd(this.numerator, this.denominator);
     this.numerator = FInteger.div(this.numerator, gcd);
     this.denominator = FInteger.div(this.denominator, gcd);
+    this.level = level;
   }
 
-  public FRational(String s) {
+  public FRational(String s, int level) {
     ArrayList<String> numbers = Helper.wordsFromString(s.replace('/', ' '));
     if (numbers.size() == 1) {
       numbers.add("1");
     }
-    FRational num = new FRational(new BigInteger(numbers.get(0)), new BigInteger(numbers.get(1)));
+    FRational num = new FRational(new BigInteger(numbers.get(0)), new BigInteger(numbers.get(1)), level);
     this.numerator = num.getNum();
     this.denominator = num.getDen();
+    this.level = level;
   }
 
   @Override
@@ -122,7 +146,8 @@ public class FRational implements MathObject {
         FInteger.sum(
             FInteger.mul(addend1.getNum(), addend2.getDen()),
             FInteger.mul(addend1.getDen(), addend2.getNum())),
-        FInteger.mul(addend1.getDen(), addend2.getDen()));
+        FInteger.mul(addend1.getDen(), addend2.getDen()),
+            Helper.chooseNotNull(addend1.level, addend2.level));
   }
 
   public static FRational sub(FRational minuend, FRational subtrahend) {
@@ -130,19 +155,22 @@ public class FRational implements MathObject {
         FInteger.sub(
             FInteger.mul(minuend.getNum(), subtrahend.getDen()),
             FInteger.mul(minuend.getDen(), subtrahend.getNum())),
-        FInteger.mul(minuend.getDen(), subtrahend.getDen()));
+        FInteger.mul(minuend.getDen(), subtrahend.getDen()),
+            Helper.chooseNotNull(minuend.level, subtrahend.level));
   }
 
   public static FRational mul(FRational multiplicand, FRational multiplier) {
     return new FRational(
         FInteger.mul(multiplicand.getNum(), multiplier.getNum()),
-        FInteger.mul(multiplicand.getDen(), multiplier.getDen()));
+        FInteger.mul(multiplicand.getDen(), multiplier.getDen()),
+            Helper.chooseNotNull(multiplicand.level, multiplier.level));
   }
 
   public static FRational div(FRational dividend, FRational divisor) {
     return new FRational(
         FInteger.mul(dividend.getNum(), divisor.getDen()),
-        FInteger.mul(dividend.getDen(), divisor.getNum()));
+        FInteger.mul(dividend.getDen(), divisor.getNum()),
+            Helper.chooseNotNull(dividend.level, divisor.level));
   }
 
   public static FRational pow(FRational base, FRational power) {
@@ -160,7 +188,8 @@ public class FRational implements MathObject {
             FInteger.pow(
                 FInteger.mul(base.getDen(), FInteger.pow(FInteger.TEN, power.getDen())),
                 power.getNum()),
-            power.getDen()));
+            power.getDen()),
+            Helper.chooseNotNull(base.level, power.level));
   }
 
   public static FRational root(FRational radicand, FRational degree) {
@@ -177,11 +206,12 @@ public class FRational implements MathObject {
   // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
 
   public static FRational gcd(FRational number1, FRational number2) {
+    int level = Helper.chooseNotNull(number1.level, number2.level);
     FInteger lcm = FInteger.lcm(number1.getDen(), number2.getDen());
-    FInteger updatedNumber1 = mul(number1, new FRational(lcm, FInteger.ONE)).getNum();
-    FInteger updatedNumber2 = mul(number2, new FRational(lcm, FInteger.ONE)).getNum();
+    FInteger updatedNumber1 = mul(number1, new FRational(lcm, FInteger.ONE, level)).getNum();
+    FInteger updatedNumber2 = mul(number2, new FRational(lcm, FInteger.ONE, level)).getNum();
     FInteger gcd = FInteger.gcd(updatedNumber1, updatedNumber2);
-    return new FRational(gcd, lcm);
+    return new FRational(gcd, lcm, level);
     // умножаем дроби на НОК знаменателей, находим НОД, делим на НОК знаменателей
   }
 
@@ -214,17 +244,18 @@ public class FRational implements MathObject {
   }
 
   public static FRational sign(FRational number) {
-    return new FRational(number.compareTo(ZERO), 1);
+    return new FRational(number.compareTo(ZERO), 1, number.level);
   }
 
   public static FRational abs(FRational number) {
-    return new FRational(FInteger.abs(number.getNum()), FInteger.abs(number.getDen()));
+    return new FRational(FInteger.abs(number.getNum()), FInteger.abs(number.getDen()), number.level);
   }
 
   public static FRational med(FRational number1, FRational number2) {
     return new FRational(
         FInteger.sum(number1.getNum(), number2.getNum()),
-        FInteger.sum(number1.getDen(), number2.getDen()));
+        FInteger.sum(number1.getDen(), number2.getDen()),
+            Helper.chooseNotNull(number1.level, number2.level));
   }
 
   // MathObject mink(MathObject a); // функция Минковского (непрерывно отображает рациональные числа

@@ -40,13 +40,13 @@ public interface MathObject extends Serializable {
     return MATH_OBJECT_HASH_MAP.get(type);
   }
 
-  static MathObject parseMathObject(String s, String type) {
+  static MathObject parseMathObject(String s, String type, int level) {
     try {
       return MATH_OBJECT_HASH_MAP
           .get(type)
           .getClass()
-          .getConstructor(new Class[] {String.class})
-          .newInstance(s);
+          .getConstructor(new Class[] {String.class, int.class})
+          .newInstance(s, level);
     } catch (NoSuchMethodException e) {
       throw new MathObjectException(e.getMessage());
     } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {

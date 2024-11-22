@@ -18,6 +18,7 @@ public class FComplex implements MathObject {
   public static final FComplex IMAGINARY_UNIT = new FComplex(0, 1);
 
   protected FReal real, imaginary;
+  protected Integer level;
 
   public FComplex() {
     this.real = FReal.ZERO;
@@ -29,31 +30,42 @@ public class FComplex implements MathObject {
     this.imaginary = new FReal(imaginary);
   }
 
-  public FComplex(BigInteger real, BigInteger imaginary) {
-    this.real = new FReal(real);
-    this.imaginary = new FReal(imaginary);
+  public FComplex(double real, double imaginary, int level) {
+    this.real = new FReal(real, level);
+    this.imaginary = new FReal(imaginary, level);
+    this.level = level;
   }
 
-  public FComplex(BigDecimal real, BigDecimal imaginary) {
-    this.real = new FReal(real);
-    this.imaginary = new FReal(imaginary);
+  public FComplex(BigInteger real, BigInteger imaginary, int level) {
+    this.real = new FReal(real, level);
+    this.imaginary = new FReal(imaginary, level);
+    this.level = level;
   }
 
-  public FComplex(BigComplex complex) {
-    this.real = new FReal(complex.re);
-    this.imaginary = new FReal(complex.im);
+  public FComplex(BigDecimal real, BigDecimal imaginary, int level) {
+    this.real = new FReal(real, level);
+    this.imaginary = new FReal(imaginary, level);
+    this.level = level;
   }
 
-  public FComplex(FReal real, FReal imaginary) {
+  public FComplex(BigComplex complex, int level) {
+    this.real = new FReal(complex.re, level);
+    this.imaginary = new FReal(complex.im, level);
+    this.level = level;
+  }
+
+  public FComplex(FReal real, FReal imaginary, int level) {
     this.real = real;
     this.imaginary = imaginary;
+    this.level = level;
   }
 
-  public FComplex(String s) {
+  public FComplex(String s, int level) {
     ArrayList<String> snumbers =
         Helper.wordsFromString(s.replace('i', ' ').replace('+', ' ').replaceAll("-", " -"));
-    this.real = new FReal(snumbers.get(0));
-    this.imaginary = new FReal(snumbers.get(1));
+    this.real = new FReal(snumbers.get(0), level);
+    this.imaginary = new FReal(snumbers.get(1), level);
+    this.level = level;
   }
 
   @Override
@@ -89,13 +101,14 @@ public class FComplex implements MathObject {
 
   public static FComplex sum(FComplex addend1, FComplex addend2) {
     return new FComplex(
-        FReal.sum(addend1.getRe(), addend2.getRe()), FReal.sum(addend1.getIm(), addend2.getIm()));
+        FReal.sum(addend1.getRe(), addend2.getRe()), FReal.sum(addend1.getIm(), addend2.getIm()), Helper.chooseNotNull(addend1.level, addend2.level));
   }
 
   public static FComplex sub(FComplex minuend, FComplex subtrahend) {
     return new FComplex(
         FReal.sub(minuend.getRe(), subtrahend.getRe()),
-        FReal.sub(minuend.getIm(), subtrahend.getIm()));
+        FReal.sub(minuend.getIm(), subtrahend.getIm()),
+            Helper.chooseNotNull(minuend.level, subtrahend.level));
   }
 
   public static FComplex mul(FComplex multiplicand, FComplex multiplier) {
@@ -105,7 +118,8 @@ public class FComplex implements MathObject {
             FReal.mul(multiplicand.getIm(), multiplier.getIm())),
         FReal.sum(
             FReal.mul(multiplicand.getRe(), multiplier.getIm()),
-            FReal.mul(multiplicand.getIm(), multiplier.getRe())));
+            FReal.mul(multiplicand.getIm(), multiplier.getRe())),
+            Helper.chooseNotNull(multiplicand.level, multiplier.level));
   }
 
   public static FComplex div(FComplex dividend, FComplex divisor) {
@@ -114,21 +128,22 @@ public class FComplex implements MathObject {
       throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     }
     FComplex temp = mul(dividend, conj(divisor));
-    return new FComplex(FReal.div(temp.getRe(), abs), FReal.div(temp.getIm(), abs));
+    return new FComplex(FReal.div(temp.getRe(), abs), FReal.div(temp.getIm(), abs), Helper.chooseNotNull(dividend.level, divisor.level));
   }
 
   public static FComplex pow(FComplex base, FComplex power) {
-    return new FComplex(BigComplexMath.pow(base.get(), power.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.pow(base.get(), power.get(), DEFAULT_MATHCONTEXT), Helper.chooseNotNull(base.level, power.level));
   }
 
   public static FComplex root(FComplex radicand, FComplex degree) {
-    return new FComplex(BigComplexMath.root(radicand.get(), degree.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.root(radicand.get(), degree.get(), DEFAULT_MATHCONTEXT), Helper.chooseNotNull(radicand.level, degree.level));
   }
 
   public static FComplex log(FComplex base, FComplex antilogarithm) {
     return new FComplex(
         BigComplexMath.log(antilogarithm.get(), DEFAULT_MATHCONTEXT)
-            .divide(BigComplexMath.log(base.get(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT));
+            .divide(BigComplexMath.log(base.get(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT),
+            Helper.chooseNotNull(base.level, antilogarithm.level));
   }
 
   // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция
@@ -137,7 +152,7 @@ public class FComplex implements MathObject {
   // MathObject hlog(MathObject base, MathObject antilogarithm, MathObject grade);
 
   public static FComplex fact(FComplex number) {
-    return new FComplex(BigComplexMath.factorial(number.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.factorial(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FComplex sign(FComplex number) {
@@ -146,46 +161,46 @@ public class FComplex implements MathObject {
   }
 
   public static FComplex abs(FComplex number) {
-    return new FComplex(FReal.root(norm(number).getRe(), FReal.TWO), FReal.ZERO);
+    return new FComplex(FReal.root(norm(number).getRe(), FReal.TWO), FReal.ZERO, number.level);
   }
 
   public static FComplex sin(FComplex number) {
-    return new FComplex(BigComplexMath.sin(number.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.sin(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FComplex cos(FComplex number) {
-    return new FComplex(BigComplexMath.cos(number.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.cos(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FComplex tan(FComplex number) {
-    return new FComplex(BigComplexMath.tan(number.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.tan(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FComplex arcsin(FComplex number) {
-    return new FComplex(BigComplexMath.asin(number.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.asin(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FComplex arccos(FComplex number) {
-    return new FComplex(BigComplexMath.acos(number.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.acos(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FComplex arctan(FComplex number) {
-    return new FComplex(BigComplexMath.atan(number.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.atan(number.get(), DEFAULT_MATHCONTEXT), number.level);
   }
 
   public static FComplex conj(FComplex number) {
-    return new FComplex(number.getRe(), FReal.sub(FReal.ZERO, number.getIm()));
+    return new FComplex(number.getRe(), FReal.sub(FReal.ZERO, number.getIm()), number.level);
   }
 
   public static FComplex arg(FComplex number) {
-    return new FComplex(FReal.arctan2(number.getIm(), number.getRe()), FReal.ZERO);
+    return new FComplex(FReal.arctan2(number.getIm(), number.getRe()), FReal.ZERO, number.level);
   }
 
   public static FComplex norm(FComplex number) {
     return new FComplex(
         FReal.sum(
             FReal.mul(number.getRe(), number.getRe()), FReal.mul(number.getIm(), number.getIm())),
-        FReal.ZERO);
+        FReal.ZERO, number.level);
   }
 
   @Override

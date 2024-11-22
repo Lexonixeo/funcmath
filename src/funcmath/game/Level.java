@@ -33,30 +33,14 @@ public class Level implements Serializable {
   boolean completed = false;
 
   public Level(int level, boolean tutorial, int customFlag) {
-    String levelSwitch =
-        switch (customFlag) {
-          case 0 -> "l";
-          case 1 -> "customL";
-          case 2 -> "preL";
-          default -> throw new LevelException("Несуществующий уровневый флаг: " + customFlag);
-        };
-    int add = 0;
-    if (customFlag == 2) {
-      add = 1;
-    }
-
     this.tutorial = tutorial;
     this.level = level;
-    ArrayList<Object> generated =
-        Helper.cast(
-            Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat"),
-            new ArrayList<>());
-
-    if (generated.get(0).equals("nothing :)") && add == 0) {
-      throw new LevelException("Уровень " + level + " ещё не пройден создателем!");
-    }
 
     levelInfo = new LevelInfo(level, customFlag);
+
+    if (!levelInfo.getCompleted() && customFlag != 2) {
+      throw new LevelException("Уровень " + level + " ещё не пройден создателем!");
+    }
 
     originalNumbers = levelInfo.getOriginalNumbers();
     numbers = Helper.deepClone(originalNumbers);
@@ -196,7 +180,7 @@ public class Level implements Serializable {
     for (String word : expression) {
       if (!fNames.contains(word)) {
         try {
-          globalArgs.add(MathObject.parseMathObject(word, resultClassName));
+          globalArgs.add(MathObject.parseMathObject(word, resultClassName, level));
         } catch (RuntimeException e) {
           System.out.println(
               "= Неверные аргументы: не существует какой-то функции или числа! Введите выражение заново.");
@@ -226,7 +210,7 @@ public class Level implements Serializable {
             MathObject[] args = new MathObject[nums.peek().size()];
             ArrayList<MathObject> ans;
             try {
-              ans = fStack.peek().use(mode, nums.peek().toArray(args));
+              ans = fStack.peek().use(level, mode, nums.peek().toArray(args));
             } catch (RuntimeException e) {
               try {
                 System.out.println("= " + e.getCause().getCause().getMessage());
