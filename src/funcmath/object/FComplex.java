@@ -71,6 +71,14 @@ public class FComplex implements MathObject {
     return "комплексные числа";
   }
 
+  @Override
+  public String getName() {
+    return null;
+  }
+
+  @Override
+  public void setName(String name) {}
+
   public FReal getRe() {
     return real;
   }
@@ -110,20 +118,17 @@ public class FComplex implements MathObject {
   }
 
   public static FComplex pow(FComplex base, FComplex power) {
-    return new FComplex(
-        BigComplexMath.pow(base.get(), power.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.pow(base.get(), power.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex root(FComplex radicand, FComplex degree) {
-    return new FComplex(
-        BigComplexMath.root(radicand.get(), degree.get(), DEFAULT_MATHCONTEXT));
+    return new FComplex(BigComplexMath.root(radicand.get(), degree.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FComplex log(FComplex base, FComplex antilogarithm) {
     return new FComplex(
         BigComplexMath.log(antilogarithm.get(), DEFAULT_MATHCONTEXT)
-            .divide(
-                BigComplexMath.log(base.get(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT));
+            .divide(BigComplexMath.log(base.get(), DEFAULT_MATHCONTEXT), DEFAULT_MATHCONTEXT));
   }
 
   // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция

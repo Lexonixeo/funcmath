@@ -54,14 +54,14 @@ public class FunctionMaker {
     System.out.println(
         "sum x0 x1       sub x0 x1       mul x0 x1       div x0 x1       mod x0 x1       pow x0 x1");
     System.out.println(
-        "root x0 x1      log x0 x1       gcd x0 x1       lcm x0 x1       fact x0         rand x0 x1");
+        "root x0 x1      log x0 x1       gcd x0 x1       lcm x0 x1       fact x0         concat x0 x1");
     System.out.println(
-        "abs x0          and x0 x1       or x0 x1        xor x0 x1       min x0 x1       max x0 x1");
+        "rand x0 x1      abs x0          and x0 x1       or x0 x1        xor x0 x1       min x0 x1");
     System.out.println(
-        "sign x0         primes x0       not x0          med x0 x1       sin x0          cos x0");
+        "max x0 x1       sign x0         primes x0       not x0          med x0 x1       sin x0");
     System.out.println(
-        "tan x0          arcsin x0       arccos x0       arctan x0       conj x0         arg x0");
-    System.out.println("ignore x0");
+        "cos x0          tan x0          arcsin x0       arccos x0       arctan x0       conj x0");
+    System.out.println("arg x0          ignore x0");
     System.out.println(
         "(Функция ignore предназначена для игнорирования какого-либо аргумента и ничего не возвращает.)");
     scanner.nextLine();

@@ -59,6 +59,14 @@ public class FReal implements MathObject {
     return "действительные числа";
   }
 
+  @Override
+  public String getName() {
+    return null;
+  }
+
+  @Override
+  public void setName(String name) {}
+
   public static FReal sum(FReal addend1, FReal addend2) {
     return new FReal(addend1.get().add(addend2.get()));
   }

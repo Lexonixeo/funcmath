@@ -48,6 +48,14 @@ public class FInteger implements MathObject {
     return "целые числа";
   }
 
+  @Override
+  public String getName() {
+    return null;
+  }
+
+  @Override
+  public void setName(String name) {}
+
   public static FInteger sum(FInteger addend1, FInteger addend2) {
     return new FInteger(addend1.get().add(addend2.get()));
   }

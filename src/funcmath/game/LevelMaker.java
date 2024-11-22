@@ -4,9 +4,10 @@ import funcmath.Helper;
 import funcmath.function.Function;
 import funcmath.object.MathObject;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class LevelMaker {
@@ -107,13 +108,22 @@ public class LevelMaker {
       }
     }
 
+    int customFlag = 2;
     String path = "data\\preLevels\\";
     String normalPath = "data\\customLevels\\";
     System.out.print("Введите что-нибудь: ");
     String mode = scanner.nextLine();
     boolean universalMode = Integer.toHexString(mode.hashCode()).equals("586034f");
     if (universalMode) {
-      path = "data\\levels\\";
+      customFlag = 0;
+    }
+
+    SecureRandom random = new SecureRandom();
+    int levelID = random.nextInt();
+    String level = "level" + levelID + ".dat";
+    while (!universalMode && Helper.getFileNames(normalPath).contains(level)) {
+      levelID += mode.hashCode();
+      level = "level" + levelID + ".dat";
     }
 
     System.out.print("Введите название уровня: ");
@@ -171,28 +181,21 @@ public class LevelMaker {
       hints.add(scanner.nextLine());
     }
 
-    ArrayList<Object> generated = new ArrayList<>();
-    if (!universalMode) {
-      generated.add("nothing :)");
-    }
-    generated.add(originalNumbers);
-    generated.add(originalFunctions);
-    generated.add(answers);
-    generated.add(hints);
-    generated.add(resultClassName);
-    generated.add(cutscene);
-    generated.add(name);
+    HashSet<String> usingNames = new HashSet<>();
 
-    int levelHash =
-        Objects.hash(originalNumbers, originalFunctions, hints, answers, resultClassName);
-    String level = "level" + levelHash + ".dat";
-    while (!universalMode && Helper.getFileNames(normalPath).contains(level)) {
-      levelHash += mode.hashCode();
-      level = "level" + levelHash + ".dat";
-    }
-    if (universalMode) level = "level" + (Helper.filesCount(path) + 1) + ".dat";
-
-    Helper.write(generated, path + level);
+    LevelInfo levelInfo =
+        new LevelInfo(
+            originalNumbers,
+            originalFunctions,
+            hints,
+            cutscene,
+            answers,
+            resultClassName,
+            name,
+            universalMode,
+            levelID,
+            customFlag,
+            usingNames);
 
     if (!universalMode) {
       System.out.println(
@@ -200,11 +203,10 @@ public class LevelMaker {
       System.out.print("Будете проходить? y/n ");
       String answer = scanner.nextLine();
       if (answer.equals("y") || answer.equals("у")) {
-        Level l = new Level(levelHash, tutorial, 2);
+        Level l = new Level(levelID, tutorial, 2);
         int[] result = l.game();
         if (result[1] == 1) {
-          generated.remove(0);
-          Helper.write(generated, normalPath + level);
+          levelInfo.setCompleted(true);
         }
       }
     }

@@ -12,6 +12,7 @@ import java.util.*;
 public class Level implements Serializable {
   @Serial private static final long serialVersionUID = 7967415798449468220L;
 
+  LevelInfo levelInfo;
   ArrayList<MathObject> numbers;
   ArrayList<MathObject> originalNumbers;
   HashMap<String, Function> originalFunctions;
@@ -55,24 +56,21 @@ public class Level implements Serializable {
       throw new LevelException("Уровень " + level + " ещё не пройден создателем!");
     }
 
-    originalNumbers = Helper.cast(generated.get(add), new ArrayList<>());
+    levelInfo = new LevelInfo(level, customFlag);
+
+    originalNumbers = levelInfo.getOriginalNumbers();
     numbers = Helper.deepClone(originalNumbers);
     numbersStack.push(Helper.deepClone(numbers));
 
-    originalFunctions = Helper.cast(generated.get(1 + add), new HashMap<>());
+    originalFunctions = levelInfo.getOriginalFunctions();
     functions = Helper.deepClone(originalFunctions);
     functionsStack.push(Helper.deepClone(functions));
 
-    try {
-      answers = Helper.cast(generated.get(2 + add), new ArrayList<>());
-    } catch (RuntimeException e) {
-      answers = new ArrayList<>();
-      answers.add((MathObject) generated.get(2 + add));
-    }
-    hints = Helper.cast(generated.get(3 + add), new ArrayList<>());
-    resultClassName = (String) generated.get(4 + add);
-    cutscene = Helper.cast(generated.get(5 + add), new ArrayList<>());
-    name = (String) generated.get(6 + add);
+    answers = levelInfo.getAnswers();
+    hints = levelInfo.getHints();
+    resultClassName = levelInfo.getResultClassName();
+    cutscene = levelInfo.getCutscene();
+    name = levelInfo.getName();
 
     for (Function f : functions.values()) {
       fuses += f.getUses();
@@ -89,12 +87,6 @@ public class Level implements Serializable {
     System.out.println("\n\nНажмите Enter, чтобы продолжить...");
     scanner.nextLine();
   }
-
-  /*
-  private void winCheck(MathObject newNumber) {
-      completed |= ans.equals(newNumber);
-  }
-   */
 
   private boolean numsCheck(ArrayList<MathObject> args) {
     ArrayList<MathObject> nums = Helper.deepClone(numbers);
@@ -150,7 +142,9 @@ public class Level implements Serializable {
     System.out.println(this);
 
     System.out.println(
-        "В данном уровне вычисления происходят на уровне объектов вида \"" + MathObject.getMathObject(resultClassName).getTypeForLevel() + "\".\n");
+        "В данном уровне вычисления происходят на уровне объектов вида \""
+            + MathObject.getMathObject(resultClassName).getTypeForLevel()
+            + "\".\n");
 
     System.out.println("У вас есть ограниченный набор чисел:");
     for (MathObject number : numbers) {

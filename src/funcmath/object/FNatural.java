@@ -14,7 +14,7 @@ public class FNatural implements MathObject {
 
   protected BigInteger number;
 
-  public FNatural(){
+  public FNatural() {
     this.number = ZERO.get();
   }
 
@@ -54,6 +54,14 @@ public class FNatural implements MathObject {
   public String getTypeForLevel() {
     return "натуральные числа";
   }
+
+  @Override
+  public String getName() {
+    return null;
+  }
+
+  @Override
+  public void setName(String name) {}
 
   public static FNatural sum(FNatural addend1, FNatural addend2) {
     return new FNatural(addend1.get().add(addend2.get()));

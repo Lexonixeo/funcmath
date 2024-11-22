@@ -101,6 +101,14 @@ public class FRational implements MathObject {
     return "рациональные числа";
   }
 
+  @Override
+  public String getName() {
+    return null;
+  }
+
+  @Override
+  public void setName(String name) {}
+
   public FInteger getNum() { // сокращено из-за длинных выражений
     return numerator;
   }

@@ -16,12 +16,12 @@ public class SimpleFunction {
     Method[] functions = resultClass.getClass().getMethods();
     for (Method f : functions) {
       if (this.name.equals("ignore")) {
-          try {
-              function = MathObject.class.getMethod("ignore", MathObject.class);
-          } catch (NoSuchMethodException e) {
-            // как это произошло?
-              throw new RuntimeException(e);
-          }
+        try {
+          function = MathObject.class.getMethod("ignore", MathObject.class);
+        } catch (NoSuchMethodException e) {
+          // как это произошло?
+          throw new RuntimeException(e);
+        }
       }
       if (this.name.equals(f.getName())) {
         function = f;

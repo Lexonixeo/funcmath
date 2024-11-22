@@ -1,7 +1,6 @@
 package funcmath;
 
 import funcmath.object.*;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -151,15 +150,11 @@ public class Helper {
   public static void generateDirectories() {
     new File("data/customLevels").mkdirs();
     new File("data/functions").mkdirs();
-    new File("data/functions/natural").mkdirs();
-    new File("data/functions/integer").mkdirs();
-    new File("data/functions/rational").mkdirs();
-    new File("data/functions/real").mkdirs();
-    new File("data/functions/complex").mkdirs();
     new File("data/levels").mkdirs();
     new File("data/players").mkdirs();
     new File("data/preLevels").mkdirs();
     new File("data/locales").mkdirs();
+    new File("data/objects").mkdirs();
   }
 
   public static String arrayListToString(ArrayList<MathObject> nums) {
@@ -173,8 +168,8 @@ public class Helper {
   }
 
   public static <T> T cast(Object obj, T resultClass) {
-      //noinspection unchecked
-      return (T) obj;
+    //noinspection unchecked
+    return (T) obj;
   }
 
   public static void loadMathObjects() {
@@ -183,6 +178,7 @@ public class Helper {
     MathObject.loadMathObject(new FRational());
     MathObject.loadMathObject(new FReal());
     MathObject.loadMathObject(new FComplex());
+    MathObject.loadMathObject(new FUnknown());
   }
 
   // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ
