@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Scanner;
 
 public class LevelMaker {
@@ -181,8 +180,6 @@ public class LevelMaker {
       hints.add(scanner.nextLine());
     }
 
-    HashSet<String> usingNames = new HashSet<>();
-
     LevelInfo levelInfo =
         new LevelInfo(
             originalNumbers,
@@ -194,8 +191,7 @@ public class LevelMaker {
             name,
             universalMode,
             levelID,
-            customFlag,
-            usingNames);
+            customFlag);
 
     if (!universalMode) {
       System.out.println(

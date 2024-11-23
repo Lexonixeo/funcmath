@@ -5,7 +5,6 @@ import funcmath.exceptions.MathObjectException;
 
 import java.io.Serial;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class FUnknown implements MathObject {
   @Serial private static final long serialVersionUID = -3316114815988684843L;
@@ -13,6 +12,7 @@ public class FUnknown implements MathObject {
   protected String unknownName;
   protected FInteger number;
   protected boolean isKnown;
+  protected boolean isFound = false;
 
   public FUnknown() {
     this.number = FInteger.ZERO;
@@ -28,52 +28,42 @@ public class FUnknown implements MathObject {
     this.number = number;
     this.isKnown = isKnown;
     if (!isKnown) {
-      ArrayList<Object> generated = Helper.cast(Helper.read("data/levels/current.dat"), new ArrayList<>());
-      ArrayList<MathObject> numbers = Helper.cast(generated.get(0), new ArrayList<>());
-      HashSet<String> usingNames = Helper.cast(generated.get(1), new HashSet<>());
-      String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      for (int i = 1; i <= usingNames.size(); i++) {
-        StringBuilder name = new StringBuilder();
-        int j = i;
-        while (j != 0) {
-          j--;
-          name.append(alphabet.charAt(j % alphabet.length()));
-          j++;
-          j /= alphabet.length();
-        }
-        if (!usingNames.contains(name.toString())) {
-          this.unknownName = name.toString();
-          break;
-        }
-      }
+      this.unknownName = MathObject.makeMathObjectName();
     }
   }
 
   public FUnknown(String s) {
-    // A=239 or 30 or B
+    // A=239 or 30 or B or FOUND_a=43
     if (!Character.isDigit(s.charAt(0))) {
-      ArrayList<String> words = Helper.wordsFromString(s.replace('=', ' '));
+      ArrayList<String> words = Helper.wordsFromString(s.replace('=', ' ').replace('_', ' '));
       this.isKnown = false;
-      this.unknownName = words.get(0);
-      if (words.size() == 2) {
-          this.number = new FInteger(words.get(1));
-      } else if (words.size() == 1) {
-        ArrayList<Object> generated = Helper.cast(Helper.read("data/levels/current.dat"), new ArrayList<>());
-        ArrayList<MathObject> numbers = Helper.cast(generated.get(0), new ArrayList<>());
-        for (MathObject n : numbers) {
-          if (n.getName().equals(unknownName)) {
-            assert n.getClass() == FUnknown.class;
-            this.number = ((FUnknown) n).get();
-            break;
-          }
-        }
+      this.unknownName = "";
+      int add = 0;
+      if (words.get(0).equals("FOUND")) {
+        add++;
+        this.unknownName += "FOUND_";
+        this.isFound = true;
+      }
+      this.unknownName += words.get(add);
+      if (words.size() == 2 + add) {
+        this.number = new FInteger(words.get(1 + add));
+      } else if (words.size() == 1 + add) {
+        FUnknown n = Helper.cast(MathObject.getMathObjectFromLevel(unknownName), new FUnknown());
+        this.number = n.get();
       } else {
-          throw new MathObjectException("Избыток аргументов для FUnknown!");
+        throw new MathObjectException("Избыток аргументов для FUnknown!");
       }
     } else {
       this.isKnown = true;
       this.number = new FInteger(s);
     }
+  }
+
+  public FUnknown(FUnknown number, boolean isFound) {
+    this.number = number.get();
+    this.isKnown = number.isKnown;
+    this.unknownName = "FOUND_" + number.unknownName;
+    this.isFound = isFound;
   }
 
   @Override
@@ -98,7 +88,7 @@ public class FUnknown implements MathObject {
 
   @Override
   public void setName(String name) {
-      this.unknownName = name;
+    this.unknownName = name;
   }
 
   public static FUnknown known(FUnknown number) {
@@ -107,6 +97,10 @@ public class FUnknown implements MathObject {
 
   public static FUnknown unknown(FUnknown number) {
     return new FUnknown(number.get(), false);
+  }
+
+  public static FUnknown found(FUnknown number) {
+    return new FUnknown(number, true);
   }
 
   public static FUnknown sum(FUnknown addend1, FUnknown addend2) {
@@ -218,7 +212,8 @@ public class FUnknown implements MathObject {
   public boolean equals(Object obj) {
     return obj.getClass() == FUnknown.class
         && this.get().equals(((FUnknown) obj).get())
-        && this.isKnown == ((FUnknown) obj).isKnown;
+        && this.isKnown == ((FUnknown) obj).isKnown
+        && this.isFound == ((FUnknown) obj).isFound;
   }
 
   @Override

@@ -8,7 +8,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class LevelInfo implements Serializable {
   @Serial private static final long serialVersionUID = -1977159268179008434L;
@@ -86,8 +85,7 @@ public class LevelInfo implements Serializable {
       String name,
       boolean isCompleted,
       int level,
-      int customFlag,
-      HashSet<String> usingNames) {
+      int customFlag) {
     this.level = level;
     String levelSwitch =
         switch (customFlag) {

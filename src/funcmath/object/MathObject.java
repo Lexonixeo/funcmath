@@ -1,12 +1,16 @@
 package funcmath.object;
 
+import funcmath.Helper;
+import funcmath.exceptions.LevelException;
 import funcmath.exceptions.MathObjectException;
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public interface MathObject extends Serializable {
   MathContext DEFAULT_MATHCONTEXT = new MathContext(10, RoundingMode.HALF_UP);
@@ -18,12 +22,45 @@ public interface MathObject extends Serializable {
 
   String getTypeForLevel(); // вроде "натуральных", "целых"...
 
-  String getName(); // название числа (типо A, B, ...), null если само число
+  String getName(); // название числа (типа A, B, ...), null если само число не требует названия
 
   void setName(String name);
 
   static boolean checkResultClassName(String resultClassName) {
     return MATH_OBJECT_HASH_MAP.containsKey(resultClassName);
+  }
+
+  static MathObject getMathObjectFromLevel(String name) {
+    ArrayList<Object> generated =
+        Helper.cast(Helper.read("data/currentLevel.dat"), new ArrayList<>());
+    ArrayList<MathObject> numbers = Helper.cast(generated.get(0), new ArrayList<>());
+    for (MathObject n : numbers) {
+      if (n.getName().equals(name)) {
+        return n;
+      }
+    }
+    throw new LevelException("Число " + name + " не обнаружено!");
+  }
+
+  static String makeMathObjectName() {
+    ArrayList<Object> generated =
+        Helper.cast(Helper.read("data/currentLevel.dat"), new ArrayList<>());
+    HashSet<String> usingNames = Helper.cast(generated.get(1), new HashSet<>());
+    String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (int i = 1; i <= usingNames.size(); i++) {
+      StringBuilder name = new StringBuilder();
+      int j = i;
+      while (j != 0) {
+        j--;
+        name.append(alphabet.charAt(j % alphabet.length()));
+        j++;
+        j /= alphabet.length();
+      }
+      if (!usingNames.contains(name.toString())) {
+        return name.toString();
+      }
+    }
+    return null; // никогда не вызовется
   }
 
   static void loadMathObject(MathObject x) {

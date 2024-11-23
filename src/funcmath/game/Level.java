@@ -326,8 +326,8 @@ public class Level implements Serializable {
     for (MathObject n : numbers) {
       if (n.getName() != null && usingNames.contains(n.getName())) {
         throw new MathObjectException(
-                "Названия объектов не должны повторяться с функциями или другими объектами: "
-                        + n.getName());
+            "Названия объектов не должны повторяться с функциями или другими объектами: "
+                + n.getName());
       }
       if (n.getName() != null) {
         usingNames.add(n.getName());
@@ -340,7 +340,7 @@ public class Level implements Serializable {
     ArrayList<Object> generated = new ArrayList<>();
     generated.add(Helper.deepClone(numbers));
     generated.add(Helper.deepClone(usingNames));
-    Helper.write(generated, "data/levels/current.dat");
+    Helper.write(generated, "data/currentLevel.dat");
   }
 
   public int[] game() {

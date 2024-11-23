@@ -68,7 +68,7 @@ public class Function implements Serializable {
 
     this.numberOfArgs = 0;
     for (String word : definition) {
-      if (!sfNames.contains(word) && word.charAt(0) == 'x') {
+      if (!sfNames.contains(word) && word.charAt(0) == 'x' && word.charAt(1) != '=') {
         this.numberOfArgs = Math.max(this.numberOfArgs, Integer.parseInt(word.substring(1)) + 1);
       }
     }
@@ -116,7 +116,7 @@ public class Function implements Serializable {
         sfStack.push(new SimpleFunction(word, resultClass));
         nums.push(new ArrayList<>());
       } else {
-        if (word.charAt(0) == 'x') {
+        if (word.charAt(0) == 'x' && word.charAt(1) != '=') {
           int j = Integer.parseInt(word.substring(1));
           timed.add(x[j]);
         } else {
