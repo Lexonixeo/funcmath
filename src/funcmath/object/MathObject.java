@@ -22,6 +22,10 @@ public interface MathObject extends Serializable {
 
   void setName(String name);
 
+  static boolean checkResultClassName(String resultClassName) {
+    return MATH_OBJECT_HASH_MAP.containsKey(resultClassName);
+  }
+
   static void loadMathObject(MathObject x) {
     String type = x.getType();
     MathObject typeInstance;

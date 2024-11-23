@@ -5,6 +5,7 @@ import funcmath.exceptions.MathObjectException;
 
 import java.io.Serial;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class FUnknown implements MathObject {
   @Serial private static final long serialVersionUID = -3316114815988684843L;
@@ -27,8 +28,24 @@ public class FUnknown implements MathObject {
     this.number = number;
     this.isKnown = isKnown;
     if (!isKnown) {
-        // TODO
-        // Проблема: нужно придумать название числу, чтобы в уровне оно ни с кем не совпало
+      ArrayList<Object> generated = Helper.cast(Helper.read("data/levels/current.dat"), new ArrayList<>());
+      ArrayList<MathObject> numbers = Helper.cast(generated.get(0), new ArrayList<>());
+      HashSet<String> usingNames = Helper.cast(generated.get(1), new HashSet<>());
+      String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      for (int i = 1; i <= usingNames.size(); i++) {
+        StringBuilder name = new StringBuilder();
+        int j = i;
+        while (j != 0) {
+          j--;
+          name.append(alphabet.charAt(j % alphabet.length()));
+          j++;
+          j /= alphabet.length();
+        }
+        if (!usingNames.contains(name.toString())) {
+          this.unknownName = name.toString();
+          break;
+        }
+      }
     }
   }
 
@@ -41,8 +58,15 @@ public class FUnknown implements MathObject {
       if (words.size() == 2) {
           this.number = new FInteger(words.get(1));
       } else if (words.size() == 1) {
-          // TODO
-          // Проблема: нужно получить неизвестное число из уровня, зная лишь название числа
+        ArrayList<Object> generated = Helper.cast(Helper.read("data/levels/current.dat"), new ArrayList<>());
+        ArrayList<MathObject> numbers = Helper.cast(generated.get(0), new ArrayList<>());
+        for (MathObject n : numbers) {
+          if (n.getName().equals(unknownName)) {
+            assert n.getClass() == FUnknown.class;
+            this.number = ((FUnknown) n).get();
+            break;
+          }
+        }
       } else {
           throw new MathObjectException("Избыток аргументов для FUnknown!");
       }

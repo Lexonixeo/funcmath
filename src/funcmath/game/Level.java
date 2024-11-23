@@ -1,7 +1,9 @@
 package funcmath.game;
 
 import funcmath.Helper;
+import funcmath.exceptions.FunctionException;
 import funcmath.exceptions.LevelException;
+import funcmath.exceptions.MathObjectException;
 import funcmath.function.Function;
 import funcmath.object.*;
 import java.io.Serial;
@@ -31,32 +33,17 @@ public class Level implements Serializable {
   String resultClassName;
   String name;
   boolean completed = false;
+  HashSet<String> usingNames = new HashSet<>();
 
   public Level(int level, boolean tutorial, int customFlag) {
-    String levelSwitch =
-        switch (customFlag) {
-          case 0 -> "l";
-          case 1 -> "customL";
-          case 2 -> "preL";
-          default -> throw new LevelException("Несуществующий уровневый флаг: " + customFlag);
-        };
-    int add = 0;
-    if (customFlag == 2) {
-      add = 1;
-    }
-
     this.tutorial = tutorial;
     this.level = level;
-    ArrayList<Object> generated =
-        Helper.cast(
-            Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat"),
-            new ArrayList<>());
-
-    if (generated.get(0).equals("nothing :)") && add == 0) {
-      throw new LevelException("Уровень " + level + " ещё не пройден создателем!");
-    }
 
     levelInfo = new LevelInfo(level, customFlag);
+
+    if (!levelInfo.getCompleted() && customFlag != 2) {
+      throw new LevelException("Уровень " + level + " ещё не пройден создателем!");
+    }
 
     originalNumbers = levelInfo.getOriginalNumbers();
     numbers = Helper.deepClone(originalNumbers);
@@ -304,6 +291,7 @@ public class Level implements Serializable {
   }
 
   private int turn() {
+    turnSave();
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     System.out.print("[Level] Введите выражение: ");
     ArrayList<String> command = Helper.wordsFromString(scanner.nextLine());
@@ -325,6 +313,34 @@ public class Level implements Serializable {
       default -> computation(0, command);
     }
     return 0;
+  }
+
+  private void updateUsingNames() {
+    usingNames.clear();
+    for (Function f : functions.values()) {
+      if (usingNames.contains(f.getName())) {
+        throw new FunctionException("Названия функций не должны повторяться: " + f.getName());
+      }
+      usingNames.add(f.getName());
+    }
+    for (MathObject n : numbers) {
+      if (n.getName() != null && usingNames.contains(n.getName())) {
+        throw new MathObjectException(
+                "Названия объектов не должны повторяться с функциями или другими объектами: "
+                        + n.getName());
+      }
+      if (n.getName() != null) {
+        usingNames.add(n.getName());
+      }
+    }
+  }
+
+  private void turnSave() {
+    updateUsingNames();
+    ArrayList<Object> generated = new ArrayList<>();
+    generated.add(Helper.deepClone(numbers));
+    generated.add(Helper.deepClone(usingNames));
+    Helper.write(generated, "data/levels/current.dat");
   }
 
   public int[] game() {

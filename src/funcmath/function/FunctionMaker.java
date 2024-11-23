@@ -1,6 +1,8 @@
 package funcmath.function;
 
 import funcmath.Helper;
+import funcmath.object.MathObject;
+
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -116,16 +118,13 @@ public class FunctionMaker {
       }
     }
 
-    ArrayList<String> resultClassNames =
-        new ArrayList<>(List.of("natural", "integer", "rational", "real", "complex"));
-
     System.out.print("Введите название функции: ");
     String name = scanner.nextLine();
     System.out.print("Введите описание функции: ");
     String description = scanner.nextLine();
     System.out.print("Введите область определения функции: ");
     String resultClassName = scanner.nextLine();
-    if (!resultClassNames.contains(resultClassName)) {
+    if (!MathObject.checkResultClassName(resultClassName)) {
       System.out.println("Неверная область определения!");
       return true;
     }

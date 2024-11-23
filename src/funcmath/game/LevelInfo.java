@@ -1,9 +1,7 @@
 package funcmath.game;
 
 import funcmath.Helper;
-import funcmath.exceptions.FunctionException;
 import funcmath.exceptions.LevelException;
-import funcmath.exceptions.MathObjectException;
 import funcmath.function.Function;
 import funcmath.object.MathObject;
 import java.io.Serial;
@@ -24,7 +22,6 @@ public class LevelInfo implements Serializable {
   String name;
   boolean isCompleted;
   int level;
-  HashSet<String> usingNames;
 
   private LevelInfo() {}
 
@@ -50,7 +47,6 @@ public class LevelInfo implements Serializable {
       this.resultClassName = levelInfo.getResultClassName();
       this.name = levelInfo.getName();
       this.isCompleted = levelInfo.getCompleted();
-      this.usingNames = levelInfo.getUsingNames();
     } catch (ClassCastException e) {
       int add = 0;
       if (customFlag == 2) {
@@ -76,11 +72,8 @@ public class LevelInfo implements Serializable {
       resultClassName = (String) generated.get(4 + add);
       cutscene = Helper.cast(generated.get(5 + add), new ArrayList<>());
       name = (String) generated.get(6 + add);
-      usingNames = new HashSet<>();
       Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
     }
-
-    updateUsingNames(levelSwitch);
   }
 
   public LevelInfo(
@@ -112,30 +105,7 @@ public class LevelInfo implements Serializable {
     this.resultClassName = resultClassName;
     this.name = name;
     this.isCompleted = isCompleted;
-    this.usingNames = usingNames;
     Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
-  }
-
-  private void updateUsingNames(String levelSwitch) {
-    if (usingNames.isEmpty()) {
-      for (Function f : originalFunctions.values()) {
-        if (usingNames.contains(f.getName())) {
-          throw new FunctionException("Названия функций не должны повторяться: " + f.getName());
-        }
-        usingNames.add(f.getName());
-      }
-      for (MathObject n : originalNumbers) {
-        if (n.getName() != null && usingNames.contains(n.getName())) {
-          throw new MathObjectException(
-              "Названия объектов не должны повторяться с функциями или другими объектами: "
-                  + n.getName());
-        }
-        if (n.getName() != null) {
-          usingNames.add(n.getName());
-        }
-      }
-      Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
-    }
   }
 
   public String getName() {
@@ -168,10 +138,6 @@ public class LevelInfo implements Serializable {
 
   public boolean getCompleted() {
     return isCompleted;
-  }
-
-  public HashSet<String> getUsingNames() {
-    return usingNames;
   }
 
   public void setCompleted(boolean isCompleted) {
