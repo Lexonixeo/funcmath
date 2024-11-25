@@ -1,6 +1,7 @@
 package funcmath.object;
 
 import funcmath.exceptions.FunctionException;
+import funcmath.exceptions.MathException;
 import java.io.Serial;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -53,9 +54,6 @@ public class FInteger implements MathObject {
     return null;
   }
 
-  @Override
-  public void setName(String name) {}
-
   public static FInteger sum(FInteger addend1, FInteger addend2) {
     return new FInteger(addend1.get().add(addend2.get()));
   }
@@ -70,7 +68,7 @@ public class FInteger implements MathObject {
 
   public static FInteger div(FInteger dividend, FInteger divisor) {
     if (divisor.equals(ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
+      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     } else {
       return new FInteger(sub(dividend, mod(dividend, divisor)).get().divide(divisor.get()));
     }
@@ -78,7 +76,7 @@ public class FInteger implements MathObject {
 
   public static FInteger mod(FInteger dividend, FInteger divisor) {
     if (divisor.equals(ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "%" + divisor);
+      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "%" + divisor);
     } else {
       return new FInteger(dividend.get().mod(divisor.get().abs()));
     }
@@ -86,7 +84,7 @@ public class FInteger implements MathObject {
 
   public static FInteger pow(FInteger base, FInteger power) {
     if (power.compareTo(ZERO) < 0 && base.compareTo(ZERO) == 0) {
-      throw new ArithmeticException(
+      throw new MathException(
           "Деление на ноль не имеет смысла: 1/(0^" + power.get().negate() + ")");
     }
 
@@ -121,10 +119,10 @@ public class FInteger implements MathObject {
     if (degree.compareTo(ZERO) < 0) {
       return root(pow(radicand, NEGATIVE_ONE), mul(degree, NEGATIVE_ONE));
     } else if (degree.equals(ZERO)) {
-      throw new ArithmeticException(
+      throw new MathException(
           "Деление на ноль не имеет смысла: " + radicand + "^(1/" + degree + ")");
     } else if (radicand.compareTo(ZERO) < 0 && mod(degree, TWO).equals(ZERO)) {
-      throw new ArithmeticException(
+      throw new MathException(
           "Корни степени, делящейся на 2, не определены для отрицательных чисел");
     } else if (radicand.compareTo(ZERO) < 0) {
       FInteger left = sub(radicand, ONE);
@@ -156,7 +154,7 @@ public class FInteger implements MathObject {
   }
 
   public static FInteger log(FInteger base, FInteger antilogarithm) {
-    throw new NullPointerException("Функция log временно не введена для целых чисел.");
+    throw new FunctionException("Функция log временно не введена для целых чисел.");
   }
 
   // MathObject hyper(MathObject base, MathObject exponent, MathObject grade); // гиперфункция
@@ -174,7 +172,7 @@ public class FInteger implements MathObject {
 
   public static FInteger fact(FInteger number) {
     if (number.compareTo(ZERO) < 0) {
-      throw new ArithmeticException("Факториал для отрицательных целых чисел не определен.");
+      throw new MathException("Факториал для отрицательных целых чисел не определен.");
     } else if (number.equals(ZERO)) {
       return ONE;
     }
@@ -182,14 +180,13 @@ public class FInteger implements MathObject {
     try {
       return mul(fact(sub(number, ONE)), number);
     } catch (StackOverflowError e) {
-      throw new RuntimeException("Стек вызова функций переполнился для функции fact.");
+      throw new FunctionException("Стек вызова функций переполнился для функции fact.");
     }
   }
 
   public static FInteger concat(FInteger leftNumber, FInteger rightNumber) {
     if (rightNumber.compareTo(ZERO) < 0) {
-      throw new ArithmeticException(
-          "Конкатенация для отрицательного второго аргумента не определена.");
+      throw new MathException("Конкатенация для отрицательного второго аргумента не определена.");
     }
     String leftNumberString = leftNumber.get().toString();
     String rightNumberString = rightNumber.get().toString();

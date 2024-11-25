@@ -3,6 +3,7 @@ package funcmath.object;
 import ch.obermuhlner.math.big.BigComplex;
 import ch.obermuhlner.math.big.BigComplexMath;
 import funcmath.Helper;
+import funcmath.exceptions.MathException;
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -76,9 +77,6 @@ public class FComplex implements MathObject {
     return null;
   }
 
-  @Override
-  public void setName(String name) {}
-
   public FReal getRe() {
     return real;
   }
@@ -111,7 +109,7 @@ public class FComplex implements MathObject {
   public static FComplex div(FComplex dividend, FComplex divisor) {
     FReal abs = abs(divisor).getRe();
     if (abs(divisor).equals(ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
+      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     }
     FComplex temp = mul(dividend, conj(divisor));
     return new FComplex(FReal.div(temp.getRe(), abs), FReal.div(temp.getIm(), abs));

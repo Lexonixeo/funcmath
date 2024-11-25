@@ -2,6 +2,7 @@ package funcmath.object;
 
 import funcmath.Helper;
 import funcmath.exceptions.FunctionException;
+import funcmath.exceptions.MathException;
 import java.io.Serial;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -28,8 +29,7 @@ public class FRational implements MathObject {
       denominator *= -1;
     }
     if (denominator == 0) {
-      throw new ArithmeticException(
-          "Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
+      throw new MathException("Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
     }
 
     this.numerator = new FInteger(numerator);
@@ -46,8 +46,7 @@ public class FRational implements MathObject {
       denominator = FInteger.mul(denominator, FInteger.NEGATIVE_ONE);
     }
     if (denominator.equals(FInteger.ZERO)) {
-      throw new ArithmeticException(
-          "Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
+      throw new MathException("Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
     }
 
     this.numerator = numerator;
@@ -64,8 +63,7 @@ public class FRational implements MathObject {
       denominator = denominator.multiply(BigInteger.ONE.negate());
     }
     if (denominator.equals(BigInteger.ZERO)) {
-      throw new ArithmeticException(
-          "Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
+      throw new MathException("Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
     }
 
     this.numerator = new FInteger(numerator);
@@ -105,9 +103,6 @@ public class FRational implements MathObject {
   public String getName() {
     return null;
   }
-
-  @Override
-  public void setName(String name) {}
 
   public FInteger getNum() { // сокращено из-за длинных выражений
     return numerator;
@@ -190,11 +185,11 @@ public class FRational implements MathObject {
   }
 
   public static FRational fact(FRational number) {
-    throw new NullPointerException("Функция fact временно не введена для рациональных чисел.");
+    throw new FunctionException("Функция fact временно не введена для рациональных чисел.");
   }
 
   public static FRational rand(FRational number1, FRational number2) {
-    throw new NullPointerException("Функция rand временно не введена для рациональных чисел.");
+    throw new FunctionException("Функция rand временно не введена для рациональных чисел.");
   }
 
   public static FRational min(FRational number1, FRational number2) {

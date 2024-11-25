@@ -1,6 +1,9 @@
 package funcmath;
 
+import funcmath.exceptions.JavaException;
 import funcmath.object.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,7 +18,7 @@ public class Helper {
       ans = iis.readObject();
       iis.close();
     } catch (IOException | ClassNotFoundException e) {
-      throw new RuntimeException(e);
+      throw new JavaException(e.getMessage());
     }
     return ans;
   }
@@ -29,7 +32,7 @@ public class Helper {
       oos.flush();
       oos.close();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new JavaException(e.getMessage());
     }
 
     // в линуксе может отсутствовать директория у файла, решаю через generateDirectories()
@@ -74,22 +77,6 @@ public class Helper {
     return words;
   }
 
-  public static ArrayList<Integer> integersFromWords(ArrayList<String> words) {
-    ArrayList<Integer> numbers = new ArrayList<>();
-    for (String word : words) {
-      numbers.add(Integer.parseInt(word));
-    }
-    return numbers;
-  }
-
-  public static ArrayList<Double> doublesFromWords(ArrayList<String> words) {
-    ArrayList<Double> numbers = new ArrayList<>();
-    for (String word : words) {
-      numbers.add(Double.parseDouble(word));
-    }
-    return numbers;
-  }
-
   public static int filesCount(String pathname) {
     return Objects.requireNonNull(new File(pathname.replace('\\', '/')).listFiles()).length;
   }
@@ -114,7 +101,7 @@ public class Helper {
       ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray()));
       return Helper.cast(o.getClass().cast(in.readObject()), o);
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new JavaException(e.getMessage());
     }
   }
 
@@ -179,6 +166,30 @@ public class Helper {
     MathObject.loadMathObject(new FReal());
     MathObject.loadMathObject(new FComplex());
     MathObject.loadMathObject(new FUnknown());
+  }
+
+  /**
+   * Converts a given Image into a BufferedImage
+   *
+   * @param img The Image to be converted
+   * @return The converted BufferedImage
+   */
+  public static BufferedImage toBufferedImage(Image img) {
+    if (img instanceof BufferedImage) {
+      return (BufferedImage) img;
+    }
+
+    // Create a buffered image with transparency
+    BufferedImage bimage =
+        new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+    // Draw the image on to the buffered image
+    Graphics2D bGr = bimage.createGraphics();
+    bGr.drawImage(img, 0, 0, null);
+    bGr.dispose();
+
+    // Return the buffered image
+    return bimage;
   }
 
   // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ

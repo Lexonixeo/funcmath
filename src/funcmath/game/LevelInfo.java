@@ -21,6 +21,7 @@ public class LevelInfo implements Serializable {
   String name;
   boolean isCompleted;
   int level;
+  // int mode = 0;
 
   private LevelInfo() {}
 
@@ -46,6 +47,7 @@ public class LevelInfo implements Serializable {
       this.resultClassName = levelInfo.getResultClassName();
       this.name = levelInfo.getName();
       this.isCompleted = levelInfo.getCompleted();
+      // this.mode = levelInfo.getMode();
     } catch (ClassCastException e) {
       int add = 0;
       if (customFlag == 2) {

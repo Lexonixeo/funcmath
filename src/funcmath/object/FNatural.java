@@ -1,5 +1,7 @@
 package funcmath.object;
 
+import funcmath.exceptions.FunctionException;
+import funcmath.exceptions.MathException;
 import java.io.Serial;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -20,14 +22,14 @@ public class FNatural implements MathObject {
 
   public FNatural(long number) {
     if (number < 0) {
-      throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+      throw new MathException("Не существует натуральных чисел, меньших нуля: " + number);
     }
     this.number = BigInteger.valueOf(number);
   }
 
   public FNatural(BigInteger number) {
     if (number.compareTo(BigInteger.ZERO) < 0) {
-      throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+      throw new MathException("Не существует натуральных чисел, меньших нуля: " + number);
     }
     this.number = number;
   }
@@ -35,7 +37,7 @@ public class FNatural implements MathObject {
   public FNatural(String s) {
     BigInteger number = new BigInteger(s);
     if (number.compareTo(BigInteger.ZERO) < 0) {
-      throw new ArithmeticException("Не существует натуральных чисел, меньших нуля: " + number);
+      throw new MathException("Не существует натуральных чисел, меньших нуля: " + number);
     }
     this.number = number;
   }
@@ -60,9 +62,6 @@ public class FNatural implements MathObject {
     return null;
   }
 
-  @Override
-  public void setName(String name) {}
-
   public static FNatural sum(FNatural addend1, FNatural addend2) {
     return new FNatural(addend1.get().add(addend2.get()));
   }
@@ -77,7 +76,7 @@ public class FNatural implements MathObject {
 
   public static FNatural div(FNatural dividend, FNatural divisor) {
     if (divisor.equals(ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
+      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     } else {
       return new FNatural(dividend.get().divide(divisor.get()));
     }
@@ -85,7 +84,7 @@ public class FNatural implements MathObject {
 
   public static FNatural mod(FNatural dividend, FNatural divisor) {
     if (divisor.equals(ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "%" + divisor);
+      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "%" + divisor);
     } else {
       return new FNatural(dividend.get().mod(divisor.get()));
     }
@@ -100,7 +99,7 @@ public class FNatural implements MathObject {
         FNatural tempMultiplier = pow(base, tempPower);
         return mul(tempMultiplier, tempMultiplier);
       } catch (StackOverflowError e) {
-        throw new RuntimeException("Стек вызова функций переполнился для функции pow.");
+        throw new FunctionException("Стек вызова функций переполнился для функции pow.");
       }
     } else {
       FNatural tempPower = div(power, TWO);
@@ -108,14 +107,14 @@ public class FNatural implements MathObject {
         FNatural tempMultiplier = pow(base, tempPower);
         return mul(mul(tempMultiplier, tempMultiplier), base);
       } catch (StackOverflowError e) {
-        throw new RuntimeException("Стек вызова функций переполнился для функции pow.");
+        throw new FunctionException("Стек вызова функций переполнился для функции pow.");
       }
     }
   }
 
   public static FNatural root(FNatural radicand, FNatural degree) {
     if (degree.equals(ZERO)) {
-      throw new ArithmeticException(
+      throw new MathException(
           "Деление на ноль не имеет смысла: " + radicand + "^(1/" + degree + ")");
     }
 
@@ -135,11 +134,11 @@ public class FNatural implements MathObject {
 
   public static FNatural log(FNatural base, FNatural antilogarithm) {
     if (antilogarithm.equals(ZERO)) {
-      throw new ArithmeticException("Логарифм от нуля не определен.");
+      throw new MathException("Логарифм от нуля не определен.");
     } else if (base.equals(ZERO)) {
-      throw new ArithmeticException("Логарифм по основанию нуля не определен.");
+      throw new MathException("Логарифм по основанию нуля не определен.");
     } else if (base.equals(ONE)) {
-      throw new ArithmeticException("Логарифм по основанию единицы не определен.");
+      throw new MathException("Логарифм по основанию единицы не определен.");
     }
 
     FNatural left = ZERO;
@@ -177,7 +176,7 @@ public class FNatural implements MathObject {
     try {
       return mul(fact(sub(number, ONE)), number);
     } catch (StackOverflowError e) {
-      throw new RuntimeException("Стек вызова функций переполнился для функции fact.");
+      throw new FunctionException("Стек вызова функций переполнился для функции fact.");
     }
   }
 

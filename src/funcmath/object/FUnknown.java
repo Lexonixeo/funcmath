@@ -11,29 +11,25 @@ public class FUnknown implements MathObject {
 
   protected String unknownName;
   protected FInteger number;
-  protected boolean isKnown;
+  protected boolean isKnown = true;
   protected boolean isFound = false;
 
   public FUnknown() {
     this.number = FInteger.ZERO;
-    this.isKnown = true;
   }
 
   public FUnknown(FInteger number) {
     this.number = number;
-    this.isKnown = true;
   }
 
   public FUnknown(FInteger number, boolean isKnown) {
     this.number = number;
     this.isKnown = isKnown;
-    if (!isKnown) {
-      this.unknownName = MathObject.makeMathObjectName();
-    }
+    this.unknownName = MathObject.makeMathObjectName();
   }
 
   public FUnknown(String s) {
-    // A=239 or 30 or B or FOUND_a=43
+    // a=30 or B or 239 or FOUND_a
     if (!Character.isDigit(s.charAt(0))) {
       ArrayList<String> words = Helper.wordsFromString(s.replace('=', ' ').replace('_', ' '));
       this.isKnown = false;
@@ -54,16 +50,8 @@ public class FUnknown implements MathObject {
         throw new MathObjectException("Избыток аргументов для FUnknown!");
       }
     } else {
-      this.isKnown = true;
       this.number = new FInteger(s);
     }
-  }
-
-  public FUnknown(FUnknown number, boolean isFound) {
-    this.number = number.get();
-    this.isKnown = number.isKnown;
-    this.unknownName = "FOUND_" + number.unknownName;
-    this.isFound = isFound;
   }
 
   @Override
@@ -86,21 +74,12 @@ public class FUnknown implements MathObject {
     return (isKnown ? null : unknownName);
   }
 
-  @Override
-  public void setName(String name) {
-    this.unknownName = name;
-  }
-
   public static FUnknown known(FUnknown number) {
     return new FUnknown(number.get(), true);
   }
 
   public static FUnknown unknown(FUnknown number) {
     return new FUnknown(number.get(), false);
-  }
-
-  public static FUnknown found(FUnknown number) {
-    return new FUnknown(number, true);
   }
 
   public static FUnknown sum(FUnknown addend1, FUnknown addend2) {
@@ -200,8 +179,11 @@ public class FUnknown implements MathObject {
   }
 
   public static FUnknown[] equal(FUnknown number1, FUnknown number2, FUnknown returnNumber) {
-    if (number1.compareTo(number2) == 0) return new FUnknown[] {returnNumber};
-    else return new FUnknown[] {};
+    if (number1.compareTo(number2) == 0) {
+      return new FUnknown[] {returnNumber};
+    } else {
+      return new FUnknown[] {};
+    }
   }
 
   public int compareTo(FUnknown number) {
@@ -211,9 +193,9 @@ public class FUnknown implements MathObject {
   @Override
   public boolean equals(Object obj) {
     return obj.getClass() == FUnknown.class
-        && this.get().equals(((FUnknown) obj).get())
-        && this.isKnown == ((FUnknown) obj).isKnown
-        && this.isFound == ((FUnknown) obj).isFound;
+            && this.isKnown == ((FUnknown) obj).isKnown && this.isFound == ((FUnknown) obj).isFound
+        && (!this.isFound && this.get().equals(((FUnknown) obj).get())
+        || (this.isFound && this.unknownName.equals(((FUnknown) obj).unknownName)));
   }
 
   @Override

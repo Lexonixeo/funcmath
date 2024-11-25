@@ -1,6 +1,7 @@
 package funcmath.object;
 
 import funcmath.Helper;
+import funcmath.exceptions.JavaException;
 import funcmath.exceptions.LevelException;
 import funcmath.exceptions.MathObjectException;
 import java.io.File;
@@ -24,8 +25,6 @@ public interface MathObject extends Serializable {
 
   String getName(); // название числа (типа A, B, ...), null если само число не требует названия
 
-  void setName(String name);
-
   static boolean checkResultClassName(String resultClassName) {
     return MATH_OBJECT_HASH_MAP.containsKey(resultClassName);
   }
@@ -47,6 +46,7 @@ public interface MathObject extends Serializable {
         Helper.cast(Helper.read("data/currentLevel.dat"), new ArrayList<>());
     HashSet<String> usingNames = Helper.cast(generated.get(1), new HashSet<>());
     String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    String newName = "";
     for (int i = 1; i <= usingNames.size(); i++) {
       StringBuilder name = new StringBuilder();
       int j = i;
@@ -57,9 +57,13 @@ public interface MathObject extends Serializable {
         j /= alphabet.length();
       }
       if (!usingNames.contains(name.toString())) {
-        return name.toString();
+        newName = name.toString();
+        break;
       }
     }
+    usingNames.add(newName);
+    generated.set(1, usingNames);
+    Helper.write(generated, "data/currentLevel.dat");
     return null; // никогда не вызовется
   }
 
@@ -71,7 +75,7 @@ public interface MathObject extends Serializable {
     } catch (NoSuchMethodException e) {
       throw new MathObjectException(e.getMessage());
     } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new RuntimeException(e);
+      throw new JavaException(e.getMessage());
     }
     MATH_OBJECT_HASH_MAP.put(type, typeInstance);
     new File("data/functions/" + type).mkdirs();
@@ -91,7 +95,7 @@ public interface MathObject extends Serializable {
     } catch (NoSuchMethodException e) {
       throw new MathObjectException(e.getMessage());
     } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new RuntimeException(e);
+      throw new JavaException(e.getMessage());
     }
   }
 

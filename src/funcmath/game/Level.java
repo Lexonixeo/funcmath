@@ -191,7 +191,7 @@ public class Level implements Serializable {
         }
       }
     }
-    if (!numsCheck(globalArgs) && mode == 0) {
+    if (!numsCheck(globalArgs) && (mode == 0 || mode == 2)) {
       System.out.println(
           "= Неверные аргументы: какие-то числа не существуют в наборе! Введите выражение заново.");
       return;
@@ -247,14 +247,14 @@ public class Level implements Serializable {
     }
     System.out.print("=");
     for (MathObject answerNum : nums.peek()) {
-      if (mode == 0) {
+      if (mode == 0 || mode == 2) {
         numbers.add(answerNum);
       }
       System.out.print(" " + answerNum);
     }
     System.out.println();
 
-    if (mode == 0) {
+    if (mode == 0 || mode == 2) {
       completed = numsCheck(answers);
       numbersStack.push(Helper.deepClone(numbers));
       functionsStack.push(Helper.deepClone(functions));
@@ -308,9 +308,27 @@ public class Level implements Serializable {
       }
       case "clear" -> start();
       case "hint" -> hint();
-      case "calc" -> computation(1, new ArrayList<>(command.subList(1, command.size())));
-      case "back" -> back();
-      default -> computation(0, command);
+      case "calc" -> {
+        if (resultClassName.equals("unknown")) {
+          System.out.println("Пупупу...");
+        } else {
+          computation(1, new ArrayList<>(command.subList(1, command.size())));
+        }
+      }
+      case "back" -> {
+        if (resultClassName.equals("unknown")) {
+          System.out.println("Пупупу...");
+        } else {
+          back();
+        }
+      }
+      default -> {
+        if (resultClassName.equals("unknown")) {
+          computation(2, command);
+        } else {
+          computation(0, command);
+        }
+      }
     }
     return 0;
   }

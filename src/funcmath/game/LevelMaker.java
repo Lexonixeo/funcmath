@@ -108,7 +108,6 @@ public class LevelMaker {
     }
 
     int customFlag = 2;
-    String path = "data\\preLevels\\";
     String normalPath = "data\\customLevels\\";
     System.out.print("Введите что-нибудь: ");
     String mode = scanner.nextLine();
@@ -124,6 +123,7 @@ public class LevelMaker {
       levelID += mode.hashCode();
       level = "level" + levelID + ".dat";
     }
+    if (universalMode) levelID = Helper.filesCount("data/levels/") + 1;
 
     System.out.print("Введите название уровня: ");
     String name = scanner.nextLine();

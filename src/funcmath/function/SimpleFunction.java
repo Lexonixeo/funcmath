@@ -1,6 +1,7 @@
 package funcmath.function;
 
 import funcmath.exceptions.FunctionException;
+import funcmath.exceptions.JavaException;
 import funcmath.object.MathObject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,7 +21,7 @@ public class SimpleFunction {
           function = MathObject.class.getMethod("ignore", MathObject.class);
         } catch (NoSuchMethodException e) {
           // как это произошло?
-          throw new RuntimeException(e);
+          throw new JavaException(e.getMessage());
         }
       }
       if (this.name.equals(f.getName())) {
@@ -50,7 +51,7 @@ public class SimpleFunction {
     try {
       ans = function.invoke(null, (Object[]) args);
     } catch (InvocationTargetException | IllegalAccessException e) {
-      throw new RuntimeException(e);
+      throw new JavaException(e.getMessage());
     }
     return ans;
   }

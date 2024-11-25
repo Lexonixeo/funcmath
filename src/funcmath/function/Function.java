@@ -140,7 +140,7 @@ public class Function implements Serializable {
       }
     }
 
-    if (mode == 0) this.uses--;
+    if (mode == 0 || mode == 2) this.uses--;
     return nums.peek();
   }
 

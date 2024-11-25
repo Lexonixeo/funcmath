@@ -1,6 +1,7 @@
 package funcmath.object;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import funcmath.exceptions.MathException;
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -64,9 +65,6 @@ public class FReal implements MathObject {
     return null;
   }
 
-  @Override
-  public void setName(String name) {}
-
   public static FReal sum(FReal addend1, FReal addend2) {
     return new FReal(addend1.get().add(addend2.get()));
   }
@@ -81,7 +79,7 @@ public class FReal implements MathObject {
 
   public static FReal div(FReal dividend, FReal divisor) {
     if (divisor.get().equals(BigDecimal.ZERO)) {
-      throw new ArithmeticException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
+      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     }
     return new FReal(dividend.get().divide(divisor.get(), RoundingMode.HALF_UP));
   }
