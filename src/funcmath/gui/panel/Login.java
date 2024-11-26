@@ -1,4 +1,4 @@
-package funcmath.gui.panels;
+package funcmath.gui.panel;
 
 import funcmath.gui.utility.Button;
 import funcmath.gui.utility.GamePanel;
@@ -6,16 +6,21 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class LoginPanel extends GamePanel {
+public class Login extends GamePanel {
   funcmath.gui.utility.Button button;
 
-  public LoginPanel() {
+  public Login() {
     button = new Button(100, 100, 200, 50, "data/images/test.png", () -> {});
   }
 
   @Override
   protected void paintComponent(Graphics g) {
     button.paint(g);
+  }
+
+  @Override
+  public boolean dispatchKeyEvent(KeyEvent e) {
+    return false;
   }
 
   @Override
@@ -34,11 +39,6 @@ public class LoginPanel extends GamePanel {
 
   @Override
   public void mouseExited(MouseEvent e) {}
-
-  @Override
-  public boolean dispatchKeyEvent(KeyEvent e) {
-    return false;
-  }
 
   @Override
   public void mouseDragged(MouseEvent e) {}

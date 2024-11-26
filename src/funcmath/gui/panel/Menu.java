@@ -1,10 +1,10 @@
-package funcmath.gui.panels;
+package funcmath.gui.panel;
 
 import funcmath.gui.utility.GamePanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class MenuPanel extends GamePanel {
+public class Menu extends GamePanel {
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {
     return false;

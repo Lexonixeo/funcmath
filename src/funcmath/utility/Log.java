@@ -28,6 +28,10 @@ public class Log {
     e.printStackTrace(stream);
   }
 
+  public String getPathname() {
+    return pathname;
+  }
+
   public static Log getInstance() {
     return instance;
   }

@@ -66,7 +66,8 @@ public class Game {
   private void last() {
     int lastLevel = player.getLastLevel();
     if (lastLevel == 0) {
-      Log.getInstance().write("Игрок попытался вызвать last, при этом не заходя ни в какой уровень");
+      Log.getInstance()
+          .write("Игрок попытался вызвать last, при этом не заходя ни в какой уровень");
       System.out.println("Вы ещё не заходили в какой-либо уровень!");
       return;
     }
@@ -80,14 +81,17 @@ public class Game {
   private void next() {
     int lastLevel = player.getLastLevel();
     if (lastLevel == 0) {
-      Log.getInstance().write("Игрок попытался вызвать next, при этом не заходя ни в какой уровень");
+      Log.getInstance()
+          .write("Игрок попытался вызвать next, при этом не заходя ни в какой уровень");
       System.out.println(
           "Вы ещё не заходили в какой-либо уровень!"); // переформулировать когда добавлю случайные
       // уровни
       return;
     }
     if (lastLevel < 0) {
-      Log.getInstance().write("Игрок попытался вызвать next, при этом он играл в последний раз в пользовательский уровень");
+      Log.getInstance()
+          .write(
+              "Игрок попытался вызвать next, при этом он играл в последний раз в пользовательский уровень");
       System.out.println("Не существует следующего уровня!");
       return;
     }
@@ -97,14 +101,17 @@ public class Game {
   private void prev() {
     int lastLevel = player.getLastLevel();
     if (lastLevel == 0) {
-      Log.getInstance().write("Игрок попытался вызвать prev, при этом не заходя ни в какой уровень");
+      Log.getInstance()
+          .write("Игрок попытался вызвать prev, при этом не заходя ни в какой уровень");
       System.out.println(
           "Вы ещё не заходили в какой-либо уровень!"); // переформулировать когда добавлю случайные
       // уровни
       return;
     }
     if (lastLevel < 0) {
-      Log.getInstance().write("Игрок попытался вызвать prev, при этом он играл в последний раз в пользовательский уровень");
+      Log.getInstance()
+          .write(
+              "Игрок попытался вызвать prev, при этом он играл в последний раз в пользовательский уровень");
       System.out.println("Не существует предыдущего уровня!");
       return;
     }

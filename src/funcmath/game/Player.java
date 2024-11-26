@@ -2,7 +2,6 @@ package funcmath.game;
 
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

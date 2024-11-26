@@ -21,8 +21,12 @@ public class Main {
       game.game();
     } catch (Exception e) {
       Log.getInstance().write(e);
+      System.out.println("\n\nК сожалению, произошла необработанная ошибка.");
+      System.out.println("Ваша статистика сохранена, вы можете перезайти в игру.");
       System.out.println(
-          "\n\nК сожалению, произошла необработанная ошибка. Ваша статистика сохранена, перезайдите в игру.");
+          "Пришлите, пожалуйста, в телеграм @funcmath_bot файл "
+              + Log.getInstance().getPathname()
+              + ", чтобы я разобрался с данной проблемой.");
       Log.getInstance().write("Игра завершена в связи с необработанной ошибкой");
     }
   }

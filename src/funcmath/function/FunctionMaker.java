@@ -3,7 +3,6 @@ package funcmath.function;
 import funcmath.object.MathObject;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
-
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 

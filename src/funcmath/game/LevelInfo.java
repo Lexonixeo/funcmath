@@ -5,7 +5,6 @@ import funcmath.function.Function;
 import funcmath.object.MathObject;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -97,7 +96,8 @@ public class LevelInfo implements Serializable {
       int customFlag,
       int mode) {
     Log.getInstance().write("Пытается создаться уровень с такими данными:");
-    Log.getInstance().write(name + " " + resultClassName + " " + level + " " + customFlag + " " + mode);
+    Log.getInstance()
+        .write(name + " " + resultClassName + " " + level + " " + customFlag + " " + mode);
     Log.getInstance().write(Helper.collectionToString(originalNumbers));
     Log.getInstance().write(Helper.collectionToString(answers));
     Log.getInstance().write(Helper.collectionToString(originalFunctions.values()));
