@@ -180,6 +180,11 @@ public class LevelMaker {
       hints.add(scanner.nextLine());
     }
 
+    int modei = 0;
+    if (resultClassName.equals("unknown")) {
+      modei = 2;
+    }
+
     LevelInfo levelInfo =
         new LevelInfo(
             originalNumbers,
@@ -191,7 +196,8 @@ public class LevelMaker {
             name,
             universalMode,
             levelID,
-            customFlag);
+            customFlag,
+            modei);
 
     if (!universalMode) {
       System.out.println(

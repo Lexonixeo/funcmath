@@ -64,7 +64,7 @@ public interface MathObject extends Serializable {
     usingNames.add(newName);
     generated.set(1, usingNames);
     Helper.write(generated, "data/currentLevel.dat");
-    return null; // никогда не вызовется
+    return newName;
   }
 
   static void loadMathObject(MathObject x) {

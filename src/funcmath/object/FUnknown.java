@@ -2,7 +2,6 @@ package funcmath.object;
 
 import funcmath.Helper;
 import funcmath.exceptions.MathObjectException;
-
 import java.io.Serial;
 import java.util.ArrayList;
 
@@ -193,9 +192,10 @@ public class FUnknown implements MathObject {
   @Override
   public boolean equals(Object obj) {
     return obj.getClass() == FUnknown.class
-            && this.isKnown == ((FUnknown) obj).isKnown && this.isFound == ((FUnknown) obj).isFound
+        && this.isKnown == ((FUnknown) obj).isKnown
+        && this.isFound == ((FUnknown) obj).isFound
         && (!this.isFound && this.get().equals(((FUnknown) obj).get())
-        || (this.isFound && this.unknownName.equals(((FUnknown) obj).unknownName)));
+            || (this.isFound && this.unknownName.equals(((FUnknown) obj).unknownName)));
   }
 
   @Override
@@ -206,4 +206,14 @@ public class FUnknown implements MathObject {
       return this.unknownName;
     }
   }
+
+  /*
+  Я не доделал этот вид математического объекта.
+  Я хотел, чтобы я с его помощью мог делать задачи двух видов:
+  1. угадайка (см. уровни 43 и 44)
+  2. конструктивы (см. https://sochisirius.ru/uploads/2024/02/math_0124_9_2.pdf, Квадратный трёхчлен - 2 задача 10)
+
+  Я смог реализовать только задачи первого вида.
+  Я оставляю читателям решение задач второго вида - пришлите потом пулл реквест с решением
+   */
 }

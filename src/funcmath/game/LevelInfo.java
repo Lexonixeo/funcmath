@@ -21,7 +21,7 @@ public class LevelInfo implements Serializable {
   String name;
   boolean isCompleted;
   int level;
-  // int mode = 0;
+  int mode = 0;
 
   private LevelInfo() {}
 
@@ -47,7 +47,7 @@ public class LevelInfo implements Serializable {
       this.resultClassName = levelInfo.getResultClassName();
       this.name = levelInfo.getName();
       this.isCompleted = levelInfo.getCompleted();
-      // this.mode = levelInfo.getMode();
+      this.mode = levelInfo.getMode();
     } catch (ClassCastException e) {
       int add = 0;
       if (customFlag == 2) {
@@ -73,6 +73,7 @@ public class LevelInfo implements Serializable {
       resultClassName = (String) generated.get(4 + add);
       cutscene = Helper.cast(generated.get(5 + add), new ArrayList<>());
       name = (String) generated.get(6 + add);
+      mode = 0;
       Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
     }
   }
@@ -87,7 +88,8 @@ public class LevelInfo implements Serializable {
       String name,
       boolean isCompleted,
       int level,
-      int customFlag) {
+      int customFlag,
+      int mode) {
     this.level = level;
     String levelSwitch =
         switch (customFlag) {
@@ -105,6 +107,7 @@ public class LevelInfo implements Serializable {
     this.resultClassName = resultClassName;
     this.name = name;
     this.isCompleted = isCompleted;
+    this.mode = mode;
     Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
   }
 
@@ -138,6 +141,10 @@ public class LevelInfo implements Serializable {
 
   public boolean getCompleted() {
     return isCompleted;
+  }
+
+  public int getMode() {
+    return mode;
   }
 
   public void setCompleted(boolean isCompleted) {

@@ -34,6 +34,7 @@ public class Level implements Serializable {
   String name;
   boolean completed = false;
   HashSet<String> usingNames = new HashSet<>();
+  int levelMode; // 0 - обычный, 1 - выключить calc и back, числа не тратятся
 
   public Level(int level, boolean tutorial, int customFlag) {
     this.tutorial = tutorial;
@@ -58,6 +59,7 @@ public class Level implements Serializable {
     resultClassName = levelInfo.getResultClassName();
     cutscene = levelInfo.getCutscene();
     name = levelInfo.getName();
+    levelMode = levelInfo.getMode();
 
     for (Function f : functions.values()) {
       fuses += f.getUses();
@@ -133,7 +135,7 @@ public class Level implements Serializable {
             + MathObject.getMathObject(resultClassName).getTypeForLevel()
             + "\".\n");
 
-    System.out.println("У вас есть ограниченный набор чисел:");
+    System.out.println("У вас есть " + (levelMode == 1 ? "не" : "") + "ограниченный набор чисел:");
     for (MathObject number : numbers) {
       System.out.print(number + " ");
     }
@@ -172,6 +174,11 @@ public class Level implements Serializable {
   }
 
   private void computation(int mode, ArrayList<String> expression) {
+    if (mode == 1 && levelMode == 1) {
+      System.out.println("Пупупу...");
+      return;
+    }
+
     ArrayList<String> fNames = new ArrayList<>(functions.keySet());
     Stack<Function> fStack = new Stack<>();
     Stack<ArrayList<MathObject>> nums = new Stack<>();
@@ -191,7 +198,7 @@ public class Level implements Serializable {
         }
       }
     }
-    if (!numsCheck(globalArgs) && (mode == 0 || mode == 2)) {
+    if (!numsCheck(globalArgs) && (mode == 0)) {
       System.out.println(
           "= Неверные аргументы: какие-то числа не существуют в наборе! Введите выражение заново.");
       return;
@@ -240,21 +247,21 @@ public class Level implements Serializable {
       return;
     }
 
-    if (mode == 0) {
+    if (mode == 0 && levelMode != 1) {
       for (MathObject arg : globalArgs) {
         numbers.remove(arg);
       }
     }
     System.out.print("=");
     for (MathObject answerNum : nums.peek()) {
-      if (mode == 0 || mode == 2) {
+      if (mode == 0) {
         numbers.add(answerNum);
       }
       System.out.print(" " + answerNum);
     }
     System.out.println();
 
-    if (mode == 0 || mode == 2) {
+    if (mode == 0) {
       completed = numsCheck(answers);
       numbersStack.push(Helper.deepClone(numbers));
       functionsStack.push(Helper.deepClone(functions));
@@ -277,6 +284,10 @@ public class Level implements Serializable {
   }
 
   private void back() {
+    if (levelMode == 1) {
+      System.out.println("Пупупу...");
+      return;
+    }
     numbersStack.pop();
     functionsStack.pop();
     if (numbersStack.empty()) {
@@ -308,27 +319,9 @@ public class Level implements Serializable {
       }
       case "clear" -> start();
       case "hint" -> hint();
-      case "calc" -> {
-        if (resultClassName.equals("unknown")) {
-          System.out.println("Пупупу...");
-        } else {
-          computation(1, new ArrayList<>(command.subList(1, command.size())));
-        }
-      }
-      case "back" -> {
-        if (resultClassName.equals("unknown")) {
-          System.out.println("Пупупу...");
-        } else {
-          back();
-        }
-      }
-      default -> {
-        if (resultClassName.equals("unknown")) {
-          computation(2, command);
-        } else {
-          computation(0, command);
-        }
-      }
+      case "calc" -> computation(1, new ArrayList<>(command.subList(1, command.size())));
+      case "back" -> back();
+      default -> computation(0, command);
     }
     return 0;
   }
