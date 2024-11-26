@@ -1,6 +1,6 @@
 package funcmath.object;
 
-import funcmath.Helper;
+import funcmath.utility.Helper;
 import funcmath.exceptions.FunctionException;
 import funcmath.exceptions.MathException;
 import java.io.Serial;

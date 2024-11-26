@@ -1,10 +1,10 @@
 package funcmath.object;
 
-import funcmath.Helper;
+import funcmath.utility.Helper;
 import funcmath.exceptions.JavaException;
 import funcmath.exceptions.LevelException;
 import funcmath.exceptions.MathObjectException;
-import funcmath.game.Log;
+import funcmath.utility.Log;
 
 import java.io.File;
 import java.io.Serializable;

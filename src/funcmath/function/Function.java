@@ -1,8 +1,8 @@
 package funcmath.function;
 
-import funcmath.Helper;
+import funcmath.utility.Helper;
 import funcmath.exceptions.FunctionException;
-import funcmath.game.Log;
+import funcmath.utility.Log;
 import funcmath.object.*;
 import java.io.Serial;
 import java.io.Serializable;
@@ -54,6 +54,7 @@ public class Function implements Serializable {
       String resultClassName,
       String description,
       int uses) {
+    Log.getInstance().write("Пытается создаться функция " + name + ",\n" + description + ",\n" + Helper.arrayListToString(definition) + ",\n" + resultClassName + " " + uses);
     this.name = name;
     this.definition = definition;
     this.resultClassName = resultClassName;

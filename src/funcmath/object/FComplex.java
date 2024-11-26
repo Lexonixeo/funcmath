@@ -2,7 +2,7 @@ package funcmath.object;
 
 import ch.obermuhlner.math.big.BigComplex;
 import ch.obermuhlner.math.big.BigComplexMath;
-import funcmath.Helper;
+import funcmath.utility.Helper;
 import funcmath.exceptions.MathException;
 import java.io.Serial;
 import java.math.BigDecimal;

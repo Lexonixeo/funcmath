@@ -3,6 +3,7 @@ package funcmath.function;
 import funcmath.exceptions.FunctionException;
 import funcmath.exceptions.JavaException;
 import funcmath.object.MathObject;
+import funcmath.utility.Log;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -21,6 +22,7 @@ public class SimpleFunction {
           function = MathObject.class.getMethod("ignore", MathObject.class);
         } catch (NoSuchMethodException e) {
           // как это произошло?
+          Log.getInstance().write("ПРОИЗОШЛО НЕМЫСЛИМОЕ: ОНО ПРОИЗОШЛО");
           throw new JavaException(e);
         }
       }

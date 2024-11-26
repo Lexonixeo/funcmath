@@ -1,11 +1,13 @@
 package funcmath.game;
 
-import funcmath.Helper;
+import funcmath.utility.Helper;
 import funcmath.exceptions.FunctionException;
 import funcmath.exceptions.LevelException;
 import funcmath.exceptions.MathObjectException;
 import funcmath.function.Function;
 import funcmath.object.*;
+import funcmath.utility.Log;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;

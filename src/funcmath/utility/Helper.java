@@ -1,7 +1,6 @@
-package funcmath;
+package funcmath.utility;
 
 import funcmath.exceptions.JavaException;
-import funcmath.game.Log;
 
 import java.io.*;
 import java.util.ArrayList;

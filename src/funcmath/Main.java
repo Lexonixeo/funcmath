@@ -1,8 +1,9 @@
 package funcmath;
 
 import funcmath.game.Game;
-import funcmath.game.Log;
+import funcmath.utility.Log;
 import funcmath.object.MathObject;
+import funcmath.utility.Helper;
 
 public class Main {
   public static void main(String[] args) {

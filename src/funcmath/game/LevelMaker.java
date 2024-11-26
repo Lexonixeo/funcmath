@@ -1,6 +1,6 @@
 package funcmath.game;
 
-import funcmath.Helper;
+import funcmath.utility.Helper;
 import funcmath.function.Function;
 import funcmath.object.MathObject;
 import java.nio.charset.StandardCharsets;

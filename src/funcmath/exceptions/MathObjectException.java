@@ -1,6 +1,6 @@
 package funcmath.exceptions;
 
-import funcmath.game.Log;
+import funcmath.utility.Log;
 
 public class MathObjectException extends RuntimeException {
   public MathObjectException(String message) {

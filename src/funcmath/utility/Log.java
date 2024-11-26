@@ -1,6 +1,5 @@
-package funcmath.game;
+package funcmath.utility;
 
-import funcmath.Helper;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;

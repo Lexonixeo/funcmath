@@ -1,7 +1,9 @@
 package funcmath.game;
 
-import funcmath.Helper;
+import funcmath.utility.Helper;
 import funcmath.function.FunctionMaker;
+import funcmath.utility.Log;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Scanner;

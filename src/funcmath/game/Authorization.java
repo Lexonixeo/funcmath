@@ -1,7 +1,9 @@
 package funcmath.game;
 
-import funcmath.Helper;
+import funcmath.utility.Helper;
 import funcmath.exceptions.AuthorizationException;
+import funcmath.utility.Log;
+
 import java.util.HashMap;
 
 public class Authorization {
