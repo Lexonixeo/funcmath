@@ -2,6 +2,7 @@ package funcmath.function;
 
 import funcmath.Helper;
 import funcmath.exceptions.FunctionException;
+import funcmath.game.Log;
 import funcmath.object.*;
 import java.io.Serial;
 import java.io.Serializable;
@@ -87,6 +88,8 @@ public class Function implements Serializable {
   }
 
   public ArrayList<MathObject> use(int mode, MathObject... x) {
+    Log.getInstance().write("Используется функция " + this);
+
     if (mode == 0 && this.uses == 0) {
       throw new FunctionException("У функции " + name + " закончилось число использований.");
     }

@@ -138,7 +138,7 @@ public class Game {
   }
 
   private void list(int page) {
-    ArrayList<Integer> levels = Helper.getLevelList(Helper.getFileNames("data\\levels\\"));
+    ArrayList<Integer> levels = Level.getLevelList(Helper.getFileNames("data\\levels\\"));
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
       System.out.println("Не бывает такой страницы!");
       return;
@@ -151,7 +151,7 @@ public class Game {
   }
 
   private void clist(int page) {
-    ArrayList<Integer> levels = Helper.getLevelList(Helper.getFileNames("data\\customLevels\\"));
+    ArrayList<Integer> levels = Level.getLevelList(Helper.getFileNames("data\\customLevels\\"));
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
       System.out.println("Не бывает такой страницы!");
       return;
@@ -199,7 +199,9 @@ public class Game {
       player.writePlayerInfo();
       System.out.println();
       System.out.print("[Commander] Введите команду: ");
-      ArrayList<String> command = Helper.wordsFromString(scanner.nextLine());
+      String cmd = scanner.nextLine();
+      ArrayList<String> command = Helper.wordsFromString(cmd);
+      Log.getInstance().write("Введена команда " + cmd);
       String first_command = command.get(0);
       switch (first_command) {
         case "menu", "clear" -> menu();

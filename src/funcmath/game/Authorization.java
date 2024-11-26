@@ -20,6 +20,7 @@ public class Authorization {
       throw new AuthorizationException("Неверный пароль!");
     }
 
+    Log.getInstance().write("Игрок авторизирован: " + name);
     return new Player(name, true);
   }
 
@@ -38,6 +39,7 @@ public class Authorization {
     players.put(password.hashCode(), name);
     Helper.write(players, "data\\players\\players.dat");
 
+    Log.getInstance().write("Игрок зарегистрирован: " + name);
     return new Player(name, false);
   }
 

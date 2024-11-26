@@ -1,6 +1,5 @@
 package funcmath.gui;
 
-import funcmath.Helper;
 import funcmath.exceptions.GuiException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -26,11 +25,18 @@ public class Button {
     try {
       image = ImageIO.read(new File(this.imagePath));
     } catch (IOException e) {
-      throw new GuiException(e.getMessage());
+      throw new GuiException(e);
     }
-    image = Helper.toBufferedImage(image.getScaledInstance(width, height, Image.SCALE_SMOOTH));
-    g.drawImage(image, x, y, null);
+    g.drawImage(image, x, y, width, height, null);
   }
 
-  public void onMouseHit(int mouseX, int mouseY) {}
+  private boolean isHit(int mouseX, int mouseY) {
+    return (x <= mouseX && mouseX <= x + width && y <= mouseY && mouseY <= y + height);
+  }
+
+  public void onMouseHit(int mouseX, int mouseY) {
+    if (isHit(mouseX, mouseY)) {
+      System.out.println("Button hit!");
+    }
+  }
 }

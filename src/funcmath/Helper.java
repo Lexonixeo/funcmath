@@ -1,16 +1,15 @@
 package funcmath;
 
 import funcmath.exceptions.JavaException;
-import funcmath.object.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import funcmath.game.Log;
+
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Objects;
 
 public class Helper {
   public static Object read(String pathname) {
+    Log.getInstance().write("Читается файл " + pathname);
     Object ans;
     try {
       FileInputStream fis = new FileInputStream(pathname.replace('\\', '/'));
@@ -18,12 +17,13 @@ public class Helper {
       ans = iis.readObject();
       iis.close();
     } catch (IOException | ClassNotFoundException e) {
-      throw new JavaException(e.getMessage());
+      throw new JavaException(e);
     }
     return ans;
   }
 
   public static void write(Object obj, String pathname) {
+    Log.getInstance().write("Записывается файл " + pathname);
     try {
       File ourFile = new File(pathname.replace('\\', '/'));
       FileOutputStream fos = new FileOutputStream(ourFile);
@@ -32,7 +32,7 @@ public class Helper {
       oos.flush();
       oos.close();
     } catch (IOException e) {
-      throw new JavaException(e.getMessage());
+      throw new JavaException(e);
     }
 
     // в линуксе может отсутствовать директория у файла, решаю через generateDirectories()
@@ -82,6 +82,7 @@ public class Helper {
   }
 
   public static void clear() {
+    Log.getInstance().write("Очистка консоли!");
     try {
       if (System.getProperty("os.name").contains("Windows")) {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -101,7 +102,7 @@ public class Helper {
       ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray()));
       return Helper.cast(o.getClass().cast(in.readObject()), o);
     } catch (Exception e) {
-      throw new JavaException(e.getMessage());
+      throw new JavaException(e);
     }
   }
 
@@ -125,16 +126,8 @@ public class Helper {
     return answer;
   }
 
-  public static ArrayList<Integer> getLevelList(ArrayList<String> fileNames) {
-    ArrayList<Integer> answer = new ArrayList<>();
-    for (String fileName : fileNames) {
-      answer.add(Integer.parseInt(fileName.substring(5, fileName.length() - 4)));
-    }
-    answer.sort(Comparator.naturalOrder());
-    return answer;
-  }
-
   public static void generateDirectories() {
+    Log.getInstance().write("Директории генерируются...");
     new File("data/customLevels").mkdirs();
     new File("data/functions").mkdirs();
     new File("data/levels").mkdirs();
@@ -142,11 +135,13 @@ public class Helper {
     new File("data/preLevels").mkdirs();
     new File("data/locales").mkdirs();
     new File("data/objects").mkdirs();
+    new File("data/images").mkdirs();
+    new File("data/logs").mkdirs();
   }
 
-  public static String arrayListToString(ArrayList<MathObject> nums) {
+  public static <T> String arrayListToString(ArrayList<T> list) {
     StringBuilder sb = new StringBuilder();
-    for (MathObject num : nums) {
+    for (T num : list) {
       sb.append(num);
       sb.append(" ");
     }
@@ -159,37 +154,14 @@ public class Helper {
     return (T) obj;
   }
 
-  public static void loadMathObjects() {
-    MathObject.loadMathObject(new FNatural());
-    MathObject.loadMathObject(new FInteger());
-    MathObject.loadMathObject(new FRational());
-    MathObject.loadMathObject(new FReal());
-    MathObject.loadMathObject(new FComplex());
-    MathObject.loadMathObject(new FUnknown());
-  }
-
-  /**
-   * Converts a given Image into a BufferedImage
-   *
-   * @param img The Image to be converted
-   * @return The converted BufferedImage
-   */
-  public static BufferedImage toBufferedImage(Image img) {
-    if (img instanceof BufferedImage) {
-      return (BufferedImage) img;
+  public static void writeLine(String line, String pathname) {
+    try {
+      FileWriter writer = new FileWriter(pathname, true);
+      writer.write(line + "\n");
+      writer.close();
+    } catch (IOException e) {
+      throw new JavaException(e);
     }
-
-    // Create a buffered image with transparency
-    BufferedImage bimage =
-        new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-    // Draw the image on to the buffered image
-    Graphics2D bGr = bimage.createGraphics();
-    bGr.drawImage(img, 0, 0, null);
-    bGr.dispose();
-
-    // Return the buffered image
-    return bimage;
   }
 
   // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ

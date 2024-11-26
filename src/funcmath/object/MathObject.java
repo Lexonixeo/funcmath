@@ -4,6 +4,8 @@ import funcmath.Helper;
 import funcmath.exceptions.JavaException;
 import funcmath.exceptions.LevelException;
 import funcmath.exceptions.MathObjectException;
+import funcmath.game.Log;
+
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -24,6 +26,10 @@ public interface MathObject extends Serializable {
   String getTypeForLevel(); // вроде "натуральных", "целых"...
 
   String getName(); // название числа (типа A, B, ...), null если само число не требует названия
+
+  static MathObject[] ignore(MathObject ignoredA) {
+    return new MathObject[] {};
+  }
 
   static boolean checkResultClassName(String resultClassName) {
     return MATH_OBJECT_HASH_MAP.containsKey(resultClassName);
@@ -73,9 +79,9 @@ public interface MathObject extends Serializable {
     try {
       typeInstance = x.getClass().getConstructor(new Class[] {}).newInstance();
     } catch (NoSuchMethodException e) {
-      throw new MathObjectException(e.getMessage());
+      throw new MathObjectException(e);
     } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new JavaException(e.getMessage());
+      throw new JavaException(e);
     }
     MATH_OBJECT_HASH_MAP.put(type, typeInstance);
     new File("data/functions/" + type).mkdirs();
@@ -93,14 +99,20 @@ public interface MathObject extends Serializable {
           .getConstructor(new Class[] {String.class})
           .newInstance(s);
     } catch (NoSuchMethodException e) {
-      throw new MathObjectException(e.getMessage());
+      throw new MathObjectException(e);
     } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new JavaException(e.getMessage());
+      throw new JavaException(e);
     }
   }
 
-  static MathObject[] ignore(MathObject ignoredA) {
-    return new MathObject[] {};
+  static void loadMathObjects() {
+    Log.getInstance().write("Математические объекты загружаются...");
+    MathObject.loadMathObject(new FNatural());
+    MathObject.loadMathObject(new FInteger());
+    MathObject.loadMathObject(new FRational());
+    MathObject.loadMathObject(new FReal());
+    MathObject.loadMathObject(new FComplex());
+    MathObject.loadMathObject(new FUnknown());
   }
 
   /*

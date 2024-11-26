@@ -21,7 +21,7 @@ public class SimpleFunction {
           function = MathObject.class.getMethod("ignore", MathObject.class);
         } catch (NoSuchMethodException e) {
           // как это произошло?
-          throw new JavaException(e.getMessage());
+          throw new JavaException(e);
         }
       }
       if (this.name.equals(f.getName())) {
@@ -51,7 +51,7 @@ public class SimpleFunction {
     try {
       ans = function.invoke(null, (Object[]) args);
     } catch (InvocationTargetException | IllegalAccessException e) {
-      throw new JavaException(e.getMessage());
+      throw new JavaException(e);
     }
     return ans;
   }

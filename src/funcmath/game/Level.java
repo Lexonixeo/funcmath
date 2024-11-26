@@ -37,6 +37,8 @@ public class Level implements Serializable {
   int levelMode; // 0 - обычный, 1 - выключить calc и back, числа не тратятся
 
   public Level(int level, boolean tutorial, int customFlag) {
+    Log.getInstance().write("Игрок зашел в уровень №" + level);
+
     this.tutorial = tutorial;
     this.level = level;
 
@@ -305,7 +307,9 @@ public class Level implements Serializable {
     turnSave();
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     System.out.print("[Level] Введите выражение: ");
-    ArrayList<String> command = Helper.wordsFromString(scanner.nextLine());
+    String cmd = scanner.nextLine();
+    ArrayList<String> command = Helper.wordsFromString(cmd);
+    Log.getInstance().write("Введено выражение " + cmd);
     String first_command = command.get(0);
     switch (first_command) {
       case "exit", "menu", "stop" -> {
@@ -375,6 +379,15 @@ public class Level implements Serializable {
               + " и прошли уровень!");
     }
     return new int[] {(tutorial ? 1 : 0), (completed ? 1 : 0), dFuses, time};
+  }
+
+  public static ArrayList<Integer> getLevelList(ArrayList<String> fileNames) {
+    ArrayList<Integer> answer = new ArrayList<>();
+    for (String fileName : fileNames) {
+      answer.add(Integer.parseInt(fileName.substring(5, fileName.length() - 4)));
+    }
+    answer.sort(Comparator.naturalOrder());
+    return answer;
   }
 
   @Override
