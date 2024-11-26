@@ -1,9 +1,9 @@
 package funcmath.utility;
 
 import funcmath.exceptions.JavaException;
-
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 public class Helper {
@@ -138,7 +138,7 @@ public class Helper {
     new File("data/logs").mkdirs();
   }
 
-  public static <T> String arrayListToString(ArrayList<T> list) {
+  public static <T> String collectionToString(Collection<T> list) {
     StringBuilder sb = new StringBuilder();
     for (T num : list) {
       sb.append(num);

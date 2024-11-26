@@ -1,9 +1,9 @@
 package funcmath.function;
 
-import funcmath.utility.Helper;
 import funcmath.exceptions.FunctionException;
-import funcmath.utility.Log;
 import funcmath.object.*;
+import funcmath.utility.Helper;
+import funcmath.utility.Log;
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -20,6 +20,7 @@ public class Function implements Serializable {
   String resultClassName;
 
   public Function(String resultClassName, String hashCode) {
+    Log.getInstance().write("Получается функция " + resultClassName + "/" + hashCode);
     Function f =
         (Function) Helper.read("data/functions/" + resultClassName + "/" + hashCode + ".dat");
     this.name = f.name;
@@ -54,7 +55,18 @@ public class Function implements Serializable {
       String resultClassName,
       String description,
       int uses) {
-    Log.getInstance().write("Пытается создаться функция " + name + ",\n" + description + ",\n" + Helper.arrayListToString(definition) + ",\n" + resultClassName + " " + uses);
+    Log.getInstance()
+        .write(
+            "Пытается создаться функция "
+                + name
+                + ",\n"
+                + description
+                + ",\n"
+                + Helper.collectionToString(definition)
+                + ",\n"
+                + resultClassName
+                + " "
+                + uses);
     this.name = name;
     this.definition = definition;
     this.resultClassName = resultClassName;

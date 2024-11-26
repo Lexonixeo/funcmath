@@ -1,13 +1,12 @@
 package funcmath.game;
 
-import funcmath.utility.Helper;
 import funcmath.exceptions.FunctionException;
 import funcmath.exceptions.LevelException;
 import funcmath.exceptions.MathObjectException;
 import funcmath.function.Function;
 import funcmath.object.*;
+import funcmath.utility.Helper;
 import funcmath.utility.Log;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -68,17 +67,21 @@ public class Level implements Serializable {
     for (Function f : functions.values()) {
       fuses += f.getUses();
     }
+
+    Log.getInstance().write("Уровень №" + level + " загружен!");
   }
 
   private void playCutscene() {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
+    Log.getInstance().write("Игрок читает катсцену...");
     for (String phrase : cutscene) {
       System.out.print(phrase + " ");
       scanner.nextLine();
     }
     System.out.println("\n\nНажмите Enter, чтобы продолжить...");
     scanner.nextLine();
+    Log.getInstance().write("Катсцена завершена!");
   }
 
   private boolean numsCheck(ArrayList<MathObject> args) {
@@ -151,7 +154,7 @@ public class Level implements Serializable {
 
     System.out.println(
         "\nВам нужно из данных чисел, используя данные функции, получить число(а) "
-            + Helper.arrayListToString(answers)
+            + Helper.collectionToString(answers)
             + ".\n");
     if (tutorial) this.tutorial();
   }
@@ -273,6 +276,7 @@ public class Level implements Serializable {
   }
 
   private void hint() {
+    Log.getInstance().write("Игрок попросил подсказку!");
     if (hints.isEmpty()) {
       System.out.println("В этом уровне нет подсказок :(");
     }
@@ -377,8 +381,9 @@ public class Level implements Serializable {
     if (completed) {
       System.out.println(
           "Поздравляем! Вы получили число(а) "
-              + Helper.arrayListToString(answers)
+              + Helper.collectionToString(answers)
               + " и прошли уровень!");
+      Log.getInstance().write("Уровень №" + level + " пройден!");
     }
     return new int[] {(tutorial ? 1 : 0), (completed ? 1 : 0), dFuses, time};
   }

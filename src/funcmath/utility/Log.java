@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 public class Log {
-  private static final Log instance = new Log();
+  private static final Log instance = new Log(); // попробовал реализовать singleton
 
   String pathname;
 

@@ -1,9 +1,11 @@
 package funcmath.game;
 
-import funcmath.utility.Helper;
 import funcmath.exceptions.LevelException;
 import funcmath.function.Function;
 import funcmath.object.MathObject;
+import funcmath.utility.Helper;
+import funcmath.utility.Log;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class LevelInfo implements Serializable {
   private LevelInfo() {}
 
   public LevelInfo(int level, int customFlag) {
+    Log.getInstance().write("Получается информация об уровне №" + level + "...");
     this.level = level;
     String levelSwitch =
         switch (customFlag) {
@@ -49,6 +52,7 @@ public class LevelInfo implements Serializable {
       this.isCompleted = levelInfo.getCompleted();
       this.mode = levelInfo.getMode();
     } catch (ClassCastException e) {
+      Log.getInstance().write("Доисторический уровень №" + level);
       int add = 0;
       if (customFlag == 2) {
         add = 1;
@@ -59,6 +63,7 @@ public class LevelInfo implements Serializable {
               Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat"),
               new ArrayList<>());
       if (generated.get(0).equals("nothing :)") && add == 0) {
+        Log.getInstance().write("Игрок попытался войти в непройденный уровень!");
         isCompleted = false;
       }
       originalNumbers = Helper.cast(generated.get(add), new ArrayList<>());
@@ -76,6 +81,7 @@ public class LevelInfo implements Serializable {
       mode = 0;
       Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
     }
+    Log.getInstance().write("Уровень загружен!");
   }
 
   public LevelInfo(
@@ -90,6 +96,11 @@ public class LevelInfo implements Serializable {
       int level,
       int customFlag,
       int mode) {
+    Log.getInstance().write("Пытается создаться уровень с такими данными:");
+    Log.getInstance().write(name + " " + resultClassName + " " + level + " " + customFlag + " " + mode);
+    Log.getInstance().write(Helper.collectionToString(originalNumbers));
+    Log.getInstance().write(Helper.collectionToString(answers));
+    Log.getInstance().write(Helper.collectionToString(originalFunctions.values()));
     this.level = level;
     String levelSwitch =
         switch (customFlag) {
@@ -109,6 +120,7 @@ public class LevelInfo implements Serializable {
     this.isCompleted = isCompleted;
     this.mode = mode;
     Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
+    Log.getInstance().write("Уровень создан!");
   }
 
   public String getName() {

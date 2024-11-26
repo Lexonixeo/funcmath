@@ -2,8 +2,8 @@ package funcmath.object;
 
 import ch.obermuhlner.math.big.BigComplex;
 import ch.obermuhlner.math.big.BigComplexMath;
-import funcmath.utility.Helper;
 import funcmath.exceptions.MathException;
+import funcmath.utility.Helper;
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;

@@ -1,8 +1,8 @@
 package funcmath.object;
 
-import funcmath.utility.Helper;
 import funcmath.exceptions.FunctionException;
 import funcmath.exceptions.MathException;
+import funcmath.utility.Helper;
 import java.io.Serial;
 import java.math.BigInteger;
 import java.util.ArrayList;

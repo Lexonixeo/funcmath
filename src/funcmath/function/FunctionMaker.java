@@ -1,7 +1,9 @@
 package funcmath.function;
 
-import funcmath.utility.Helper;
 import funcmath.object.MathObject;
+import funcmath.utility.Helper;
+import funcmath.utility.Log;
+
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -9,6 +11,7 @@ public class FunctionMaker {
   private static void tutorial() {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
+    Log.getInstance().write("Игрок читает туториал по функциям");
     System.out.println("Добро пожаловать в мастерскую создания функций!");
     System.out.println("Так как я плохо умею объяснять, буду пояснять на примере.");
     System.out.println(
@@ -102,11 +105,13 @@ public class FunctionMaker {
 
     System.out.println("Спасибо за прочтение!");
     scanner.nextLine();
+    Log.getInstance().write("Игрок прочитал туториал по функциям");
   }
 
   public static boolean make(boolean functionMakerTutorial) {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
+    Log.getInstance().write("Игрок зашел в мастерскую создания функций");
 
     System.out.println("Добро пожаловать в мастерскую создания функций!");
     if (functionMakerTutorial) {
@@ -154,11 +159,13 @@ public class FunctionMaker {
         "Ваша функция теперь имеет ID: "
             + name
             + Integer.toHexString((functionHash % 256 + 256) % 256));
+    Log.getInstance().write("Создана новая функция в " + resultClassName + "/" + functionFileName);
 
     return false;
   }
 
   public static void main(String[] args) {
+    Log.getInstance().write("Кто-то запустил программу от FunctionMaker");
     make(false);
   }
 }

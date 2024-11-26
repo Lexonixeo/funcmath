@@ -1,13 +1,13 @@
 package funcmath.game;
 
-import funcmath.utility.Helper;
 import funcmath.exceptions.AuthorizationException;
+import funcmath.utility.Helper;
 import funcmath.utility.Log;
-
 import java.util.HashMap;
 
 public class Authorization {
   public static Player login(String name, String password) {
+    Log.getInstance().write("Происходит авторизация...");
     HashMap<Integer, String> players;
     if (Helper.isNotFileExists("data\\players\\players.dat")) {
       players = new HashMap<>();
@@ -27,6 +27,7 @@ public class Authorization {
   }
 
   public static Player register(String name, String password) {
+    Log.getInstance().write("Происходит регистрация...");
     HashMap<Integer, String> players;
     if (Helper.isNotFileExists("data\\players\\players.dat")) {
       players = new HashMap<>();

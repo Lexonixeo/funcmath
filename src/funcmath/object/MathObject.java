@@ -1,11 +1,10 @@
 package funcmath.object;
 
-import funcmath.utility.Helper;
 import funcmath.exceptions.JavaException;
 import funcmath.exceptions.LevelException;
 import funcmath.exceptions.MathObjectException;
+import funcmath.utility.Helper;
 import funcmath.utility.Log;
-
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -117,7 +116,7 @@ public interface MathObject extends Serializable {
 
   /*
   В будущем добавить:
-  FUnknownInteger (мы не видим число, но оно есть)
+  FUnknownInteger (мы не видим число, но оно есть) - в процессе
   FBinaryInteger (с другой системой счисления)
   FFibonacciInteger (с фибоначчиевой системой счисления)
   FErrorInteger (число с погрешностью)

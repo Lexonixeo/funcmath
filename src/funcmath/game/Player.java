@@ -1,6 +1,8 @@
 package funcmath.game;
 
 import funcmath.utility.Helper;
+import funcmath.utility.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ public class Player {
   }
 
   public void writePlayerInfo() {
+    Log.getInstance().write("Сохраняются данные о пользователе...");
     ArrayList<Object> playerInfo = new ArrayList<>();
 
     playerInfo.add(this.completedLevels);
@@ -38,9 +41,11 @@ public class Player {
     playerInfo.add(lastLevel);
 
     Helper.write(playerInfo, "data/players/" + ID + ".dat");
+    Log.getInstance().write("Данные сохранены!");
   }
 
   public void readPlayerInfo() {
+    Log.getInstance().write("Читаются данные о пользователе...");
     try {
       ArrayList<Object> playerInfo =
           Helper.cast(Helper.read("data\\players\\" + ID + ".dat"), new ArrayList<>());
@@ -66,6 +71,7 @@ public class Player {
 
       writePlayerInfo();
     }
+    Log.getInstance().write("Данные прочитаны!");
   }
 
   public void addLevel(boolean completed, int level, int functionUses, int time) {
@@ -85,6 +91,7 @@ public class Player {
     lastLevel = level;
 
     writePlayerInfo();
+    Log.getInstance().write("Игроку в статистику добавлены результаты за уровень");
   }
 
   public String getName() {

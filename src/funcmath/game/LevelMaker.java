@@ -1,8 +1,10 @@
 package funcmath.game;
 
-import funcmath.utility.Helper;
 import funcmath.function.Function;
 import funcmath.object.MathObject;
+import funcmath.utility.Helper;
+import funcmath.utility.Log;
+
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ public class LevelMaker {
   private static void tutorial() {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
+    Log.getInstance().write("Игрок читает туториал по уровням");
     System.out.println("Добро пожаловать в мастерскую создания уровней!");
     System.out.println("Так как я плохо умею объяснять, буду пояснять на примере.");
     System.out.println("Будем вести пример на уровне №29.");
@@ -92,11 +95,13 @@ public class LevelMaker {
 
     System.out.println("Спасибо за прочтение!");
     scanner.nextLine();
+    Log.getInstance().write("Игрок прочитал туториал по уровням");
   }
 
   public static boolean make(boolean levelMakerTutorial, boolean tutorial) {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
+    Log.getInstance().write("Игрок зашел в мастерскую создания уровней");
 
     System.out.println("Добро пожаловать в мастерскую создания уровней!");
     if (levelMakerTutorial) {
@@ -209,6 +214,7 @@ public class LevelMaker {
         int[] result = l.game();
         if (result[1] == 1) {
           levelInfo.setCompleted(true);
+          Log.getInstance().write("Уровень подтвержден!");
         }
       }
     }
@@ -217,6 +223,7 @@ public class LevelMaker {
   }
 
   public static void main(String[] args) {
+    Log.getInstance().write("Кто-то запустил программу от LevelMaker");
     make(false, false);
   }
 

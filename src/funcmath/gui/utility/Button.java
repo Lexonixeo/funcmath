@@ -1,4 +1,4 @@
-package funcmath.gui;
+package funcmath.gui.utility;
 
 import funcmath.exceptions.GuiException;
 import java.awt.*;
@@ -11,13 +11,15 @@ public class Button {
   int x, y;
   int width, height;
   String imagePath;
+  ButtonAction action;
 
-  public Button(int x, int y, int width, int height, String imagePath) {
+  public Button(int x, int y, int width, int height, String imagePath, ButtonAction action) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.imagePath = imagePath;
+    this.action = action;
   }
 
   public void paint(Graphics g) {
@@ -35,8 +37,6 @@ public class Button {
   }
 
   public void onMouseHit(int mouseX, int mouseY) {
-    if (isHit(mouseX, mouseY)) {
-      System.out.println("Button hit!");
-    }
+    action.onClick();
   }
 }

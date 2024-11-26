@@ -1,13 +1,15 @@
 package funcmath.gui;
 
+import funcmath.gui.panels.LoginPanel;
+import funcmath.gui.panels.MenuPanel;
+import funcmath.gui.utility.GamePanel;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import javax.swing.*;
 
-public class GameFrame extends JFrame implements MouseListener {
-  Button button;
+public class GameFrame extends JFrame {
+  GamePanel panel;
+  KeyboardFocusManager manager;
 
   public GameFrame() {
     this.setTitle("func(math)");
@@ -16,49 +18,61 @@ public class GameFrame extends JFrame implements MouseListener {
     // this.setUndecorated(true);
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-    this.addMouseListener(this);
+    manager =
+        KeyboardFocusManager
+            .getCurrentKeyboardFocusManager(); // менеджер по трудоустройству слушателей клавиатуры
 
-    button = new Button(100, 100, 200, 50, "data/images/test.png");
+    panel = new LoginPanel();
+
+    this.add(panel);
+
+    this.addMouseListener(panel);
+    this.addMouseMotionListener(panel);
+    manager.addKeyEventDispatcher(panel);
 
     this.setVisible(true);
-  }
 
-  public void draw(Graphics g) {
-    button.paint(g);
+    while (true) {
+      this.repaint();
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 
   @Override
   public void paint(Graphics g) {
-    BufferStrategy bufferStrategy = getBufferStrategy();        // Обращаемся к стратегии буферизации
-    if (bufferStrategy == null) {                               // Если она еще не создана
-      createBufferStrategy(2);                                // то создаем ее
-      bufferStrategy = getBufferStrategy();                   // и опять обращаемся к уже наверняка созданной стратегии
+    BufferStrategy bufferStrategy = getBufferStrategy(); // Обращаемся к стратегии буферизации
+    if (bufferStrategy == null) { // Если она еще не создана
+      createBufferStrategy(2); // то создаем ее
+      bufferStrategy =
+          getBufferStrategy(); // и опять обращаемся к уже наверняка созданной стратегии
     }
-    g = bufferStrategy.getDrawGraphics();                       // Достаем текущую графику (текущий буфер)
-    g.clearRect(0, 0, getWidth(), getHeight());                 // Очищаем наш холст (ведь там остался предыдущий кадр)
+    g = bufferStrategy.getDrawGraphics(); // Достаем текущую графику (текущий буфер)
+    g.clearRect(
+        0, 0, getWidth(), getHeight()); // Очищаем наш холст (ведь там остался предыдущий кадр)
 
-    draw(g);
+    panel.paint(g);
 
-    g.dispose();                // Освободить все временные ресурсы графики (после этого в нее уже нельзя рисовать)
-    bufferStrategy.show();      // Сказать буферизирующей стратегии отрисовать новый буфер (т.е. поменять показываемый и обновляемый буферы местами)
+    g.dispose(); // Освободить все временные ресурсы графики (после этого в нее уже нельзя рисовать)
+    bufferStrategy
+        .show(); // Сказать буферизирующей стратегии отрисовать новый буфер (т.е. Поменять
+                 // показываемый и обновляемый буферы местами)
   }
 
-  public void changePanel(String newPanel) {}
+  public void changePanel(String newPanel) {
+    this.removeMouseListener(panel);
+    this.removeMouseMotionListener(panel);
+    manager.removeKeyEventDispatcher(panel);
+    this.remove(panel);
 
-  @Override
-  public void mouseClicked(MouseEvent e) {}
+    panel = new MenuPanel();
 
-  @Override
-  public void mousePressed(MouseEvent e) {
-    button.onMouseHit(e.getX(), e.getY());
+    this.add(panel);
+    this.addMouseListener(panel);
+    this.addMouseMotionListener(panel);
+    manager.addKeyEventDispatcher(panel);
   }
-
-  @Override
-  public void mouseReleased(MouseEvent e) {}
-
-  @Override
-  public void mouseEntered(MouseEvent e) {}
-
-  @Override
-  public void mouseExited(MouseEvent e) {}
 }
