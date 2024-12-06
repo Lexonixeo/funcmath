@@ -31,11 +31,3 @@ bin/
 ### game
 funcmath.jar
 launch.bat
-data/players/
-data/customLevels/
-data/preLevels/
-data/functions.dat
-data/functions/
-data/objects/
-/data/currentLevel.dat
-/data/logs/
