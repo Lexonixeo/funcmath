@@ -79,7 +79,7 @@ public class FReal implements MathObject {
 
   public static FReal div(FReal dividend, FReal divisor) {
     if (divisor.get().equals(BigDecimal.ZERO)) {
-      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
+      throw new MathException("Dividing by zero doesn't make sense: " + dividend + "/" + divisor);
     }
     return new FReal(dividend.get().divide(divisor.get(), RoundingMode.HALF_UP));
   }

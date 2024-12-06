@@ -2,18 +2,17 @@ package funcmath.gui;
 
 import funcmath.gui.panel.*;
 import funcmath.gui.panel.Menu;
-import funcmath.gui.utility.GamePanel;
+import funcmath.gui.utility.GPanel;
 import java.awt.*;
-import java.awt.image.BufferStrategy;
 import java.util.HashMap;
 import javax.swing.*;
 
 public class GameFrame extends JFrame {
   private static final GameFrame instance = new GameFrame(); // singleton
 
-  GamePanel currentPanel;
+  GPanel currentPanel;
   KeyboardFocusManager manager;
-  HashMap<String, GamePanel> panels;
+  HashMap<String, GPanel> panels;
 
   private GameFrame() {
     this.setTitle("func(math)");
@@ -35,17 +34,9 @@ public class GameFrame extends JFrame {
     manager.addKeyEventDispatcher(currentPanel);
 
     this.setVisible(true);
-
-    while (true) {
-      this.repaint();
-      try {
-        Thread.sleep(10);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
   }
 
+  /*
   @Override
   public void paint(Graphics g) {
     BufferStrategy bufferStrategy = getBufferStrategy(); // Обращаемся к стратегии буферизации
@@ -64,6 +55,7 @@ public class GameFrame extends JFrame {
     bufferStrategy.show(); // Сказать буферизирующей стратегии отрисовать новый буфер
     // (т.е. Поменять показываемый и обновляемый буферы местами)
   }
+   */
 
   private void initPanels() {
     panels = new HashMap<>();

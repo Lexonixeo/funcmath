@@ -21,8 +21,8 @@ public class SimpleFunction {
         try {
           function = MathObject.class.getMethod("ignore", MathObject.class);
         } catch (NoSuchMethodException e) {
-          // как это произошло?
-          Log.getInstance().write("ПРОИЗОШЛО НЕМЫСЛИМОЕ: ОНО ПРОИЗОШЛО");
+          // how it happened?
+          Log.getInstance().write("THE UNTHINKABLE HAPPENED: IT HAPPENED (SFnoignore)");
           throw new JavaException(e);
         }
       }
@@ -43,9 +43,9 @@ public class SimpleFunction {
   public Object use(MathObject... args) {
     if (numberOfArgs != args.length) {
       throw new FunctionException(
-          "Не совпадает число аргументов функции: должно быть "
+          "Number of function arguments does not match: should be "
               + numberOfArgs
-              + ", есть: "
+              + ", but there is: "
               + args.length);
     }
 

@@ -27,14 +27,14 @@ public class LevelInfo implements Serializable {
   private LevelInfo() {}
 
   public LevelInfo(int level, int customFlag) {
-    Log.getInstance().write("Получается информация об уровне №" + level + "...");
+    Log.getInstance().write("Receiving information about level №" + level + "...");
     this.level = level;
     String levelSwitch =
         switch (customFlag) {
           case 0 -> "l";
           case 1 -> "customL";
           case 2 -> "preL";
-          default -> throw new LevelException("Несуществующий уровневый флаг: " + customFlag);
+          default -> throw new LevelException("A non-existent level flag: " + customFlag);
         };
     try {
       LevelInfo levelInfo =
@@ -51,7 +51,7 @@ public class LevelInfo implements Serializable {
       this.isCompleted = levelInfo.getCompleted();
       this.mode = levelInfo.getMode();
     } catch (ClassCastException e) {
-      Log.getInstance().write("Доисторический уровень №" + level);
+      Log.getInstance().write("Prehistoric level №" + level);
       int add = 0;
       if (customFlag == 2) {
         add = 1;
@@ -62,7 +62,7 @@ public class LevelInfo implements Serializable {
               Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat"),
               new ArrayList<>());
       if (generated.get(0).equals("nothing :)") && add == 0) {
-        Log.getInstance().write("Игрок попытался войти в непройденный уровень!");
+        Log.getInstance().write("The player has tried to enter an uncompleted level!");
         isCompleted = false;
       }
       originalNumbers = Helper.cast(generated.get(add), new ArrayList<>());
@@ -80,7 +80,7 @@ public class LevelInfo implements Serializable {
       mode = 0;
       Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
     }
-    Log.getInstance().write("Уровень загружен!");
+    Log.getInstance().write("The level is loaded!");
   }
 
   public LevelInfo(
@@ -95,7 +95,7 @@ public class LevelInfo implements Serializable {
       int level,
       int customFlag,
       int mode) {
-    Log.getInstance().write("Пытается создаться уровень с такими данными:");
+    Log.getInstance().write("Trying to create a level with such data:");
     Log.getInstance()
         .write(name + " " + resultClassName + " " + level + " " + customFlag + " " + mode);
     Log.getInstance().write(Helper.collectionToString(originalNumbers));
@@ -107,7 +107,7 @@ public class LevelInfo implements Serializable {
           case 0 -> "l";
           case 1 -> "customL";
           case 2 -> "preL";
-          default -> throw new LevelException("Несуществующий уровневый флаг: " + customFlag);
+          default -> throw new LevelException("A non-existent level flag: " + customFlag);
         };
 
     this.originalNumbers = originalNumbers;
@@ -120,7 +120,7 @@ public class LevelInfo implements Serializable {
     this.isCompleted = isCompleted;
     this.mode = mode;
     Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
-    Log.getInstance().write("Уровень создан!");
+    Log.getInstance().write("The level has been created!");
   }
 
   public String getName() {

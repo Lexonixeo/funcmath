@@ -15,6 +15,7 @@ public class Player {
   int lastLevel;
 
   public Player(String name, boolean registered) {
+    Log.getInstance().write("The data about the user " + name + ":" + registered + " is being read/wrote");
     this.name = name;
     this.ID = Integer.toHexString(name.hashCode());
 
@@ -28,10 +29,11 @@ public class Player {
 
       writePlayerInfo();
     }
+    Log.getInstance().write("User data has loaded!");
   }
 
   public void writePlayerInfo() {
-    Log.getInstance().write("Сохраняются данные о пользователе...");
+    Log.getInstance().write("The data about the user is writing...");
     ArrayList<Object> playerInfo = new ArrayList<>();
 
     playerInfo.add(this.completedLevels);
@@ -40,11 +42,11 @@ public class Player {
     playerInfo.add(lastLevel);
 
     Helper.write(playerInfo, "data/players/" + ID + ".dat");
-    Log.getInstance().write("Данные сохранены!");
+    Log.getInstance().write("The data is saved!");
   }
 
   public void readPlayerInfo() {
-    Log.getInstance().write("Читаются данные о пользователе...");
+    Log.getInstance().write("The data about the user is reading...");
     try {
       ArrayList<Object> playerInfo =
           Helper.cast(Helper.read("data\\players\\" + ID + ".dat"), new ArrayList<>());
@@ -70,7 +72,7 @@ public class Player {
 
       writePlayerInfo();
     }
-    Log.getInstance().write("Данные прочитаны!");
+    Log.getInstance().write("The data has been read!");
   }
 
   public void addLevel(boolean completed, int level, int functionUses, int time) {
@@ -90,7 +92,7 @@ public class Player {
     lastLevel = level;
 
     writePlayerInfo();
-    Log.getInstance().write("Игроку в статистику добавлены результаты за уровень");
+    Log.getInstance().write("The player has added the results for the level to the statistics");
   }
 
   public String getName() {

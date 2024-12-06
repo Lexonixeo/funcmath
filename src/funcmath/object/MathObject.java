@@ -43,7 +43,7 @@ public interface MathObject extends Serializable {
         return n;
       }
     }
-    throw new LevelException("Число " + name + " не обнаружено!");
+    throw new LevelException("The number \" + name + \" has not detected!");
   }
 
   static String makeMathObjectName() {
@@ -105,13 +105,14 @@ public interface MathObject extends Serializable {
   }
 
   static void loadMathObjects() {
-    Log.getInstance().write("Математические объекты загружаются...");
+    Log.getInstance().write("MathObjects are being loaded...");
     MathObject.loadMathObject(new FNatural());
     MathObject.loadMathObject(new FInteger());
     MathObject.loadMathObject(new FRational());
     MathObject.loadMathObject(new FReal());
     MathObject.loadMathObject(new FComplex());
     MathObject.loadMathObject(new FUnknown());
+    Log.getInstance().write("MathObjects has loaded!");
   }
 
   /*

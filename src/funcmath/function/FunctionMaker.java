@@ -110,7 +110,7 @@ public class FunctionMaker {
   public static boolean make(boolean functionMakerTutorial) {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
-    Log.getInstance().write("Игрок зашел в мастерскую создания функций");
+    Log.getInstance().write("The player went into the function maker");
 
     System.out.println("Добро пожаловать в мастерскую создания функций!");
     if (functionMakerTutorial) {
@@ -158,13 +158,13 @@ public class FunctionMaker {
         "Ваша функция теперь имеет ID: "
             + name
             + Integer.toHexString((functionHash % 256 + 256) % 256));
-    Log.getInstance().write("Создана новая функция в " + resultClassName + "/" + functionFileName);
+    Log.getInstance().write("Created a new function in " + resultClassName + "/" + functionFileName);
 
     return false;
   }
 
   public static void main(String[] args) {
-    Log.getInstance().write("Кто-то запустил программу от FunctionMaker");
+    Log.getInstance().write("Someone ran a program from class FunctionMaker");
     make(false);
   }
 }

@@ -32,7 +32,7 @@ public class Function implements Serializable {
   }
 
   /*
-  здесь будет простейшая функция
+  i'm planning here to do simple function
   public Function(String name) {
       this.name = name;
       this.description = ...
@@ -57,7 +57,7 @@ public class Function implements Serializable {
       int uses) {
     Log.getInstance()
         .write(
-            "Пытается создаться функция "
+            "Function is trying to initialize: "
                 + name
                 + ",\n"
                 + description
@@ -101,16 +101,16 @@ public class Function implements Serializable {
   }
 
   public ArrayList<MathObject> use(int mode, MathObject... x) {
-    Log.getInstance().write("Используется функция " + this);
+    Log.getInstance().write("Function is in use: " + this);
 
     if (mode == 0 && this.uses == 0) {
-      throw new FunctionException("У функции " + name + " закончилось число использований.");
+      throw new FunctionException("Function " + name + " hasn't any uses.");
     }
     if (x.length != numberOfArgs) {
       throw new FunctionException(
-          "Не совпадает число аргументов функции: должно быть "
+          "Number of function arguments does not match: should be "
               + numberOfArgs
-              + ", есть: "
+              + ", but there is: "
               + x.length);
     }
 

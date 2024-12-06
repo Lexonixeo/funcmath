@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class Helper {
   public static Object read(String pathname) {
-    Log.getInstance().write("Читается файл " + pathname);
+    Log.getInstance().write("Reading file " + pathname);
     Object ans;
     try {
       FileInputStream fis = new FileInputStream(pathname.replace('\\', '/'));
@@ -22,7 +22,7 @@ public class Helper {
   }
 
   public static void write(Object obj, String pathname) {
-    Log.getInstance().write("Записывается файл " + pathname);
+    Log.getInstance().write("Writing file " + pathname);
     try {
       File ourFile = new File(pathname.replace('\\', '/'));
       FileOutputStream fos = new FileOutputStream(ourFile);
@@ -81,7 +81,7 @@ public class Helper {
   }
 
   public static void clear() {
-    Log.getInstance().write("Очистка консоли!");
+    Log.getInstance().write("Clearing console!");
     try {
       if (System.getProperty("os.name").contains("Windows")) {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -126,7 +126,7 @@ public class Helper {
   }
 
   public static void generateDirectories() {
-    Log.getInstance().write("Директории генерируются...");
+    Log.getInstance().write("Directories is generating...");
     new File("data/customLevels").mkdirs();
     new File("data/functions").mkdirs();
     new File("data/levels").mkdirs();
@@ -149,6 +149,7 @@ public class Helper {
   }
 
   public static <T> T cast(Object obj, T resultClass) {
+    Log.getInstance().write("casting " + obj + " to " + resultClass.getClass());
     //noinspection unchecked
     return (T) obj;
   }

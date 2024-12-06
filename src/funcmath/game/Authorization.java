@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class Authorization {
   public static Player login(String name, String password) {
-    Log.getInstance().write("Происходит авторизация...");
+    Log.getInstance().write("Authorization is in progress...");
     HashMap<Integer, String> players;
     if (Helper.isNotFileExists("data\\players\\players.dat")) {
       players = new HashMap<>();
@@ -16,18 +16,18 @@ public class Authorization {
     }
 
     if (!players.containsValue(name)) {
-      throw new AuthorizationException("Пользователь не найден!");
+      throw new AuthorizationException("User not found!");
     } else if (!players.containsKey(password.hashCode())
         || !players.get(password.hashCode()).equals(name)) {
-      throw new AuthorizationException("Неверный пароль!");
+      throw new AuthorizationException("Incorrect password!");
     }
 
-    Log.getInstance().write("Игрок авторизирован: " + name);
+    Log.getInstance().write("Player authorized: " + name);
     return new Player(name, true);
   }
 
   public static Player register(String name, String password) {
-    Log.getInstance().write("Происходит регистрация...");
+    Log.getInstance().write("Registration is taking place...");
     HashMap<Integer, String> players;
     if (Helper.isNotFileExists("data\\players\\players.dat")) {
       players = new HashMap<>();
@@ -36,13 +36,13 @@ public class Authorization {
     }
 
     if (players.containsValue(name)) {
-      throw new AuthorizationException("Пользователь уже существует!");
+      throw new AuthorizationException("The user already exists!");
     }
 
     players.put(password.hashCode(), name);
     Helper.write(players, "data\\players\\players.dat");
 
-    Log.getInstance().write("Игрок зарегистрирован: " + name);
+    Log.getInstance().write("Player registered: " + name);
     return new Player(name, false);
   }
 

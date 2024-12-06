@@ -14,35 +14,35 @@ public class Game {
   boolean functionMakerTutorial = true;
 
   Game(Player player) {
-    Log.getInstance().write("Создана игра с игроком " + player);
+    Log.getInstance().write("A game has been created with a player " + player);
     this.player = player;
   }
 
   private void level(int level) {
-    Log.getInstance().write("Попытка зайти в уровень №" + level);
+    Log.getInstance().write("Attempting to enter level №" + level);
     int levels = Helper.filesCount("data\\levels\\");
     if (level > levels || level < 1) {
-      Log.getInstance().write("Игрок не смог зайти в уровень №" + level);
+      Log.getInstance().write("The player was unable to enter level №" + level);
       System.out.println("Такого уровня не существует!");
       return;
     }
     Level l = new Level(level, tutorial, 0);
     int[] result = l.game();
-    Log.getInstance().write("Уровень №" + level + " был завершен");
+    Log.getInstance().write("Level №" + level + " was completed");
     tutorial = (result[0] == 1);
     player.addLevel((result[1] == 1), level, result[2], result[3]);
   }
 
   private void customLevel(int level) {
-    Log.getInstance().write("Попытка зайти в пользовательский уровень №" + level);
+    Log.getInstance().write("Attempting to enter custom level №" + level);
     if (Helper.isNotFileExists("data\\customLevels\\level" + level + ".dat")) {
-      Log.getInstance().write("Игрок не смог зайти в пользовательский уровень №" + level);
+      Log.getInstance().write("The player was unable to enter custom level №" + level);
       System.out.println("Такого уровня не существует!");
       return;
     }
     Level l = new Level(level, tutorial, 1);
     int[] result = l.game();
-    Log.getInstance().write("Пользовательский уровень №" + level + " был завершен");
+    Log.getInstance().write("Custom level №" + level + " was completed");
     tutorial = (result[0] == 1);
     player.addLevel((result[1] == 1), level, result[2], result[3]);
   }
@@ -58,7 +58,7 @@ public class Game {
       }
     }
     if (!isAnyNotCompletedLevel) {
-      Log.getInstance().write("Игрок попытался вызвать play, при этом пройдя все уровни");
+      Log.getInstance().write("The player attempted to invoke play when he completed all the levels");
       System.out.println("Вы прошли все уровни!");
     }
   }
@@ -67,7 +67,7 @@ public class Game {
     int lastLevel = player.getLastLevel();
     if (lastLevel == 0) {
       Log.getInstance()
-          .write("Игрок попытался вызвать last, при этом не заходя ни в какой уровень");
+          .write("The player attempted to invoke last when he hasn't entered any level");
       System.out.println("Вы ещё не заходили в какой-либо уровень!");
       return;
     }
@@ -82,7 +82,7 @@ public class Game {
     int lastLevel = player.getLastLevel();
     if (lastLevel == 0) {
       Log.getInstance()
-          .write("Игрок попытался вызвать next, при этом не заходя ни в какой уровень");
+          .write("The player attempted to invoke next when he hasn't entered any level");
       System.out.println(
           "Вы ещё не заходили в какой-либо уровень!"); // переформулировать когда добавлю случайные
       // уровни
@@ -91,7 +91,7 @@ public class Game {
     if (lastLevel < 0) {
       Log.getInstance()
           .write(
-              "Игрок попытался вызвать next, при этом он играл в последний раз в пользовательский уровень");
+              "The player attempted to invoke next while playing the last time he was in a custom level");
       System.out.println("Не существует следующего уровня!");
       return;
     }
@@ -102,7 +102,7 @@ public class Game {
     int lastLevel = player.getLastLevel();
     if (lastLevel == 0) {
       Log.getInstance()
-          .write("Игрок попытался вызвать prev, при этом не заходя ни в какой уровень");
+          .write("The player attempted to invoke next when he hasn't entered any level");
       System.out.println(
           "Вы ещё не заходили в какой-либо уровень!"); // переформулировать когда добавлю случайные
       // уровни
@@ -111,7 +111,7 @@ public class Game {
     if (lastLevel < 0) {
       Log.getInstance()
           .write(
-              "Игрок попытался вызвать prev, при этом он играл в последний раз в пользовательский уровень");
+              "The player attempted to invoke next while playing the last time he was in a custom level");
       System.out.println("Не существует предыдущего уровня!");
       return;
     }
@@ -161,7 +161,7 @@ public class Game {
   private void list(int page) {
     ArrayList<Integer> levels = Level.getLevelList(Helper.getFileNames("data\\levels\\"));
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
-      Log.getInstance().write("Игрок попытался вызвать list с несуществующей страницей");
+      Log.getInstance().write("A player tried to invoke a list with a non-existent page");
       System.out.println("Не бывает такой страницы!");
       return;
     }
@@ -175,7 +175,7 @@ public class Game {
   private void clist(int page) {
     ArrayList<Integer> levels = Level.getLevelList(Helper.getFileNames("data\\customLevels\\"));
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
-      Log.getInstance().write("Игрок попытался вызвать clist с несуществующей страницей");
+      Log.getInstance().write("A player tried to invoke a clist with a non-existent page");
       System.out.println("Не бывает такой страницы!");
       return;
     }
@@ -215,7 +215,6 @@ public class Game {
 
   public void game() {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-    Helper.clear();
     menu();
     boolean running = true;
     while (running) {
@@ -224,7 +223,7 @@ public class Game {
       System.out.print("[Commander] Введите команду: ");
       String cmd = scanner.nextLine();
       ArrayList<String> command = Helper.wordsFromString(cmd);
-      Log.getInstance().write("Введена команда " + cmd);
+      Log.getInstance().write("Introduced the command " + cmd);
       String first_command = command.get(0);
       switch (first_command) {
         case "menu", "clear" -> menu();
@@ -232,11 +231,11 @@ public class Game {
         case "play" -> play();
         case "level" -> {
           if (command.size() > 2) {
-            Log.getInstance().write("Игрок попытался вызвать level с избытком аргументов");
+            Log.getInstance().write("The player tried to invoke level with excessive arguments");
             System.out.println("Избыток аргументов! Введите команду ещё раз.");
             continue;
           } else if (command.size() == 1) {
-            Log.getInstance().write("Игрок попытался вызвать level без аргументов");
+            Log.getInstance().write("The player tried to invoke level without arguments");
             System.out.println("Недостаточно аргументов! Введите команду ещё раз.");
             continue;
           }
@@ -244,7 +243,7 @@ public class Game {
           try {
             level = Integer.parseInt(command.get(1));
           } catch (NumberFormatException e) {
-            Log.getInstance().write("Игрок попытался вызвать level не от числа");
+            Log.getInstance().write("The player tried to invoke a level with NaN");
             System.out.println("Неверный аргумент: должно быть число!");
             continue;
           }
@@ -252,11 +251,11 @@ public class Game {
         }
         case "custom" -> {
           if (command.size() > 2) {
-            Log.getInstance().write("Игрок попытался вызвать custom с избытком аргументов");
+            Log.getInstance().write("The player tried to invoke custom with excessive arguments");
             System.out.println("Избыток аргументов! Введите команду ещё раз.");
             continue;
           } else if (command.size() == 1) {
-            Log.getInstance().write("Игрок попытался вызвать custom без аргументов");
+            Log.getInstance().write("The player tried to invoke custom without arguments");
             System.out.println("Недостаточно аргументов! Введите команду ещё раз.");
             continue;
           }
@@ -264,7 +263,7 @@ public class Game {
           try {
             level = Integer.parseInt(command.get(1));
           } catch (NumberFormatException e) {
-            Log.getInstance().write("Игрок попытался вызвать custom не от числа");
+            Log.getInstance().write("The player tried to invoke a custom with NaN");
             System.out.println("Неверный аргумент: должно быть число!");
             continue;
           }
@@ -276,7 +275,7 @@ public class Game {
             page = Integer.parseInt(command.get(1));
             list(page);
           } catch (NumberFormatException e) {
-            Log.getInstance().write("Игрок попытался вызвать list не от числа");
+            Log.getInstance().write("The player tried to invoke a list with NaN");
             System.out.println("Неверный аргумент: должно быть число!");
           } catch (IndexOutOfBoundsException e) {
             list(1);
@@ -288,7 +287,7 @@ public class Game {
             page = Integer.parseInt(command.get(1));
             clist(page);
           } catch (NumberFormatException e) {
-            Log.getInstance().write("Игрок попытался вызвать clist не от числа");
+            Log.getInstance().write("The player tried to invoke a clist with NaN");
             System.out.println("Неверный аргумент: должно быть число!");
           } catch (IndexOutOfBoundsException e) {
             clist(1);
@@ -314,7 +313,7 @@ public class Game {
             System.out.println("Неизвестная команда :( Введите help, чтобы узнать список команд.");
       }
     }
-    Log.getInstance().write("Игрок вышел из игры легальным путем!");
+    Log.getInstance().write("The player is out of the game legally!");
   }
 
   public static Game login() {

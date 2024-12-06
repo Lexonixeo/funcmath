@@ -35,10 +35,10 @@ public class Level implements Serializable {
   String name;
   boolean completed = false;
   HashSet<String> usingNames = new HashSet<>();
-  int levelMode; // 0 - обычный, 1 - выключить calc и back, числа не тратятся
+  int levelMode; // 0 - default, 1 - turn off calc and back, numbers isn't deleting
 
   public Level(int level, boolean tutorial, int customFlag) {
-    Log.getInstance().write("Игрок зашел в уровень №" + level);
+    Log.getInstance().write("The player entered the level №" + level);
 
     this.tutorial = tutorial;
     this.level = level;
@@ -46,7 +46,7 @@ public class Level implements Serializable {
     levelInfo = new LevelInfo(level, customFlag);
 
     if (!levelInfo.getCompleted() && customFlag != 2) {
-      throw new LevelException("Уровень " + level + " ещё не пройден создателем!");
+      throw new LevelException("Level " + level + " has not yet been passed by the creator!");
     }
 
     originalNumbers = levelInfo.getOriginalNumbers();
@@ -68,20 +68,20 @@ public class Level implements Serializable {
       fuses += f.getUses();
     }
 
-    Log.getInstance().write("Уровень №" + level + " загружен!");
+    Log.getInstance().write("Level №" + level + " was loaded!");
   }
 
   private void playCutscene() {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
-    Log.getInstance().write("Игрок читает катсцену...");
+    Log.getInstance().write("Player is reading cutscene...");
     for (String phrase : cutscene) {
       System.out.print(phrase + " ");
       scanner.nextLine();
     }
     System.out.println("\n\nНажмите Enter, чтобы продолжить...");
     scanner.nextLine();
-    Log.getInstance().write("Катсцена завершена!");
+    Log.getInstance().write("Cutscene was completed!");
   }
 
   private boolean numsCheck(ArrayList<MathObject> args) {
@@ -276,7 +276,7 @@ public class Level implements Serializable {
   }
 
   private void hint() {
-    Log.getInstance().write("Игрок попросил подсказку!");
+    Log.getInstance().write("A player asked for a hint!");
     if (hints.isEmpty()) {
       System.out.println("В этом уровне нет подсказок :(");
     }
@@ -315,7 +315,7 @@ public class Level implements Serializable {
     System.out.print("[Level] Введите выражение: ");
     String cmd = scanner.nextLine();
     ArrayList<String> command = Helper.wordsFromString(cmd);
-    Log.getInstance().write("Введено выражение " + cmd);
+    Log.getInstance().write("An expression is introduced: " + cmd);
     String first_command = command.get(0);
     switch (first_command) {
       case "exit", "menu", "stop" -> {
@@ -340,14 +340,14 @@ public class Level implements Serializable {
     usingNames.clear();
     for (Function f : functions.values()) {
       if (usingNames.contains(f.getName())) {
-        throw new FunctionException("Названия функций не должны повторяться: " + f.getName());
+        throw new FunctionException("Function names must not be repeated: " + f.getName());
       }
       usingNames.add(f.getName());
     }
     for (MathObject n : numbers) {
       if (n.getName() != null && usingNames.contains(n.getName())) {
         throw new MathObjectException(
-            "Названия объектов не должны повторяться с функциями или другими объектами: "
+            "MathObject names must not be repeated with Functions or other MathObjects: "
                 + n.getName());
       }
       if (n.getName() != null) {
@@ -383,7 +383,7 @@ public class Level implements Serializable {
           "Поздравляем! Вы получили число(а) "
               + Helper.collectionToString(answers)
               + " и прошли уровень!");
-      Log.getInstance().write("Уровень №" + level + " пройден!");
+      Log.getInstance().write("Level №" + level + " was completed!");
     }
     return new int[] {(tutorial ? 1 : 0), (completed ? 1 : 0), dFuses, time};
   }
@@ -416,6 +416,6 @@ public class Level implements Serializable {
 
   @Override
   public String toString() {
-    return "Уровень " + this.level + ": " + this.name;
+    return "Level " + this.level + ": " + this.name;
   }
 }

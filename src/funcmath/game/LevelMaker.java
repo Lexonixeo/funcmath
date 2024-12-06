@@ -14,7 +14,7 @@ public class LevelMaker {
   private static void tutorial() {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
-    Log.getInstance().write("Игрок читает туториал по уровням");
+    Log.getInstance().write("The player reads a tutorial on the levels");
     System.out.println("Добро пожаловать в мастерскую создания уровней!");
     System.out.println("Так как я плохо умею объяснять, буду пояснять на примере.");
     System.out.println("Будем вести пример на уровне №29.");
@@ -94,13 +94,13 @@ public class LevelMaker {
 
     System.out.println("Спасибо за прочтение!");
     scanner.nextLine();
-    Log.getInstance().write("Игрок прочитал туториал по уровням");
+    Log.getInstance().write("The player has read the tutorial on the levels");
   }
 
   public static boolean make(boolean levelMakerTutorial, boolean tutorial) {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
-    Log.getInstance().write("Игрок зашел в мастерскую создания уровней");
+    Log.getInstance().write("The player entered the level creation workshop");
 
     System.out.println("Добро пожаловать в мастерскую создания уровней!");
     if (levelMakerTutorial) {
@@ -213,7 +213,7 @@ public class LevelMaker {
         int[] result = l.game();
         if (result[1] == 1) {
           levelInfo.setCompleted(true);
-          Log.getInstance().write("Уровень подтвержден!");
+          Log.getInstance().write("The level is confirmed!");
         }
       }
     }
@@ -222,7 +222,7 @@ public class LevelMaker {
   }
 
   public static void main(String[] args) {
-    Log.getInstance().write("Кто-то запустил программу от LevelMaker");
+    Log.getInstance().write("Someone has launched a program from LevelMaker");
     make(false, false);
   }
 

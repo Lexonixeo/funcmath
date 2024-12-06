@@ -68,7 +68,7 @@ public class FInteger implements MathObject {
 
   public static FInteger div(FInteger dividend, FInteger divisor) {
     if (divisor.equals(ZERO)) {
-      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
+      throw new MathException("Dividing by zero doesn't make sense: " + dividend + "/" + divisor);
     } else {
       return new FInteger(sub(dividend, mod(dividend, divisor)).get().divide(divisor.get()));
     }
@@ -76,7 +76,7 @@ public class FInteger implements MathObject {
 
   public static FInteger mod(FInteger dividend, FInteger divisor) {
     if (divisor.equals(ZERO)) {
-      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "%" + divisor);
+      throw new MathException("Dividing by zero doesn't make sense: " + dividend + "%" + divisor);
     } else {
       return new FInteger(dividend.get().mod(divisor.get().abs()));
     }
@@ -85,7 +85,7 @@ public class FInteger implements MathObject {
   public static FInteger pow(FInteger base, FInteger power) {
     if (power.compareTo(ZERO) < 0 && base.compareTo(ZERO) == 0) {
       throw new MathException(
-          "Деление на ноль не имеет смысла: 1/(0^" + power.get().negate() + ")");
+          "Dividing by zero doesn't make sense: 1/(0^" + power.get().negate() + ")");
     }
 
     if (power.equals(ZERO)) {
@@ -120,7 +120,7 @@ public class FInteger implements MathObject {
       return root(pow(radicand, NEGATIVE_ONE), mul(degree, NEGATIVE_ONE));
     } else if (degree.equals(ZERO)) {
       throw new MathException(
-          "Деление на ноль не имеет смысла: " + radicand + "^(1/" + degree + ")");
+          "Dividing by zero doesn't make sense: " + radicand + "^(1/" + degree + ")");
     } else if (radicand.compareTo(ZERO) < 0 && mod(degree, TWO).equals(ZERO)) {
       throw new MathException(
           "Корни степени, делящейся на 2, не определены для отрицательных чисел");

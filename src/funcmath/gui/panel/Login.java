@@ -1,21 +1,37 @@
 package funcmath.gui.panel;
 
-import funcmath.gui.utility.Button;
-import funcmath.gui.utility.GamePanel;
+import funcmath.gui.utility.ButtonAction;
+import funcmath.gui.utility.GButton;
+import funcmath.gui.utility.GPanel;
+import funcmath.gui.utility.GTextField;
+import funcmath.utility.Log;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class Login extends GamePanel {
-  funcmath.gui.utility.Button button;
-
+public class Login extends GPanel {
   public Login() {
-    button = new Button(100, 100, 200, 50, "data/images/test.png", () -> {});
+    this.setLayout(null);
+    this.setBackground(Color.black);
+
+    GTextField x = new GTextField(300, 300, 100, 50, null);
+    this.add(x);
+
+    GButton y = new GButton(100, 100, 200, 50, "data/images/test.png", new ButtonAction() {
+      @Override
+      public void onClick() {}
+    });
+    this.add(y);
+
+    this.validate();
+    this.repaint();
   }
 
   @Override
   protected void paintComponent(Graphics g) {
-    button.paint(g);
+    g.setColor(Color.white);
+    g.fillRect(0,0, 1920, 1080);
   }
 
   @Override
@@ -27,9 +43,7 @@ public class Login extends GamePanel {
   public void mouseClicked(MouseEvent e) {}
 
   @Override
-  public void mousePressed(MouseEvent e) {
-    button.onMouseHit(e.getX(), e.getY());
-  }
+  public void mousePressed(MouseEvent e) {}
 
   @Override
   public void mouseReleased(MouseEvent e) {}

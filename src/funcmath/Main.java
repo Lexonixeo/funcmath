@@ -8,7 +8,7 @@ import funcmath.utility.Log;
 public class Main {
   public static void main(String[] args) {
     try {
-      Log.getInstance().write("Игрок зашел в игру");
+      Log.getInstance().write("Player has entered the game");
       Helper.generateDirectories();
       MathObject.loadMathObjects();
       Helper.clear();
@@ -27,7 +27,7 @@ public class Main {
           "Пришлите, пожалуйста, в телеграм @funcmath_bot файл "
               + Log.getInstance().getPathname()
               + ", чтобы я разобрался с данной проблемой.");
-      Log.getInstance().write("Игра завершена в связи с необработанной ошибкой");
+      Log.getInstance().write("The game is terminated due to an unhandled error");
     }
   }
 }
