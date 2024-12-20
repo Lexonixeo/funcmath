@@ -15,7 +15,8 @@ public class Player {
   int lastLevel;
 
   public Player(String name, boolean registered) {
-    Log.getInstance().write("The data about the user " + name + ":" + registered + " is being read/wrote");
+    Log.getInstance()
+        .write("The data about the user " + name + ":" + registered + " is being read/wrote");
     this.name = name;
     this.ID = Integer.toHexString(name.hashCode());
 

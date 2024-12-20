@@ -5,7 +5,7 @@ import funcmath.object.MathObject;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
 
-public class Main {
+public class ConsoleLaunch {
   public static void main(String[] args) {
     try {
       Log.getInstance().write("Player has entered the game");

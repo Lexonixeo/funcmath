@@ -29,7 +29,8 @@ public class FRational implements MathObject {
       denominator *= -1;
     }
     if (denominator == 0) {
-      throw new MathException("Dividing by zero doesn't make sense: " + numerator + "/" + denominator);
+      throw new MathException(
+          "Dividing by zero doesn't make sense: " + numerator + "/" + denominator);
     }
 
     this.numerator = new FInteger(numerator);
@@ -46,7 +47,8 @@ public class FRational implements MathObject {
       denominator = FInteger.mul(denominator, FInteger.NEGATIVE_ONE);
     }
     if (denominator.equals(FInteger.ZERO)) {
-      throw new MathException("Dividing by zero doesn't make sense: " + numerator + "/" + denominator);
+      throw new MathException(
+          "Dividing by zero doesn't make sense: " + numerator + "/" + denominator);
     }
 
     this.numerator = numerator;
@@ -63,7 +65,8 @@ public class FRational implements MathObject {
       denominator = denominator.multiply(BigInteger.ONE.negate());
     }
     if (denominator.equals(BigInteger.ZERO)) {
-      throw new MathException("Dividing by zero doesn't make sense: " + numerator + "/" + denominator);
+      throw new MathException(
+          "Dividing by zero doesn't make sense: " + numerator + "/" + denominator);
     }
 
     this.numerator = new FInteger(numerator);

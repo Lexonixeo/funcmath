@@ -1,8 +1,9 @@
 package funcmath.gui;
 
+import funcmath.game.Player;
 import funcmath.gui.panel.*;
 import funcmath.gui.panel.Menu;
-import funcmath.gui.utility.GPanel;
+import funcmath.gui.swing.GPanel;
 import java.awt.*;
 import java.util.HashMap;
 import javax.swing.*;
@@ -13,6 +14,7 @@ public class GameFrame extends JFrame {
   GPanel currentPanel;
   KeyboardFocusManager manager;
   HashMap<String, GPanel> panels;
+  Player player;
 
   private GameFrame() {
     this.setTitle("func(math)");
@@ -84,6 +86,14 @@ public class GameFrame extends JFrame {
     this.addMouseListener(currentPanel);
     this.addMouseMotionListener(currentPanel);
     manager.addKeyEventDispatcher(currentPanel);
+
+    this.invalidate();
+    this.validate();
+    this.repaint();
+  }
+
+  public void setPlayer(Player player) {
+    this.player = player;
   }
 
   public static GameFrame getInstance() {

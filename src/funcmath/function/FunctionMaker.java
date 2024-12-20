@@ -158,7 +158,8 @@ public class FunctionMaker {
         "Ваша функция теперь имеет ID: "
             + name
             + Integer.toHexString((functionHash % 256 + 256) % 256));
-    Log.getInstance().write("Created a new function in " + resultClassName + "/" + functionFileName);
+    Log.getInstance()
+        .write("Created a new function in " + resultClassName + "/" + functionFileName);
 
     return false;
   }

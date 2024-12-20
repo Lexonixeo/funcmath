@@ -4,7 +4,7 @@ import funcmath.gui.swing.GPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class FunctionMakerTutorial extends GPanel {
+public class ErrorPanel extends GPanel {
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {
     return false;

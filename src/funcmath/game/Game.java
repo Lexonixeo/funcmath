@@ -58,7 +58,8 @@ public class Game {
       }
     }
     if (!isAnyNotCompletedLevel) {
-      Log.getInstance().write("The player attempted to invoke play when he completed all the levels");
+      Log.getInstance()
+          .write("The player attempted to invoke play when he completed all the levels");
       System.out.println("Вы прошли все уровни!");
     }
   }

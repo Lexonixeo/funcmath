@@ -1,6 +1,6 @@
 package funcmath.gui.panel;
 
-import funcmath.gui.utility.GPanel;
+import funcmath.gui.swing.GPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 

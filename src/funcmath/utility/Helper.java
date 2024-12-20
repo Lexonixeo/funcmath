@@ -164,5 +164,14 @@ public class Helper {
     }
   }
 
+  public static <T extends Number> int[] toIntArray(ArrayList<T> al) {
+    int size = al.size();
+    int[] ans = new int[size];
+    for (int i = 0; i < size; i++) {
+      ans[i] = al.get(i).intValue();
+    }
+    return ans;
+  }
+
   // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ
 }

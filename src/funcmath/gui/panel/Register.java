@@ -1,10 +1,19 @@
 package funcmath.gui.panel;
 
-import funcmath.gui.utility.GPanel;
+import funcmath.gui.swing.GPanel;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class Register extends GPanel {
+  public Register() {
+    this.setLayout(null);
+    this.setBackground(Color.black);
+
+    this.validate();
+    this.repaint();
+  }
+
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {
     return false;
