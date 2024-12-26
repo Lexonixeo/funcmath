@@ -4,38 +4,32 @@ import funcmath.exceptions.AuthorizationException;
 import funcmath.game.Authorization;
 import funcmath.game.Player;
 import funcmath.gui.GameFrame;
-import funcmath.gui.paint.Background;
 import funcmath.gui.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import javax.swing.*;
 
 public class Login extends GPanel {
-  Background bg = new Background();
   boolean show = false;
 
   public Login() {
     this.setLayout(null);
     this.setBackground(Color.black);
 
-    GLabel nameLabel =
-        new GLabel(
-            (1920 - 250) / 2,
-            100,
-            250,
-            50,
-            "func(math)",
-            new Font("Comic Sans MS", Font.PLAIN, 40),
-            Color.white);
+    GLabel nameLabel = new GLabel((1920 - 250) / 2, 50, 250, 50);
+    nameLabel.setText("func(math)");
+    nameLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
+    nameLabel.setForeground(Color.white);
+    nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
     this.add(nameLabel);
 
     GButton logInButton =
         new GButton(
             (1920 - 300) / 2,
-            200,
+            150,
             140,
             60,
-            null,
             new ButtonAction() {
               @Override
               public void onClick() {}
@@ -50,10 +44,9 @@ public class Login extends GPanel {
     GButton signUpButton =
         new GButton(
             (1920 - 300) / 2 + 160,
-            200,
+            150,
             140,
             60,
-            null,
             new ButtonAction() {
               @Override
               public void onClick() {
@@ -66,32 +59,20 @@ public class Login extends GPanel {
     signUpButton.setText("Sign up");
     this.add(signUpButton);
 
-    GTextField focuser =
-        new GTextField(
-            0,
-            0,
-            1,
-            1,
-            null,
-            new TextFieldAction() {
-              @Override
-              public void onEnterPress() {}
-            },
-            "");
-    this.add(focuser);
+    GTextField focuses = new GFocuses();
+    this.add(focuses);
 
     GTextField nameField =
         new GTextField(
             (1920 - 300) / 2,
-            300,
+            250,
             300,
             50,
-            null,
             new TextFieldAction() {
               @Override
               public void onEnterPress() {}
-            },
-            "username");
+            });
+    nameField.setText("username");
     nameField.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
     nameField.setBackground(new Color(56, 109, 80));
     nameField.setForeground(Color.white);
@@ -100,59 +81,30 @@ public class Login extends GPanel {
     GPasswordField passField =
         new GPasswordField(
             (1920 - 300) / 2,
-            400,
+            350,
             300,
             50,
-            null,
             new TextFieldAction() {
               @Override
               public void onEnterPress() {}
-            },
-            "password");
+            });
+    passField.setText("password");
     passField.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
     passField.setBackground(new Color(56, 109, 80));
     passField.setForeground(Color.white);
     this.add(passField);
 
-    GButton showPassword =
-        new GButton(
-            (1920 - 300) / 2 + 350,
-            400,
-            50,
-            50,
-            null,
-            new ButtonAction() {
-              @Override
-              public void onClick() {
-                show = !show;
-                if (show) {
-                  passField.setEchoChar((char) 0);
-                } else {
-                  passField.setEchoChar('*');
-                }
-              }
-            });
-    showPassword.setBackground(new Color(56, 109, 80));
-    this.add(showPassword);
-
-    GLabel errorInfo =
-        new GLabel(
-            (1920 - 300) / 2,
-            600,
-            300,
-            50,
-            "",
-            new Font("Comic Sans MS", Font.PLAIN, 25),
-            Color.white);
+    GLabel errorInfo = new GLabel((1920 - 300) / 2, 550, 300, 50);
+    errorInfo.setFont(new Font("Comic Sans MS", Font.PLAIN, 25));
+    errorInfo.setForeground(Color.white);
     this.add(errorInfo);
 
     GButton tryLogInButton =
         new GButton(
             (1920 - 300) / 2,
-            500,
+            450,
             300,
             50,
-            null,
             new ButtonAction() {
               @Override
               public void onClick() {
@@ -162,6 +114,7 @@ public class Login extends GPanel {
                   errorInfo.setText("");
                   Player p = Authorization.login(username, password);
                   GameFrame.getInstance().setPlayer(p);
+                  GameFrame.getInstance().changePanel("menu");
                 } catch (AuthorizationException e) {
                   errorInfo.setText(e.getMessage());
                 }
@@ -172,6 +125,22 @@ public class Login extends GPanel {
     tryLogInButton.setBackground(new Color(56, 109, 80));
     tryLogInButton.setText("Log in!");
     this.add(tryLogInButton);
+
+      GButton showPassword =
+              new GButton(
+                      (1920 - 300) / 2 + 350,
+                      350,
+                      50,
+                      50,
+                      new ButtonAction() {
+                          @Override
+                          public void onClick() {
+                              show = !show;
+                              passField.setShow(show);
+                          }
+                      });
+      showPassword.setBackground(new Color(56, 109, 80));
+      this.add(showPassword);
 
     this.validate();
     this.repaint();

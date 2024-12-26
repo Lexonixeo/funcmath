@@ -1,6 +1,7 @@
-package funcmath.game;
+package funcmath.console;
 
-import funcmath.function.FunctionMaker;
+import funcmath.game.Authorization;
+import funcmath.game.Player;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +27,7 @@ public class Game {
       System.out.println("Такого уровня не существует!");
       return;
     }
-    Level l = new Level(level, tutorial, 0);
+    LevelConsole l = new LevelConsole(level, tutorial, 0);
     int[] result = l.game();
     Log.getInstance().write("Level №" + level + " was completed");
     tutorial = (result[0] == 1);
@@ -40,7 +41,7 @@ public class Game {
       System.out.println("Такого уровня не существует!");
       return;
     }
-    Level l = new Level(level, tutorial, 1);
+    LevelConsole l = new LevelConsole(level, tutorial, 1);
     int[] result = l.game();
     Log.getInstance().write("Custom level №" + level + " was completed");
     tutorial = (result[0] == 1);
@@ -160,7 +161,7 @@ public class Game {
   }
 
   private void list(int page) {
-    ArrayList<Integer> levels = Level.getLevelList(Helper.getFileNames("data\\levels\\"));
+    ArrayList<Integer> levels = LevelConsole.getLevelList(Helper.getFileNames("data\\levels\\"));
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
       Log.getInstance().write("A player tried to invoke a list with a non-existent page");
       System.out.println("Не бывает такой страницы!");
@@ -169,12 +170,12 @@ public class Game {
     Helper.clear();
     System.out.println("Страница " + page + " из " + ((levels.size() - 1) / 20 + 1));
     for (int i = 20 * (page - 1); i < Math.min(20 * page, levels.size()); i++) {
-      System.out.println(new Level(levels.get(i), false, 0));
+      System.out.println(new LevelConsole(levels.get(i), false, 0));
     }
   }
 
   private void clist(int page) {
-    ArrayList<Integer> levels = Level.getLevelList(Helper.getFileNames("data\\customLevels\\"));
+    ArrayList<Integer> levels = LevelConsole.getLevelList(Helper.getFileNames("data\\customLevels\\"));
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
       Log.getInstance().write("A player tried to invoke a clist with a non-existent page");
       System.out.println("Не бывает такой страницы!");
@@ -183,7 +184,7 @@ public class Game {
     Helper.clear();
     System.out.println("Страница " + page + " из " + ((levels.size() - 1) / 20 + 1));
     for (int i = 20 * (page - 1); i < Math.min(20 * page, levels.size()); i++) {
-      System.out.println(new Level(levels.get(i), false, 1));
+      System.out.println(new LevelConsole(levels.get(i), false, 1));
     }
   }
 

@@ -5,7 +5,6 @@ import funcmath.gui.panel.*;
 import funcmath.gui.panel.Menu;
 import funcmath.gui.swing.GPanel;
 import java.awt.*;
-import java.util.HashMap;
 import javax.swing.*;
 
 public class GameFrame extends JFrame {
@@ -13,7 +12,6 @@ public class GameFrame extends JFrame {
 
   GPanel currentPanel;
   KeyboardFocusManager manager;
-  HashMap<String, GPanel> panels;
   Player player;
 
   private GameFrame() {
@@ -27,9 +25,8 @@ public class GameFrame extends JFrame {
         KeyboardFocusManager
             .getCurrentKeyboardFocusManager(); // менеджер по трудоустройству слушателей клавиатуры
 
-    initPanels();
+    currentPanel = new Login();
 
-    currentPanel = panels.get("login");
     this.add(currentPanel);
     this.addMouseListener(currentPanel);
     this.addMouseMotionListener(currentPanel);
@@ -59,28 +56,26 @@ public class GameFrame extends JFrame {
   }
    */
 
-  private void initPanels() {
-    panels = new HashMap<>();
-    panels.put("login", new Login());
-    panels.put("register", new Register());
-    panels.put("menu", new Menu());
-    panels.put("stats", new Statistics());
-    panels.put("settings", new Settings());
-    panels.put("tutorial", new Tutorial());
-    panels.put("level", new LevelPanel());
-    panels.put("level maker", new LevelMakerPanel());
-    panels.put("level maker tutorial", new LevelMakerTutorial());
-    panels.put("function maker", new FunctionMakerPanel());
-    panels.put("function maker tutorial", new FunctionMakerTutorial());
-  }
-
   public void changePanel(String panelKey) {
     this.removeMouseListener(currentPanel);
     this.removeMouseMotionListener(currentPanel);
     manager.removeKeyEventDispatcher(currentPanel);
     this.remove(currentPanel);
 
-    currentPanel = panels.get(panelKey);
+    currentPanel = switch(panelKey) {
+      case "login" -> new Login();
+      case "register" -> new Register();
+      case "menu" -> new Menu();
+      case "stats" -> new Statistics();
+      case "settings" -> new Settings();
+      case "tutorial" -> new Tutorial();
+      case "level" -> new LevelPanel();
+      case "level maker" -> new LevelMakerPanel();
+      case "level maker tutorial" -> new LevelMakerTutorial();
+      case "function maker" -> new FunctionMakerPanel();
+      case "function maker tutorial" -> new FunctionMakerTutorial();
+        default -> throw new IllegalStateException("Unexpected value: " + panelKey);
+    };
 
     this.add(currentPanel);
     this.addMouseListener(currentPanel);
@@ -94,6 +89,10 @@ public class GameFrame extends JFrame {
 
   public void setPlayer(Player player) {
     this.player = player;
+  }
+
+  public Player getPlayer() {
+    return player;
   }
 
   public static GameFrame getInstance() {

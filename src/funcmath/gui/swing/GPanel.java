@@ -9,6 +9,8 @@ import javax.swing.*;
 public abstract class GPanel extends JPanel
     implements KeyEventDispatcher, MouseListener, MouseMotionListener {
 
+  public void reset() {}
+
   @Override
   protected void paintComponent(Graphics g) {
     BackgroundManager.getInstance().getCurrentBackground().draw(g);

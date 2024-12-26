@@ -1,6 +1,5 @@
-package funcmath;
+package funcmath.console;
 
-import funcmath.game.Game;
 import funcmath.object.MathObject;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;

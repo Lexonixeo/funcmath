@@ -9,24 +9,14 @@ import javax.swing.*;
 public class GButton extends JButton {
   int x, y;
   int width, height;
-  String imagePath;
 
-  public GButton(int x, int y, int width, int height, String imagePath, ButtonAction action) {
+  public GButton(int x, int y, int width, int height, ButtonAction action) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.imagePath = imagePath;
     this.setLocation(x, y);
     this.setSize(width, height);
-    if (imagePath != null) {
-      try {
-        Image img = ImageIO.read(new File(imagePath));
-        this.setIcon(new ImageIcon(img.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-      } catch (Exception ex) {
-        throw new GuiException(ex);
-      }
-    }
     this.addActionListener(action);
   }
 
@@ -42,5 +32,14 @@ public class GButton extends JButton {
     this.width = width;
     this.height = height;
     super.setSize(width, height);
+  }
+
+  public void setImage(String imagePath) {
+    try {
+      Image img = ImageIO.read(new File(imagePath));
+      this.setIcon(new ImageIcon(img.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+    } catch (Exception ex) {
+      throw new GuiException(ex);
+    }
   }
 }

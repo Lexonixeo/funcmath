@@ -12,6 +12,7 @@ public class Player {
   HashSet<Integer> completedLevels;
   HashMap<Integer, Integer> minFunctionUsesInLevel;
   HashMap<Integer, Integer> minTimeInLevel;
+  HashMap<Integer, LevelState> savings;
   int lastLevel;
 
   public Player(String name, boolean registered) {

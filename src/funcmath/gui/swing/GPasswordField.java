@@ -10,18 +10,11 @@ public class GPasswordField extends JPasswordField {
 
   int x, y;
   int width, height;
-  String imagePath;
   TextFieldAction action;
   boolean firstFocus = false;
+  boolean show = true;
 
-  public GPasswordField(
-      int x,
-      int y,
-      int width,
-      int height,
-      String imagePath,
-      TextFieldAction action,
-      String defaultText) {
+  public GPasswordField(int x, int y, int width, int height, TextFieldAction action) {
     manager =
         KeyboardFocusManager
             .getCurrentKeyboardFocusManager(); // менеджер по трудоустройству слушателей клавиатуры
@@ -30,13 +23,11 @@ public class GPasswordField extends JPasswordField {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.imagePath = imagePath;
     this.setLocation(x, y);
     this.setSize(width, height);
     this.action = action;
 
-    this.setText(defaultText);
-    this.setEchoChar((char) 0);
+    this.setShow(true);
 
     this.addFocusListener(
         new FocusListener() {
@@ -46,7 +37,7 @@ public class GPasswordField extends JPasswordField {
             if (!firstFocus) {
               setText("");
               firstFocus = true;
-              setEchoChar('*');
+              setShow(false);
             }
           }
 
@@ -55,6 +46,15 @@ public class GPasswordField extends JPasswordField {
             manager.removeKeyEventDispatcher(action);
           }
         });
+  }
+
+  public void setShow(boolean show) {
+    this.show = show;
+    if (show) {
+      this.setEchoChar((char) 0);
+    } else {
+      setEchoChar('*');
+    }
   }
 
   @Override

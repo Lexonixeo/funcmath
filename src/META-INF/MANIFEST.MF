@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: funcmath.ConsoleLaunch
+Main-Class: funcmath.console.ConsoleLaunch
 Class-Path: lib/big-math-2.3.2.jar

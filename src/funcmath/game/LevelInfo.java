@@ -20,6 +20,7 @@ public class LevelInfo implements Serializable {
   ArrayList<MathObject> answers;
   String resultClassName;
   String name;
+  ArrayList<String> functionNames;
   boolean isCompleted;
   int level;
   int mode = 0;
@@ -36,50 +37,20 @@ public class LevelInfo implements Serializable {
           case 2 -> "preL";
           default -> throw new LevelException("A non-existent level flag: " + customFlag);
         };
-    try {
-      LevelInfo levelInfo =
-          Helper.cast(
-              Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat"),
-              new LevelInfo());
-      this.originalNumbers = levelInfo.getOriginalNumbers();
-      this.originalFunctions = levelInfo.getOriginalFunctions();
-      this.hints = levelInfo.getHints();
-      this.cutscene = levelInfo.getCutscene();
-      this.answers = levelInfo.getAnswers();
-      this.resultClassName = levelInfo.getResultClassName();
-      this.name = levelInfo.getName();
-      this.isCompleted = levelInfo.getCompleted();
-      this.mode = levelInfo.getMode();
-    } catch (ClassCastException e) {
-      Log.getInstance().write("Prehistoric level №" + level);
-      int add = 0;
-      if (customFlag == 2) {
-        add = 1;
-      }
-      isCompleted = true;
-      ArrayList<Object> generated =
-          Helper.cast(
-              Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat"),
-              new ArrayList<>());
-      if (generated.get(0).equals("nothing :)") && add == 0) {
-        Log.getInstance().write("The player has tried to enter an uncompleted level!");
-        isCompleted = false;
-      }
-      originalNumbers = Helper.cast(generated.get(add), new ArrayList<>());
-      originalFunctions = Helper.cast(generated.get(1 + add), new HashMap<>());
-      try {
-        answers = Helper.cast(generated.get(2 + add), new ArrayList<>());
-      } catch (RuntimeException ej) {
-        answers = new ArrayList<>();
-        answers.add((MathObject) generated.get(2 + add));
-      }
-      hints = Helper.cast(generated.get(3 + add), new ArrayList<>());
-      resultClassName = (String) generated.get(4 + add);
-      cutscene = Helper.cast(generated.get(5 + add), new ArrayList<>());
-      name = (String) generated.get(6 + add);
-      mode = 0;
-      Helper.write(this, "data\\" + levelSwitch + "evels\\level" + level + ".dat");
-    }
+    LevelInfo levelInfo =
+        Helper.cast(
+            Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat"),
+            new LevelInfo());
+    this.originalNumbers = levelInfo.getOriginalNumbers();
+    this.originalFunctions = levelInfo.getOriginalFunctions();
+    this.hints = levelInfo.getHints();
+    this.cutscene = levelInfo.getCutscene();
+    this.answers = levelInfo.getAnswers();
+    this.resultClassName = levelInfo.getResultClassName();
+    this.name = levelInfo.getName();
+    this.isCompleted = levelInfo.getCompleted();
+    this.mode = levelInfo.getMode();
+    this.functionNames = new ArrayList<>(originalFunctions.keySet());
     Log.getInstance().write("The level is loaded!");
   }
 
@@ -157,6 +128,14 @@ public class LevelInfo implements Serializable {
 
   public int getMode() {
     return mode;
+  }
+
+  public LevelState getLevelState() {
+    return new LevelState(level, originalNumbers, originalFunctions);
+  }
+
+  public ArrayList<String> getFunctionNames() {
+    return functionNames;
   }
 
   public void setCompleted(boolean isCompleted) {

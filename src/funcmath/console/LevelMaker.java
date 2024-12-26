@@ -1,6 +1,7 @@
-package funcmath.game;
+package funcmath.console;
 
 import funcmath.function.Function;
+import funcmath.game.LevelInfo;
 import funcmath.object.MathObject;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
@@ -209,7 +210,7 @@ public class LevelMaker {
       System.out.print("Будете проходить? y/n ");
       String answer = scanner.nextLine();
       if (answer.equals("y") || answer.equals("у")) {
-        Level l = new Level(levelID, tutorial, 2);
+        LevelConsole l = new LevelConsole(levelID, tutorial, 2);
         int[] result = l.game();
         if (result[1] == 1) {
           levelInfo.setCompleted(true);

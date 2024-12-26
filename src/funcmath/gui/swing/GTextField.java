@@ -10,19 +10,11 @@ public class GTextField extends JTextField {
 
   int x, y;
   int width, height;
-  String imagePath;
   TextFieldAction action;
 
   boolean firstFocus = false;
 
-  public GTextField(
-      int x,
-      int y,
-      int width,
-      int height,
-      String imagePath,
-      TextFieldAction action,
-      String defaultText) {
+  public GTextField(int x, int y, int width, int height, TextFieldAction action) {
     manager =
         KeyboardFocusManager
             .getCurrentKeyboardFocusManager(); // менеджер по трудоустройству слушателей клавиатуры
@@ -31,12 +23,9 @@ public class GTextField extends JTextField {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.imagePath = imagePath;
     this.setLocation(x, y);
     this.setSize(width, height);
     this.action = action;
-
-    this.setText(defaultText);
 
     this.addFocusListener(
         new FocusListener() {
