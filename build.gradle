@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "funcmath.console.ConsoleLaunch"
+    }
+    archiveFileName.set("funcmath.jar")
+    destinationDirectory.set(file("/"))
+}
+
+group = 'funcmath'
+version = '1.4'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation('ch.obermuhlner:big-math:2.3.2')
+}
+
+test {
+    useJUnitPlatform()
+}

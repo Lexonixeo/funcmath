@@ -26,9 +26,6 @@ public interface MathObject extends Serializable {
 
   String getName(); // название числа (типа A, B, ...), null если само число не требует названия
 
-  @Override
-  int hashCode();
-
   static MathObject[] ignore(MathObject ignoredA) {
     return new MathObject[] {};
   }
