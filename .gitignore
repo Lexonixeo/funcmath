@@ -30,6 +30,7 @@ bin/
 
 ### Gradle ###
 build/
+.gradle/
 
 ### game
 funcmath.jar
