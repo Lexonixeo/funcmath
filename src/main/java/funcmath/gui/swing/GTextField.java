@@ -14,19 +14,14 @@ public class GTextField extends JTextField {
 
   boolean firstFocus = false;
 
-  public GTextField(int x, int y, int width, int height, TextFieldAction action) {
+  public GTextField() {
     manager =
         KeyboardFocusManager
             .getCurrentKeyboardFocusManager(); // менеджер по трудоустройству слушателей клавиатуры
+  }
 
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.setLocation(x, y);
-    this.setSize(width, height);
+  public void setTextFieldAction(TextFieldAction action) {
     this.action = action;
-
     this.addFocusListener(
         new FocusListener() {
           @Override

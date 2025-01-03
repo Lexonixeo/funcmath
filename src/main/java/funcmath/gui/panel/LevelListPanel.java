@@ -1,4 +1,3 @@
 package funcmath.gui.panel;
 
-public class LevelListPanel {
-}
+public class LevelListPanel {}

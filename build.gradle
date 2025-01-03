@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'java-library'
+    id('com.jaredsburrows.license') version '0.9.8'
 }
 
 java {
@@ -11,10 +12,29 @@ java {
 
 jar {
     manifest {
-        attributes "Main-Class": "funcmath.console.ConsoleLaunch"
+        attributes "Main-Class": "funcmath.gui.MainTest"
     }
     archiveFileName.set("funcmath.jar")
     destinationDirectory.set(file("/"))
+}
+
+tasks.register('uberJar', Jar) {
+    manifest {
+        attributes "Main-Class": "funcmath.console.ConsoleLaunch"
+    }
+
+    archiveClassifier = 'uber'
+
+    archiveFileName.set("funcmath.jar")
+
+    destinationDirectory.set(file("/"))
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
 }
 
 group = 'funcmath'

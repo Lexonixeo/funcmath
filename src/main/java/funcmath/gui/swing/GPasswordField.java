@@ -14,21 +14,16 @@ public class GPasswordField extends JPasswordField {
   boolean firstFocus = false;
   boolean show = true;
 
-  public GPasswordField(int x, int y, int width, int height, TextFieldAction action) {
+  public GPasswordField() {
     manager =
         KeyboardFocusManager
             .getCurrentKeyboardFocusManager(); // менеджер по трудоустройству слушателей клавиатуры
 
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.setLocation(x, y);
-    this.setSize(width, height);
-    this.action = action;
-
     this.setShow(true);
+  }
 
+  public void setTextFieldAction(TextFieldAction action) {
+    this.action = action;
     this.addFocusListener(
         new FocusListener() {
           @Override

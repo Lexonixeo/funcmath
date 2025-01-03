@@ -7,8 +7,8 @@ import funcmath.utility.Log;
 public class ConsoleLaunch {
   public static void main(String[] args) {
     try {
-      Log.getInstance().write("Player has entered the game");
       Helper.generateDirectories();
+      Log.getInstance().write("Directories is generated! Player has entered the game.");
       MathObject.loadMathObjects();
       Helper.clear();
       System.out.println(

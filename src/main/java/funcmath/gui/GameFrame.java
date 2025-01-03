@@ -16,8 +16,8 @@ public class GameFrame extends JFrame {
 
   private GameFrame() {
     this.setTitle("func(math)");
-    this.setSize(1920, 1040);
-    // this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    this.setSize(1920, 825);
+    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     // this.setUndecorated(true);
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -27,7 +27,7 @@ public class GameFrame extends JFrame {
 
     currentPanel = new Login();
 
-    this.add(currentPanel);
+    this.setContentPane(currentPanel);
     this.addMouseListener(currentPanel);
     this.addMouseMotionListener(currentPanel);
     manager.addKeyEventDispatcher(currentPanel);
@@ -60,24 +60,24 @@ public class GameFrame extends JFrame {
     this.removeMouseListener(currentPanel);
     this.removeMouseMotionListener(currentPanel);
     manager.removeKeyEventDispatcher(currentPanel);
-    this.remove(currentPanel);
 
-    currentPanel = switch(panelKey) {
-      case "login" -> new Login();
-      case "register" -> new Register();
-      case "menu" -> new Menu();
-      case "stats" -> new Statistics();
-      case "settings" -> new Settings();
-      case "tutorial" -> new Tutorial();
-      case "level" -> new LevelPanel();
-      case "level maker" -> new LevelMakerPanel();
-      case "level maker tutorial" -> new LevelMakerTutorial();
-      case "function maker" -> new FunctionMakerPanel();
-      case "function maker tutorial" -> new FunctionMakerTutorial();
-        default -> throw new IllegalStateException("Unexpected value: " + panelKey);
-    };
+    currentPanel =
+        switch (panelKey) {
+          case "login" -> new Login();
+          case "register" -> new Register();
+          case "menu" -> new Menu();
+          case "stats" -> new Statistics();
+          case "settings" -> new Settings();
+          case "tutorial" -> new Tutorial();
+          case "level" -> new LevelPanel();
+          case "level maker" -> new LevelMakerPanel();
+          case "level maker tutorial" -> new LevelMakerTutorial();
+          case "function maker" -> new FunctionMakerPanel();
+          case "function maker tutorial" -> new FunctionMakerTutorial();
+          default -> throw new IllegalStateException("Unexpected value: " + panelKey);
+        };
 
-    this.add(currentPanel);
+    this.setContentPane(currentPanel);
     this.addMouseListener(currentPanel);
     this.addMouseMotionListener(currentPanel);
     manager.addKeyEventDispatcher(currentPanel);

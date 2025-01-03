@@ -126,6 +126,8 @@ public class Helper {
   }
 
   public static void generateDirectories() {
+    new File("data").mkdirs();
+    new File("data/logs").mkdirs();
     Log.getInstance().write("Directories is generating...");
     new File("data/customLevels").mkdirs();
     new File("data/functions").mkdirs();
@@ -135,7 +137,6 @@ public class Helper {
     new File("data/locales").mkdirs();
     new File("data/objects").mkdirs();
     new File("data/images").mkdirs();
-    new File("data/logs").mkdirs();
   }
 
   public static <T> String collectionToString(Collection<T> list) {
@@ -171,6 +172,10 @@ public class Helper {
       ans[i] = al.get(i).intValue();
     }
     return ans;
+  }
+
+  public static String toHtmlString(String s) {
+    return "<html>" + s.replace("\n", "<br\\>") + "<html\\>";
   }
 
   // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ

@@ -5,9 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class LevelPanel extends GPanel {
-  public LevelPanel() {
-
-  }
+  public LevelPanel() {}
 
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {
