@@ -1,5 +1,7 @@
 package funcmath.console;
 
+import funcmath.game.Level;
+import funcmath.game.defaultlevel.DefaultLevel;
 import funcmath.object.MathObject;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
@@ -10,6 +12,7 @@ public class ConsoleLaunch {
       Helper.generateDirectories();
       Log.getInstance().write("Directories is generated! Player has entered the game.");
       MathObject.loadMathObjects();
+      Level.loadLevelType(new DefaultLevel());
       Helper.clear();
       System.out.println(
           "ВНИМАНИЕ: Согласно стандартам ISO 80000-2:2019 и ГОСТ Р 54521-2011 мы принимаем число 0 как условно натуральное.");

@@ -100,10 +100,10 @@ public class Function implements Serializable {
     return uses;
   }
 
-  public ArrayList<MathObject> use(int mode, MathObject... x) {
+  public ArrayList<MathObject> use(boolean isInfinityFunctions, MathObject... x) {
     Log.getInstance().write("Function is in use: " + this);
 
-    if (mode == 0 && this.uses == 0) {
+    if (!isInfinityFunctions && this.uses == 0) {
       throw new FunctionException("Function " + name + " hasn't any uses.");
     }
     if (x.length != numberOfArgs) {
@@ -156,7 +156,7 @@ public class Function implements Serializable {
       }
     }
 
-    if (mode == 0 || mode == 2) this.uses--;
+    if (!isInfinityFunctions) this.uses--;
     return nums.peek();
   }
 

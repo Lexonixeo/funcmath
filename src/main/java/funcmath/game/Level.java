@@ -1,56 +1,74 @@
 package funcmath.game;
 
-import funcmath.function.Function;
-import funcmath.object.MathObject;
+import funcmath.exceptions.JavaException;
+import funcmath.exceptions.LevelException;
+import funcmath.gui.swing.GPanel;
 import funcmath.utility.Helper;
 
-import java.io.Serial;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.io.Serializable;
-import java.util.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 
-public class Level implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -815013050840486071L;
+public interface Level extends Serializable {
+  HashMap<String, Level> LEVEL_HASH_MAP = new HashMap<>();
 
-    LevelInfo levelInfo;
-    LevelState currentLevelState;
-    Stack<LevelState> history;
+  String getType();
 
-    boolean tutorial;
-    int hint;
-    boolean isCompleted = false;
-    HashSet<String> usingNames = new HashSet<>();
+  String getName();
 
-    public boolean numsCheck(ArrayList<MathObject> args) {
-        ArrayList<MathObject> nums = Helper.deepClone(currentLevelState.getNumbers());
-        for (MathObject arg : args) {
-            if (nums.contains(arg)) nums.remove(arg);
-            else return false;
-        }
-        return true;
+  int getLevel();
+
+  Cutscene getCutscene();
+
+  int[] consoleRun(InputStream in, PrintStream out);
+
+  int[] guiRun(GPanel panel);
+
+  static ArrayList<Integer> getLevelList(ArrayList<String> fileNames) {
+    ArrayList<Integer> answer = new ArrayList<>();
+    for (String fileName : fileNames) {
+      answer.add(Integer.parseInt(fileName.substring(5, fileName.length() - 4)));
     }
+    answer.sort(Comparator.naturalOrder());
+    return answer;
+  }
 
-    public void restart() {
-        currentLevelState = levelInfo.getLevelState();
-        history.clear();
-        history.add(Helper.deepClone(currentLevelState));
+  static void loadLevelType(Level x) {
+    String type = x.getType();
+    Level typeInstance;
+    try {
+      typeInstance = x.getClass().getConstructor(new Class[] {}).newInstance();
+    } catch (NoSuchMethodException e) {
+      throw new LevelException(e);
+    } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+      throw new JavaException(e);
     }
+    LEVEL_HASH_MAP.put(type, typeInstance);
+  }
 
-    // public void computation(...) {...}
-
-    public LevelInfo getLevelInfo() {
-        return levelInfo;
+  static Level getLevelInstance(int level, LevelPlayFlag playFlag) {
+    String levelSwitch =
+            switch (playFlag) {
+              case DEFAULT -> "l";
+              case CUSTOM -> "customL";
+              case PRE -> "preL";
+            };
+    LevelInfo li = (LevelInfo) Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat");
+    String type = li.getType();
+    try {
+      return LEVEL_HASH_MAP
+              .get(type)
+              .getClass()
+              .getConstructor(new Class[] {Integer.class, LevelPlayFlag.class})
+              .newInstance(level, playFlag);
+    } catch (NoSuchMethodException e) {
+      throw new LevelException(e);
+    } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+      throw new JavaException(e);
     }
-
-    public LevelState getCurrentLevelState() {
-        return currentLevelState;
-    }
-
-    public void setLevelState(LevelState levelState) {
-        this.currentLevelState = levelState;
-    }
-
-    public Stack<LevelState> getHistory() {
-        return history;
-    }
+  }
 }

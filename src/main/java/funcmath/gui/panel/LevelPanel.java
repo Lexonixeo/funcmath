@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class LevelPanel extends GPanel {
+  // LevelState
+
   public LevelPanel() {}
 
   @Override

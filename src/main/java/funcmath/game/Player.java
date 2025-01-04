@@ -1,5 +1,6 @@
 package funcmath.game;
 
+import funcmath.game.defaultlevel.DLevelState;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Player {
   HashSet<Integer> completedLevels;
   HashMap<Integer, Integer> minFunctionUsesInLevel;
   HashMap<Integer, Integer> minTimeInLevel;
-  HashMap<Integer, LevelState> savings;
+  HashMap<Integer, DLevelState> savings;
   int lastLevel;
 
   public Player(String name, boolean registered) {

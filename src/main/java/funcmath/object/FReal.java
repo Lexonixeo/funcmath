@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.security.SecureRandom;
 
-public class FReal implements MathObject {
+public class FReal implements MathObject, Comparable<FReal> {
   @Serial private static final long serialVersionUID = -1314616813911607893L;
 
   public static final FReal EPS = new FReal(new BigDecimal("0.0001"));
@@ -180,6 +180,7 @@ public class FReal implements MathObject {
     return mul(number, number);
   }
 
+  @Override
   public int compareTo(FReal number) {
     return this.get().compareTo(number.get());
   }

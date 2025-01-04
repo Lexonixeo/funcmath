@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
-public class FNatural implements MathObject {
+public class FNatural implements MathObject, Comparable<FNatural> {
   @Serial private static final long serialVersionUID = -1322027344216575257L;
 
   public static final FNatural ZERO = new FNatural(0);
@@ -277,6 +277,7 @@ public class FNatural implements MathObject {
     return mul(number, number);
   }
 
+  @Override
   public int compareTo(FNatural number) {
     return this.get().compareTo(number.get());
   }

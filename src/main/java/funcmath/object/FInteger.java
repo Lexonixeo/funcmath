@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
-public class FInteger implements MathObject {
+public class FInteger implements MathObject, Comparable<FInteger> {
   @Serial private static final long serialVersionUID = 4465117069025671299L;
 
   public static final FInteger NEGATIVE_ONE = new FInteger(-1);
@@ -95,7 +95,7 @@ public class FInteger implements MathObject {
     } else if (base.equals(NEGATIVE_ONE) && mod(power, TWO).equals(ONE)) {
       return NEGATIVE_ONE;
     } else if (power.compareTo(ZERO) < 0) {
-      return (base.compareTo(ZERO) > 1 || mod(power, TWO).equals(ZERO) ? ZERO : NEGATIVE_ONE);
+      return (base.compareTo(ZERO) > 0 || mod(power, TWO).equals(ZERO) ? ZERO : NEGATIVE_ONE);
     } else if (mod(power, TWO).equals(ZERO)) {
       FInteger tempPower = div(power, TWO);
       try {
@@ -281,6 +281,7 @@ public class FInteger implements MathObject {
     return mul(number, number);
   }
 
+  @Override
   public int compareTo(FInteger number) {
     return this.get().compareTo(number.get());
   }

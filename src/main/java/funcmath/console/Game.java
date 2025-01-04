@@ -1,7 +1,10 @@
 package funcmath.console;
 
 import funcmath.game.Authorization;
+import funcmath.game.Level;
+import funcmath.game.LevelPlayFlag;
 import funcmath.game.Player;
+import funcmath.game.defaultlevel.DLevelMaker;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
 import java.nio.charset.StandardCharsets;
@@ -27,8 +30,9 @@ public class Game {
       System.out.println("Такого уровня не существует!");
       return;
     }
-    LevelConsole l = new LevelConsole(level, tutorial, 0);
-    int[] result = l.game();
+    Level l = Level.getLevelInstance(level, LevelPlayFlag.DEFAULT);
+    // Level l = new DefaultLevel(level, LevelPlayFlag.DEFAULT);
+    int[] result = l.consoleRun(System.in, System.out);
     Log.getInstance().write("Level №" + level + " was completed");
     tutorial = (result[0] == 1);
     player.addLevel((result[1] == 1), level, result[2], result[3]);
@@ -41,8 +45,8 @@ public class Game {
       System.out.println("Такого уровня не существует!");
       return;
     }
-    LevelConsole l = new LevelConsole(level, tutorial, 1);
-    int[] result = l.game();
+    Level l = Level.getLevelInstance(level, LevelPlayFlag.CUSTOM);
+    int[] result = l.consoleRun(System.in, System.out);
     Log.getInstance().write("Custom level №" + level + " was completed");
     tutorial = (result[0] == 1);
     player.addLevel((result[1] == 1), level, result[2], result[3]);
@@ -161,7 +165,8 @@ public class Game {
   }
 
   private void list(int page) {
-    ArrayList<Integer> levels = LevelConsole.getLevelList(Helper.getFileNames("data\\levels\\"));
+    ArrayList<Integer> levels =
+        Level.getLevelList(Helper.getFileNames("data\\levels\\"));
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
       Log.getInstance().write("A player tried to invoke a list with a non-existent page");
       System.out.println("Не бывает такой страницы!");
@@ -170,12 +175,13 @@ public class Game {
     Helper.clear();
     System.out.println("Страница " + page + " из " + ((levels.size() - 1) / 20 + 1));
     for (int i = 20 * (page - 1); i < Math.min(20 * page, levels.size()); i++) {
-      System.out.println(new LevelConsole(levels.get(i), false, 0));
+      System.out.println(Level.getLevelInstance(levels.get(i), LevelPlayFlag.DEFAULT));
     }
   }
 
   private void clist(int page) {
-    ArrayList<Integer> levels = LevelConsole.getLevelList(Helper.getFileNames("data\\customLevels\\"));
+    ArrayList<Integer> levels =
+        Level.getLevelList(Helper.getFileNames("data\\customLevels\\"));
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
       Log.getInstance().write("A player tried to invoke a clist with a non-existent page");
       System.out.println("Не бывает такой страницы!");
@@ -184,7 +190,7 @@ public class Game {
     Helper.clear();
     System.out.println("Страница " + page + " из " + ((levels.size() - 1) / 20 + 1));
     for (int i = 20 * (page - 1); i < Math.min(20 * page, levels.size()); i++) {
-      System.out.println(new LevelConsole(levels.get(i), false, 1));
+      System.out.println(Level.getLevelInstance(levels.get(i), LevelPlayFlag.CUSTOM));
     }
   }
 
@@ -302,7 +308,8 @@ public class Game {
           switch (command.get(1)) {
             case "function" ->
                 this.functionMakerTutorial = FunctionMaker.make(functionMakerTutorial);
-            case "level" -> this.levelMakerTutorial = LevelMaker.make(levelMakerTutorial, tutorial);
+            case "level" ->
+                this.levelMakerTutorial = DLevelMaker.make(levelMakerTutorial, tutorial);
             default ->
                 System.out.println(
                     "Неизвестная команда :( Введите help, чтобы узнать список команд.");

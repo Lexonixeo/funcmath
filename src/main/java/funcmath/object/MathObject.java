@@ -3,6 +3,7 @@ package funcmath.object;
 import funcmath.exceptions.JavaException;
 import funcmath.exceptions.LevelException;
 import funcmath.exceptions.MathObjectException;
+import funcmath.game.defaultlevel.DLevelState;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
 import java.io.File;
@@ -10,7 +11,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -35,10 +35,8 @@ public interface MathObject extends Serializable {
   }
 
   static MathObject getMathObjectFromLevel(String name) {
-    ArrayList<Object> generated =
-        Helper.cast(Helper.read("data/currentLevel.dat"), new ArrayList<>());
-    ArrayList<MathObject> numbers = Helper.cast(generated.get(0), new ArrayList<>());
-    for (MathObject n : numbers) {
+    DLevelState state = Helper.cast(Helper.read("data/currentLevel.dat"), new DLevelState());
+    for (MathObject n : state.getNumbers()) {
       if (n.getName().equals(name)) {
         return n;
       }
@@ -47,9 +45,8 @@ public interface MathObject extends Serializable {
   }
 
   static String makeMathObjectName() {
-    ArrayList<Object> generated =
-        Helper.cast(Helper.read("data/currentLevel.dat"), new ArrayList<>());
-    HashSet<String> usingNames = Helper.cast(generated.get(1), new HashSet<>());
+    DLevelState state = Helper.cast(Helper.read("data/currentLevel.dat"), new DLevelState());
+    HashSet<String> usingNames = state.getUsingNames();
     String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     String newName = "";
     for (int i = 1; i <= usingNames.size(); i++) {
@@ -67,8 +64,7 @@ public interface MathObject extends Serializable {
       }
     }
     usingNames.add(newName);
-    generated.set(1, usingNames);
-    Helper.write(generated, "data/currentLevel.dat");
+    Helper.write(state, "data/currentLevel.dat");
     return newName;
   }
 

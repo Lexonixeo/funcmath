@@ -7,7 +7,7 @@ import java.io.Serial;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-public class FRational implements MathObject {
+public class FRational implements MathObject, Comparable<FRational> {
   @Serial private static final long serialVersionUID = 8367368182099731988L;
 
   public static final FRational NEGATIVE_ONE = new FRational(-1, 1);
@@ -237,6 +237,7 @@ public class FRational implements MathObject {
     return mul(number, number);
   }
 
+  @Override
   public int compareTo(FRational number) {
     return sub(this, number).getNum().compareTo(FInteger.ZERO);
   }

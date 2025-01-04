@@ -1,7 +1,9 @@
-package funcmath.console;
+package funcmath.game.defaultlevel;
 
 import funcmath.function.Function;
-import funcmath.game.LevelInfo;
+import funcmath.game.Cutscene;
+import funcmath.game.Level;
+import funcmath.game.LevelPlayFlag;
 import funcmath.object.MathObject;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class LevelMaker {
+public class DLevelMaker {
   private static void tutorial() {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     Helper.clear();
@@ -112,13 +114,13 @@ public class LevelMaker {
       }
     }
 
-    int customFlag = 2;
+    LevelPlayFlag customFlag = LevelPlayFlag.PRE;
     String normalPath = "data\\customLevels\\";
     System.out.print("Введите что-нибудь: ");
     String mode = scanner.nextLine();
     boolean universalMode = Integer.toHexString(mode.hashCode()).equals("586034f");
     if (universalMode) {
-      customFlag = 0;
+      customFlag = LevelPlayFlag.DEFAULT;
     }
 
     SecureRandom random = new SecureRandom();
@@ -185,24 +187,30 @@ public class LevelMaker {
       hints.add(scanner.nextLine());
     }
 
-    int modei = 0;
+    DLevelRules rules = new DLevelRules();
+    rules.setInfinityNumbers(false);
+    rules.setInfinityFunctions(false);
+    rules.setAllowBack(true);
+    rules.setAllowCalc(true);
     if (resultClassName.equals("unknown")) {
-      modei = 2;
+      rules.setAllowBack(false);
+      rules.setAllowCalc(false);
+      rules.setInfinityNumbers(true);
     }
 
-    LevelInfo levelInfo =
-        new LevelInfo(
+    DLevelInfo levelInfo =
+        new DLevelInfo(
             originalNumbers,
             originalFunctions,
             hints,
-            cutscene,
+            new Cutscene(cutscene),
             answers,
             resultClassName,
             name,
             universalMode,
             levelID,
             customFlag,
-            modei);
+            rules);
 
     if (!universalMode) {
       System.out.println(
@@ -210,8 +218,8 @@ public class LevelMaker {
       System.out.print("Будете проходить? y/n ");
       String answer = scanner.nextLine();
       if (answer.equals("y") || answer.equals("у")) {
-        LevelConsole l = new LevelConsole(levelID, tutorial, 2);
-        int[] result = l.game();
+        Level l = Level.getLevelInstance(levelID, LevelPlayFlag.PRE);
+        int[] result = l.consoleRun(System.in, System.out);
         if (result[1] == 1) {
           levelInfo.setCompleted(true);
           Log.getInstance().write("The level is confirmed!");
