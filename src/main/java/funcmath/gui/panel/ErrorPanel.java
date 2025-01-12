@@ -1,10 +1,13 @@
 package funcmath.gui.panel;
 
-import funcmath.gui.swing.GPanel;
+import funcmath.gui.swing.GBackgroundPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class ErrorPanel extends GPanel {
+public class ErrorPanel extends GBackgroundPanel {
+  @Override
+  protected void initComponents() {}
+
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {
     return false;

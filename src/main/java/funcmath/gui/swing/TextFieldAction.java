@@ -1,10 +1,16 @@
 package funcmath.gui.swing;
 
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 
-public abstract class TextFieldAction implements KeyEventDispatcher {
+public abstract class TextFieldAction implements KeyEventDispatcher, FocusListener {
+  boolean firstFocus = false;
+
   public abstract void onEnterPress();
+
+  public abstract void onFirstFocus();
 
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {
@@ -14,5 +20,19 @@ public abstract class TextFieldAction implements KeyEventDispatcher {
       }
     }
     return false;
+  }
+
+  @Override
+  public void focusGained(FocusEvent e) {
+    KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
+    if (!firstFocus) {
+      onFirstFocus();
+      firstFocus = true;
+    }
+  }
+
+  @Override
+  public void focusLost(FocusEvent e) {
+    KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
   }
 }

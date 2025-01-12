@@ -3,12 +3,10 @@ package funcmath.game.defaultlevel;
 import funcmath.exceptions.LevelException;
 import funcmath.function.Function;
 import funcmath.game.*;
-import funcmath.gui.swing.GPanel;
+import funcmath.gui.swing.GBackgroundPanel;
 import funcmath.object.MathObject;
 import funcmath.utility.Helper;
-
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.Serial;
 import java.util.*;
 
@@ -22,9 +20,7 @@ public class DefaultLevel implements Level {
 
   boolean isCompleted = false;
 
-  public DefaultLevel() {
-
-  }
+  public DefaultLevel() {}
 
   public DefaultLevel(Integer level, LevelPlayFlag playFlag) {
     levelInfo = new DLevelInfo(level, playFlag);
@@ -63,7 +59,7 @@ public class DefaultLevel implements Level {
     }
 
     if (!numsCheck(globalArgs)) {
-      throw new LevelException("Unknown number exists");
+      throw new LevelException("В выражении есть несуществующее число");
     }
 
     int i = 0;
@@ -104,7 +100,7 @@ public class DefaultLevel implements Level {
 
     if (!fStack.isEmpty()) {
       currentLevelState = Helper.deepClone(history.peek());
-      throw new LevelException("Need more arguments");
+      throw new LevelException("Недостаточно аргументов!");
     }
 
     if (!levelInfo.getRules().isInfinityNumbers()) {
@@ -124,7 +120,7 @@ public class DefaultLevel implements Level {
   // добавить в кальк Simple Functions
   public ArrayList<MathObject> calc(ArrayList<String> expression) {
     if (!levelInfo.getRules().allowCalc) {
-      throw new LevelException("Calc is turned off for this level.");
+      throw new LevelException("Калькулятор выключен для этого уровня.");
     }
     HashMap<String, Function> functions = currentLevelState.getFunctions();
     ArrayList<String> localFNames = new ArrayList<>(functions.keySet());
@@ -172,7 +168,7 @@ public class DefaultLevel implements Level {
     }
 
     if (!fStack.isEmpty()) {
-      throw new LevelException("Need more arguments");
+      throw new LevelException("Недостаточно аргументов!");
     }
 
     return numsStack.peek();
@@ -180,12 +176,12 @@ public class DefaultLevel implements Level {
 
   public void back() {
     if (!levelInfo.getRules().isAllowBack()) {
-      throw new LevelException("Back is turned off for this level.");
+      throw new LevelException("Откат отключен для этого уровня");
     }
     history.pop();
     if (history.isEmpty()) {
       history.push(Helper.deepClone(currentLevelState));
-      throw new LevelException("There is no back move");
+      throw new LevelException("Нет хода назад!");
     }
     currentLevelState = history.peek();
   }
@@ -227,13 +223,13 @@ public class DefaultLevel implements Level {
   }
 
   @Override
-  public int[] consoleRun(InputStream in, PrintStream out) {
+  public int[] consoleRun(InputStream in, FMPrintStream out) {
     DLevelConsole console = new DLevelConsole(in, out, this);
     return console.game();
   }
 
   @Override
-  public int[] guiRun(GPanel panel) {
+  public int[] guiRun(GBackgroundPanel panel) {
     return null;
   }
 
@@ -253,6 +249,6 @@ public class DefaultLevel implements Level {
 
   @Override
   public String toString() {
-    return "Level " + getLevel() + ": " + getName();
+    return "Уровень " + getLevel() + ": " + getName();
   }
 }

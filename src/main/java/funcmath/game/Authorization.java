@@ -16,10 +16,10 @@ public class Authorization {
     }
 
     if (!players.containsValue(name)) {
-      throw new AuthorizationException("User not found!");
+      throw new AuthorizationException("Пользователь не найден!");
     } else if (!players.containsKey(password.hashCode())
         || !players.get(password.hashCode()).equals(name)) {
-      throw new AuthorizationException("Incorrect password!");
+      throw new AuthorizationException("Неверный пароль!");
     }
 
     Log.getInstance().write("Player authorized: " + name);
@@ -36,7 +36,7 @@ public class Authorization {
     }
 
     if (players.containsValue(name)) {
-      throw new AuthorizationException("The user already exists!");
+      throw new AuthorizationException("Пользователь с таким логином существует!");
     }
 
     players.put(password.hashCode(), name);

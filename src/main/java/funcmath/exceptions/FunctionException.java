@@ -1,5 +1,6 @@
 package funcmath.exceptions;
 
+import funcmath.utility.Helper;
 import funcmath.utility.Log;
 
 public class FunctionException extends RuntimeException {
@@ -9,7 +10,7 @@ public class FunctionException extends RuntimeException {
   }
 
   public FunctionException(Exception e) {
-    super(e);
+    super(Helper.getLastMessage(e), e);
     Log.getInstance().write(this);
   }
 }

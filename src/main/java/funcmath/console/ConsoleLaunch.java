@@ -13,7 +13,7 @@ public class ConsoleLaunch {
       Log.getInstance().write("Directories is generated! Player has entered the game.");
       MathObject.loadMathObjects();
       Level.loadLevelType(new DefaultLevel());
-      Helper.clear();
+      Helper.clear(System.out);
       System.out.println(
           "ВНИМАНИЕ: Согласно стандартам ISO 80000-2:2019 и ГОСТ Р 54521-2011 мы принимаем число 0 как условно натуральное.");
       System.out.println(

@@ -20,7 +20,7 @@ public class Function implements Serializable {
   String resultClassName;
 
   public Function(String resultClassName, String hashCode) {
-    Log.getInstance().write("Получается функция " + resultClassName + "/" + hashCode);
+    Log.getInstance().write("Getting the function " + resultClassName + "/" + hashCode);
     Function f =
         (Function) Helper.read("data/functions/" + resultClassName + "/" + hashCode + ".dat");
     this.name = f.name;
@@ -101,16 +101,20 @@ public class Function implements Serializable {
   }
 
   public ArrayList<MathObject> use(boolean isInfinityFunctions, MathObject... x) {
+    return compute(isInfinityFunctions, x);
+  }
+
+  public ArrayList<MathObject> compute(boolean isInfinityFunctions, MathObject... x) {
     Log.getInstance().write("Function is in use: " + this);
 
     if (!isInfinityFunctions && this.uses == 0) {
-      throw new FunctionException("Function " + name + " hasn't any uses.");
+      throw new FunctionException("У функции " + name + " закончилось число использований.");
     }
     if (x.length != numberOfArgs) {
       throw new FunctionException(
-          "Number of function arguments does not match: should be "
+          "Число аргументов функции не совпадает: должно быть "
               + numberOfArgs
-              + ", but there is: "
+              + ", но есть: "
               + x.length);
     }
 

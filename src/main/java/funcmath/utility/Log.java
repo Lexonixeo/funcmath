@@ -3,6 +3,8 @@ package funcmath.utility;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Log {
   private static final Log instance = new Log(); // singleton
@@ -10,11 +12,16 @@ public class Log {
   String pathname;
 
   private Log() {
-    this.pathname = "data/logs/" + System.currentTimeMillis() + ".txt";
+    this.pathname =
+        "data/logs/"
+            + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss")
+                .format(new Date(System.currentTimeMillis()))
+            + ".txt";
   }
 
   public void write(String s) {
-    Helper.writeLine("[" + System.currentTimeMillis() + "]: " + s, pathname);
+    Helper.writeLine("[" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+            .format(new Date(System.currentTimeMillis())) + "]: " + s, pathname);
   }
 
   public void write(Exception e) {
@@ -24,7 +31,11 @@ public class Log {
     } catch (FileNotFoundException ex) {
       throw new RuntimeException(ex);
     }
-    stream.print("[" + System.currentTimeMillis() + "]: ");
+    stream.print(
+        "["
+            + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+                .format(new Date(System.currentTimeMillis()))
+            + "]: ");
     e.printStackTrace(stream);
   }
 

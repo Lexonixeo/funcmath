@@ -16,6 +16,13 @@ jar {
     }
     archiveFileName.set("funcmath.jar")
     destinationDirectory.set(file("/"))
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
 }
 
 tasks.register('uberJar', Jar) {

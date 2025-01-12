@@ -2,6 +2,7 @@ package funcmath.game.defaultlevel;
 
 import funcmath.function.Function;
 import funcmath.game.Cutscene;
+import funcmath.game.FMPrintStream;
 import funcmath.game.Level;
 import funcmath.game.LevelPlayFlag;
 import funcmath.object.MathObject;
@@ -14,100 +15,107 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class DLevelMaker {
+  static final FMPrintStream systemOut =
+      new FMPrintStream(System.out) {
+        @Override
+        public void clear() {
+          Helper.clear(this);
+        }
+      };
+
   private static void tutorial() {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-    Helper.clear();
+    Helper.clear(systemOut);
     Log.getInstance().write("The player reads a tutorial on the levels");
-    System.out.println("Добро пожаловать в мастерскую создания уровней!");
-    System.out.println("Так как я плохо умею объяснять, буду пояснять на примере.");
-    System.out.println("Будем вести пример на уровне №29.");
-    System.out.println("Нажмите Enter, чтобы продолжить... ");
+    systemOut.println("Добро пожаловать в мастерскую создания уровней!");
+    systemOut.println("Так как я плохо умею объяснять, буду пояснять на примере.");
+    systemOut.println("Будем вести пример на уровне №29.");
+    systemOut.println("Нажмите Enter, чтобы продолжить... ");
     scanner.nextLine();
 
-    System.out.println("Сначала у вас попросят ввести что-нибудь.");
-    System.out.println("Просто введите что-нибудь, это может влиять лишь на номер уровня.");
-    System.out.println("Введите что-нибудь: gjifnswdfjew");
+    systemOut.println("Сначала у вас попросят ввести что-нибудь.");
+    systemOut.println("Просто введите что-нибудь, это может влиять лишь на номер уровня.");
+    systemOut.println("Введите что-нибудь: gjifnswdfjew");
     scanner.nextLine();
 
-    System.out.println("Потом вам нужно ввести название уровня.");
-    System.out.println(
+    systemOut.println("Потом вам нужно ввести название уровня.");
+    systemOut.println(
         "Оно будет отображаться в самом уровне рядом с его номером и в списке уровней.");
-    System.out.println("Введите название уровня: Что это?");
+    systemOut.println("Введите название уровня: Что это?");
     scanner.nextLine();
 
-    System.out.println("Потом вас попросят ввести катсцену, которая будет перед уровнем.");
-    System.out.println("Если вы играли в первые уровни, вы, возможно, знаете что это такое.");
-    System.out.println("Катсцена состоит из скольких-то фраз.");
-    System.out.println(
+    systemOut.println("Потом вас попросят ввести катсцену, которая будет перед уровнем.");
+    systemOut.println("Если вы играли в первые уровни, вы, возможно, знаете что это такое.");
+    systemOut.println("Катсцена состоит из скольких-то фраз.");
+    systemOut.println(
         "Если вы захотите закончить катсцену, просто нажмите Enter. (как в нашем случае)");
-    System.out.println("Введите катсцену, которая будет перед уровнем:");
-    System.out.println("(введите пустую строку, чтобы закончить катсцену)");
-    System.out.println("(1) ");
+    systemOut.println("Введите катсцену, которая будет перед уровнем:");
+    systemOut.println("(введите пустую строку, чтобы закончить катсцену)");
+    systemOut.println("(1) ");
     scanner.nextLine();
 
-    System.out.println("Затем у вас попросят ввести область определения уровня.");
-    System.out.println(
+    systemOut.println("Затем у вас попросят ввести область определения уровня.");
+    systemOut.println(
         "Область определения уровня - это то, в каких числах будет уровень считаться.");
-    System.out.println("Области определения уровня задаётся одним английским словом.");
-    System.out.println("Виды областей определения уровней:");
-    System.out.println("natural - натуральные числа");
-    System.out.println("integer - целые числа");
-    System.out.println("rational - рациональные (дробные) числа");
-    System.out.println("real - действительные (с плавающей запятой) числа");
-    System.out.println("complex - комплексные числа");
-    System.out.println("Введите область определения уровня: natural");
+    systemOut.println("Области определения уровня задаётся одним английским словом.");
+    systemOut.println("Виды областей определения уровней:");
+    systemOut.println("natural - натуральные числа");
+    systemOut.println("integer - целые числа");
+    systemOut.println("rational - рациональные (дробные) числа");
+    systemOut.println("real - действительные (с плавающей запятой) числа");
+    systemOut.println("complex - комплексные числа");
+    systemOut.println("Введите область определения уровня: natural");
     scanner.nextLine();
 
-    System.out.println("Потом вас попросят ввести числа, которые будут в наборе.");
-    System.out.println("Каждое число из набора может использоваться только 1 раз.");
-    System.out.println("Введите числа в наборе: 60 120 2 14 62");
+    systemOut.println("Потом вас попросят ввести числа, которые будут в наборе.");
+    systemOut.println("Каждое число из набора может использоваться только 1 раз.");
+    systemOut.println("Введите числа в наборе: 60 120 2 14 62");
     scanner.nextLine();
 
-    System.out.println("После вас попросят ввести ID функций, которые будут в уровне.");
-    System.out.println(
+    systemOut.println("После вас попросят ввести ID функций, которые будут в уровне.");
+    systemOut.println(
         "ID функции вы можете получить из названия файла с функцией внутри папки data/functions/(область определения)/");
-    System.out.println(
+    systemOut.println(
         "Либо же из мастерской создания функций - там сразу же, когда создастся функция, выдастся её ID.");
-    System.out.println("Самое главное - чтобы у функций уровня не совпадали названия.");
-    System.out.println("Введите ID функций через пробел: 12345abc 3e1bd21 2f983c0");
+    systemOut.println("Самое главное - чтобы у функций уровня не совпадали названия.");
+    systemOut.println("Введите ID функций через пробел: 12345abc 3e1bd21 2f983c0");
     scanner.nextLine();
 
-    System.out.println(
-        "Затем вам нужно написать ответ - требуемое(ые) число(а) для вашего уровня.");
-    System.out.println("Здесь вы можете ввести не только одно число, а несколько.");
-    System.out.println("Уровень будет пройден тогда, когда все требуемые числа будут в наборе.");
-    System.out.println("Введите ответ (необходимое(ые) число(а)): 194");
+    systemOut.println("Затем вам нужно написать ответ - требуемое(ые) число(а) для вашего уровня.");
+    systemOut.println("Здесь вы можете ввести не только одно число, а несколько.");
+    systemOut.println("Уровень будет пройден тогда, когда все требуемые числа будут в наборе.");
+    systemOut.println("Введите ответ (необходимое(ые) число(а)): 194");
     scanner.nextLine();
 
-    System.out.println("Затем по вашему желанию вы можете ввести подсказки.");
-    System.out.println("Сначала спросят количество подсказок, и затем по каждой подсказке.");
-    System.out.println(
+    systemOut.println("Затем по вашему желанию вы можете ввести подсказки.");
+    systemOut.println("Сначала спросят количество подсказок, и затем по каждой подсказке.");
+    systemOut.println(
         "Порядок отображения подсказок в уровне будет такой же, в каком порядке вы их вводите.");
-    System.out.println("Введите кол-во подсказок: 0");
+    systemOut.println("Введите кол-во подсказок: 0");
     scanner.nextLine();
 
-    System.out.println(
+    systemOut.println(
         "Потом вас попросят пройти данный уровень, чтобы он сохранился в пользовательских.");
-    System.out.println(
+    systemOut.println(
         "После прохождения уровень будет сохранен под случайным номером, который вы узнаете в процессе прохождения.");
-    System.out.println(
+    systemOut.println(
         "Чтобы в следующий раз пройти его, вам нужно будет ввести команду custom (номер уровня)");
-    System.out.println("Также вы сможете найти свой уровень через команду clist.");
+    systemOut.println("Также вы сможете найти свой уровень через команду clist.");
     scanner.nextLine();
 
-    System.out.println("Спасибо за прочтение!");
+    systemOut.println("Спасибо за прочтение!");
     scanner.nextLine();
     Log.getInstance().write("The player has read the tutorial on the levels");
   }
 
   public static boolean make(boolean levelMakerTutorial, boolean tutorial) {
     Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-    Helper.clear();
+    Helper.clear(systemOut);
     Log.getInstance().write("The player entered the level creation workshop");
 
-    System.out.println("Добро пожаловать в мастерскую создания уровней!");
+    systemOut.println("Добро пожаловать в мастерскую создания уровней!");
     if (levelMakerTutorial) {
-      System.out.print("Хотите ли вы прочитать туториал? y/n ");
+      systemOut.print("Хотите ли вы прочитать туториал? y/n ");
       String input = scanner.nextLine();
       if (input.equals("y") || input.equals("у")) {
         tutorial();
@@ -116,7 +124,7 @@ public class DLevelMaker {
 
     LevelPlayFlag customFlag = LevelPlayFlag.PRE;
     String normalPath = "data\\customLevels\\";
-    System.out.print("Введите что-нибудь: ");
+    systemOut.print("Введите что-нибудь: ");
     String mode = scanner.nextLine();
     boolean universalMode = Integer.toHexString(mode.hashCode()).equals("586034f");
     if (universalMode) {
@@ -132,17 +140,17 @@ public class DLevelMaker {
     }
     if (universalMode) levelID = Helper.filesCount("data/levels/") + 1;
 
-    System.out.print("Введите название уровня: ");
+    systemOut.print("Введите название уровня: ");
     String name = scanner.nextLine();
 
     ArrayList<String> cutscene = new ArrayList<>();
-    System.out.println("Введите катсцену, которая будет перед уровнем:");
-    System.out.println("(введите пустую строку, чтобы закончить катсцену)");
+    systemOut.println("Введите катсцену, которая будет перед уровнем:");
+    systemOut.println("(введите пустую строку, чтобы закончить катсцену)");
     String input = "";
     int j = 1;
     do {
       cutscene.add(input);
-      System.out.print("(" + j + ") ");
+      systemOut.print("(" + j + ") ");
       input = scanner.nextLine();
       j++;
     } while (!input.isEmpty());
@@ -150,29 +158,29 @@ public class DLevelMaker {
 
     HashMap<String, Function> originalFunctions = new HashMap<>();
 
-    System.out.print("Введите область определения уровня: ");
+    systemOut.print("Введите область определения уровня: ");
     String resultClassName = scanner.nextLine();
 
-    System.out.print("Введите числа в наборе: ");
+    systemOut.print("Введите числа в наборе: ");
     ArrayList<String> numbers = Helper.wordsFromString(scanner.nextLine());
     ArrayList<MathObject> originalNumbers = new ArrayList<>();
     for (String number : numbers) {
       originalNumbers.add(MathObject.parseMathObject(number, resultClassName));
     }
 
-    System.out.print("Введите ID функций через пробел: ");
+    systemOut.print("Введите ID функций через пробел: ");
     ArrayList<String> ids = Helper.wordsFromString(scanner.nextLine());
 
     for (String id : ids) {
       Function f = new Function(resultClassName, id);
       if (originalFunctions.containsKey(f.getName())) {
-        System.out.println("Названия функций не должны повторяться: " + f.getName());
+        systemOut.println("Названия функций не должны повторяться: " + f.getName());
         return true;
       }
       originalFunctions.put(f.getName(), f);
     }
 
-    System.out.print("Введите ответ (необходимое(ые) число(а)): ");
+    systemOut.print("Введите ответ (необходимое(ые) число(а)): ");
     ArrayList<String> ansnumbers = Helper.wordsFromString(scanner.nextLine());
     ArrayList<MathObject> answers = new ArrayList<>();
     for (String ansnum : ansnumbers) {
@@ -180,10 +188,10 @@ public class DLevelMaker {
     }
 
     ArrayList<String> hints = new ArrayList<>();
-    System.out.print("Введите кол-во подсказок: ");
+    systemOut.print("Введите кол-во подсказок: ");
     int n = Integer.parseInt(scanner.nextLine());
     for (int i = 1; i <= n; i++) {
-      System.out.print("Введите подсказку №" + i + ": ");
+      systemOut.print("Введите подсказку №" + i + ": ");
       hints.add(scanner.nextLine());
     }
 
@@ -213,13 +221,13 @@ public class DLevelMaker {
             rules);
 
     if (!universalMode) {
-      System.out.println(
+      systemOut.println(
           "А теперь вам придётся проходить уровень, чтобы он попал в список пользовательских.");
-      System.out.print("Будете проходить? y/n ");
+      systemOut.print("Будете проходить? y/n ");
       String answer = scanner.nextLine();
       if (answer.equals("y") || answer.equals("у")) {
         Level l = Level.getLevelInstance(levelID, LevelPlayFlag.PRE);
-        int[] result = l.consoleRun(System.in, System.out);
+        int[] result = l.consoleRun(System.in, systemOut);
         if (result[1] == 1) {
           levelInfo.setCompleted(true);
           Log.getInstance().write("The level is confirmed!");

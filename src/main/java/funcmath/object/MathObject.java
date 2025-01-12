@@ -41,7 +41,7 @@ public interface MathObject extends Serializable {
         return n;
       }
     }
-    throw new LevelException("The number \" + name + \" has not detected!");
+    throw new LevelException("Число " + name + " не обнаружено!");
   }
 
   static String makeMathObjectName() {

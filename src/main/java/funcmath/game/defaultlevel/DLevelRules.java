@@ -4,8 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 public class DLevelRules implements Serializable {
-  @Serial
-  private static final long serialVersionUID = 6390760097076472468L;
+  @Serial private static final long serialVersionUID = 6390760097076472468L;
 
   boolean allowBack;
   boolean allowCalc;

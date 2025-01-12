@@ -1,11 +1,11 @@
 package funcmath.game.defaultlevel;
 
 import funcmath.function.Function;
+import funcmath.game.FMPrintStream;
 import funcmath.object.MathObject;
 import funcmath.utility.Helper;
 import funcmath.utility.Log;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -13,12 +13,12 @@ import java.util.Scanner;
 public class DLevelConsole {
   DefaultLevel level;
   InputStream in;
-  PrintStream out;
+  final FMPrintStream out;
 
   boolean tutorial = true;
   int hint;
 
-  public DLevelConsole(InputStream in, PrintStream out, DefaultLevel level) {
+  public DLevelConsole(InputStream in, FMPrintStream out, DefaultLevel level) {
     this.level = level;
     this.out = out;
     this.in = in;
@@ -26,7 +26,7 @@ public class DLevelConsole {
 
   private void clear() {
     Log.getInstance().write("Clearing console!");
-    out.print("\033\143");
+    out.clear();
   }
 
   private void playCutscene() {
@@ -135,7 +135,7 @@ public class DLevelConsole {
       }
       out.println();
     } catch (RuntimeException e) {
-      out.println("= " + e.getMessage());
+      out.println("= " + Helper.getLastMessage(e));
     }
   }
 
@@ -148,7 +148,7 @@ public class DLevelConsole {
       }
       out.println();
     } catch (RuntimeException e) {
-      out.println("= " + e.getMessage());
+      out.println("= " + Helper.getLastMessage(e));
     }
   }
 
@@ -179,30 +179,34 @@ public class DLevelConsole {
   }
 
   private int turn() {
-    this.level.getCurrentLevelState().save();
-    Scanner scanner = new Scanner(in, StandardCharsets.UTF_8);
-    out.print("[Level] Введите выражение: ");
-    String cmd = scanner.nextLine();
-    ArrayList<String> command = Helper.wordsFromString(cmd);
-    Log.getInstance().write("An expression is introduced: " + cmd);
-    String first_command = command.get(0);
-    switch (first_command) {
-      case "exit", "menu", "stop" -> {
-        return -1;
-      }
-      case "nums" -> nums();
-      case "reset" -> restart();
-      case "help" -> {
-        start();
-        help();
-      }
-      case "clear" -> start();
-      case "hint" -> hint();
-      case "calc" -> calc(new ArrayList<>(command.subList(1, command.size())));
-      case "back" -> back();
-      default -> compute(command);
+    synchronized (out) {
+      this.level.getCurrentLevelState().save();
+      out.print("[Level] Введите выражение: ");
     }
-    return 0;
+    Scanner scanner = new Scanner(in, StandardCharsets.UTF_8);
+    String cmd = scanner.nextLine();
+    synchronized (out) {
+      ArrayList<String> command = Helper.wordsFromString(cmd);
+      Log.getInstance().write("An expression is introduced: " + cmd);
+      String first_command = command.get(0);
+      switch (first_command) {
+        case "exit", "menu", "stop" -> {
+          return -1;
+        }
+        case "nums" -> nums();
+        case "reset" -> restart();
+        case "help" -> {
+          start();
+          help();
+        }
+        case "clear" -> start();
+        case "hint" -> hint();
+        case "calc" -> calc(new ArrayList<>(command.subList(1, command.size())));
+        case "back" -> back();
+        default -> compute(command);
+      }
+      return 0;
+    }
   }
 
   public int[] game() {
@@ -229,11 +233,11 @@ public class DLevelConsole {
     int dFuses = fuses - newFuses;
 
     if (level.isCompleted) {
-      System.out.println(
+      out.println(
           "Поздравляем! Вы получили число(а) "
               + Helper.collectionToString(this.level.getLevelInfo().getAnswers())
               + " и прошли уровень!");
-      Log.getInstance().write("Level №" + level + " was completed!");
+      Log.getInstance().write("Level №" + level.getLevel() + " was completed!");
     }
     return new int[] {(tutorial ? 1 : 0), (this.level.isCompleted ? 1 : 0), dFuses, time};
   }

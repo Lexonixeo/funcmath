@@ -67,8 +67,7 @@ public class DLevelInfo implements LevelInfo {
       LevelPlayFlag customFlag,
       DLevelRules rules) {
     Log.getInstance().write("Trying to create a level with such data:");
-    Log.getInstance()
-        .write(name + " " + resultClassName + " " + level + " " + customFlag);
+    Log.getInstance().write(name + " " + resultClassName + " " + level + " " + customFlag);
     Log.getInstance().write(Helper.collectionToString(originalNumbers));
     Log.getInstance().write(Helper.collectionToString(answers));
     Log.getInstance().write(Helper.collectionToString(originalFunctions.values()));

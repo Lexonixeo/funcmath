@@ -32,15 +32,14 @@ public class DLevelState implements Serializable {
     usingNames.clear();
     for (Function f : functions.values()) {
       if (usingNames.contains(f.getName())) {
-        throw new FunctionException("Function names must not be repeated: " + f.getName());
+        throw new FunctionException("Названия функций не должны совпадать: " + f.getName());
       }
       usingNames.add(f.getName());
     }
     for (MathObject n : numbers) {
       if (n.getName() != null && usingNames.contains(n.getName())) {
         throw new MathObjectException(
-            "MathObject names must not be repeated with Functions or other MathObjects: "
-                + n.getName());
+            "Имена объектов не должны совпадать с другими объектами или функциями: " + n.getName());
       }
       if (n.getName() != null) {
         usingNames.add(n.getName());

@@ -1,10 +1,13 @@
 package funcmath.gui.panel;
 
-import funcmath.gui.swing.GPanel;
+import funcmath.gui.swing.GBackgroundPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class LevelMakerTutorial extends GPanel {
+public class LevelMakerTutorial extends GBackgroundPanel {
+  @Override
+  protected void initComponents() {}
+
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {
     return false;

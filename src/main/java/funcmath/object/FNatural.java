@@ -76,7 +76,7 @@ public class FNatural implements MathObject, Comparable<FNatural> {
 
   public static FNatural div(FNatural dividend, FNatural divisor) {
     if (divisor.equals(ZERO)) {
-      throw new MathException("Dividing by zero doesn't make sense: " + dividend + "/" + divisor);
+      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     } else {
       return new FNatural(dividend.get().divide(divisor.get()));
     }
@@ -84,7 +84,7 @@ public class FNatural implements MathObject, Comparable<FNatural> {
 
   public static FNatural mod(FNatural dividend, FNatural divisor) {
     if (divisor.equals(ZERO)) {
-      throw new MathException("Dividing by zero doesn't make sense: " + dividend + "%" + divisor);
+      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "%" + divisor);
     } else {
       return new FNatural(dividend.get().mod(divisor.get()));
     }
@@ -115,7 +115,7 @@ public class FNatural implements MathObject, Comparable<FNatural> {
   public static FNatural root(FNatural radicand, FNatural degree) {
     if (degree.equals(ZERO)) {
       throw new MathException(
-          "Dividing by zero doesn't make sense: " + radicand + "^(1/" + degree + ")");
+          "Деление на ноль не имеет смысла: " + radicand + "^(1/" + degree + ")");
     }
 
     FNatural left = ZERO;

@@ -109,7 +109,7 @@ public class FComplex implements MathObject {
   public static FComplex div(FComplex dividend, FComplex divisor) {
     FReal abs = abs(divisor).getRe();
     if (abs(divisor).equals(ZERO)) {
-      throw new MathException("Dividing by zero doesn't make sense: " + dividend + "/" + divisor);
+      throw new MathException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     }
     FComplex temp = mul(dividend, conj(divisor));
     return new FComplex(FReal.div(temp.getRe(), abs), FReal.div(temp.getIm(), abs));

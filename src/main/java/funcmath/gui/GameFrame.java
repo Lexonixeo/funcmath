@@ -1,6 +1,9 @@
 package funcmath.gui;
 
+import funcmath.game.Level;
+import funcmath.game.LevelPlayFlag;
 import funcmath.game.Player;
+import funcmath.game.defaultlevel.DefaultLevel;
 import funcmath.gui.panel.*;
 import funcmath.gui.panel.Menu;
 import funcmath.gui.swing.GPanel;
@@ -11,6 +14,7 @@ public class GameFrame extends JFrame {
   private static final GameFrame instance = new GameFrame(); // singleton
 
   GPanel currentPanel;
+  Level currentLevel = new DefaultLevel(1, LevelPlayFlag.DEFAULT);
   KeyboardFocusManager manager;
   Player player;
 
@@ -20,19 +24,14 @@ public class GameFrame extends JFrame {
     this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     // this.setUndecorated(true);
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    this.setContentPane(LoadingPanel.getInstance());
+    this.setVisible(true);
 
     manager =
         KeyboardFocusManager
             .getCurrentKeyboardFocusManager(); // менеджер по трудоустройству слушателей клавиатуры
 
-    currentPanel = new Login();
-
-    this.setContentPane(currentPanel);
-    this.addMouseListener(currentPanel);
-    this.addMouseMotionListener(currentPanel);
-    manager.addKeyEventDispatcher(currentPanel);
-
-    this.setVisible(true);
+    changePanel("login");
   }
 
   /*
@@ -74,17 +73,18 @@ public class GameFrame extends JFrame {
           case "level maker tutorial" -> new LevelMakerTutorial();
           case "function maker" -> new FunctionMakerPanel();
           case "function maker tutorial" -> new FunctionMakerTutorial();
+          case "loading" -> LoadingPanel.getInstance();
           default -> throw new IllegalStateException("Unexpected value: " + panelKey);
         };
 
-    this.setContentPane(currentPanel);
-    this.addMouseListener(currentPanel);
-    this.addMouseMotionListener(currentPanel);
+    setContentPane(currentPanel);
+    addMouseListener(currentPanel);
+    addMouseMotionListener(currentPanel);
     manager.addKeyEventDispatcher(currentPanel);
 
-    this.invalidate();
-    this.validate();
-    this.repaint();
+    invalidate();
+    validate();
+    repaint();
   }
 
   public void setPlayer(Player player) {
@@ -93,6 +93,14 @@ public class GameFrame extends JFrame {
 
   public Player getPlayer() {
     return player;
+  }
+
+  public Level getCurrentLevel() {
+    return currentLevel;
+  }
+
+  public void setCurrentLevel(Level currentLevel) {
+    this.currentLevel = currentLevel;
   }
 
   public static GameFrame getInstance() {

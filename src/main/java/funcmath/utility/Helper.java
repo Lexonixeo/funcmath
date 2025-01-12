@@ -80,13 +80,13 @@ public class Helper {
     return Objects.requireNonNull(new File(pathname.replace('\\', '/')).listFiles()).length;
   }
 
-  public static void clear() {
+  public static void clear(PrintStream out) {
     Log.getInstance().write("Clearing console!");
     try {
       if (System.getProperty("os.name").contains("Windows")) {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
       } else {
-        System.out.print("\033\143");
+        out.print("\033\143");
       }
     } catch (IOException | InterruptedException ignored) {
     }
@@ -174,8 +174,37 @@ public class Helper {
     return ans;
   }
 
+  public static ArrayList<Byte> toByteArrayList(byte[] a) {
+    ArrayList<Byte> ans = new ArrayList<>();
+    for (byte b : a) {
+      ans.add(b);
+    }
+    return ans;
+  }
+
+  public static <T extends Number> byte[] toByteArray(ArrayList<T> al) {
+    int size = al.size();
+    byte[] ans = new byte[size];
+    for (int i = 0; i < size; i++) {
+      ans[i] = al.get(i).byteValue();
+    }
+    return ans;
+  }
+
   public static String toHtmlString(String s) {
     return "<html>" + s.replace("\n", "<br\\>") + "<html\\>";
+  }
+
+  public static String getLastMessage(Throwable e) {
+    Throwable ee = Helper.deepClone(e);
+    while (ee.getMessage() == null) {
+      try {
+        ee = ee.getCause();
+      } catch (Exception ex) {
+        return e.toString();
+      }
+    }
+    return ee.getMessage();
   }
 
   // Когда будет много уровней/игроков: ДОБАВИТЬ СВОЙ ХЕШ

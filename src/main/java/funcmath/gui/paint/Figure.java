@@ -49,7 +49,8 @@ public class Figure implements Shape {
                 .getScaledInstance(
                     (int) (bounds.getWidth()), (int) (bounds.getHeight()), Image.SCALE_SMOOTH);
         g.drawImage(img, (int) bounds.getX(), (int) bounds.getY(), null);
-        System.out.println((int) bounds.getWidth() + " " + (int) bounds.getHeight());
+        // System.out.println(g.getClipBounds());
+        // System.out.println((int) bounds.getWidth() + " " + (int) bounds.getHeight());
       } catch (Exception ex) {
         throw new GuiException(ex);
       }

@@ -43,9 +43,9 @@ public class SimpleFunction {
   public Object use(MathObject... args) {
     if (numberOfArgs != args.length) {
       throw new FunctionException(
-          "Number of function arguments does not match: should be "
+          "Количество аргументов функции не совпадает: должно быть "
               + numberOfArgs
-              + ", but there is: "
+              + ", но есть: "
               + args.length);
     }
 

@@ -2,11 +2,9 @@ package funcmath.game;
 
 import funcmath.exceptions.JavaException;
 import funcmath.exceptions.LevelException;
-import funcmath.gui.swing.GPanel;
+import funcmath.gui.swing.GBackgroundPanel;
 import funcmath.utility.Helper;
-
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -24,9 +22,9 @@ public interface Level extends Serializable {
 
   Cutscene getCutscene();
 
-  int[] consoleRun(InputStream in, PrintStream out);
+  int[] consoleRun(InputStream in, FMPrintStream out);
 
-  int[] guiRun(GPanel panel);
+  int[] guiRun(GBackgroundPanel panel);
 
   static ArrayList<Integer> getLevelList(ArrayList<String> fileNames) {
     ArrayList<Integer> answer = new ArrayList<>();
@@ -52,19 +50,20 @@ public interface Level extends Serializable {
 
   static Level getLevelInstance(int level, LevelPlayFlag playFlag) {
     String levelSwitch =
-            switch (playFlag) {
-              case DEFAULT -> "l";
-              case CUSTOM -> "customL";
-              case PRE -> "preL";
-            };
-    LevelInfo li = (LevelInfo) Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat");
+        switch (playFlag) {
+          case DEFAULT -> "l";
+          case CUSTOM -> "customL";
+          case PRE -> "preL";
+        };
+    LevelInfo li =
+        (LevelInfo) Helper.read("data\\" + levelSwitch + "evels\\level" + level + ".dat");
     String type = li.getType();
     try {
       return LEVEL_HASH_MAP
-              .get(type)
-              .getClass()
-              .getConstructor(new Class[] {Integer.class, LevelPlayFlag.class})
-              .newInstance(level, playFlag);
+          .get(type)
+          .getClass()
+          .getConstructor(new Class[] {Integer.class, LevelPlayFlag.class})
+          .newInstance(level, playFlag);
     } catch (NoSuchMethodException e) {
       throw new LevelException(e);
     } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
