@@ -19,25 +19,11 @@ public class FRational implements MathObject, Comparable<FRational> {
   protected FInteger denominator;
 
   public FRational() {
-    this.numerator = FInteger.ZERO;
-    this.denominator = FInteger.ONE;
+    this(0, 1);
   }
 
   public FRational(long numerator, long denominator) {
-    if (denominator < 0) {
-      numerator *= -1;
-      denominator *= -1;
-    }
-    if (denominator == 0) {
-      throw new MathException("Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
-    }
-
-    this.numerator = new FInteger(numerator);
-    this.denominator = new FInteger(denominator);
-
-    FInteger gcd = FInteger.gcd(this.numerator, this.denominator);
-    this.numerator = FInteger.div(this.numerator, gcd);
-    this.denominator = FInteger.div(this.denominator, gcd);
+    this(new FInteger(numerator), new FInteger(denominator));
   }
 
   public FRational(FInteger numerator, FInteger denominator) {
@@ -58,20 +44,7 @@ public class FRational implements MathObject, Comparable<FRational> {
   }
 
   public FRational(BigInteger numerator, BigInteger denominator) {
-    if (denominator.compareTo(BigInteger.ZERO) < 0) {
-      numerator = numerator.multiply(BigInteger.ONE.negate());
-      denominator = denominator.multiply(BigInteger.ONE.negate());
-    }
-    if (denominator.equals(BigInteger.ZERO)) {
-      throw new MathException("Деление на ноль не имеет смысла: " + numerator + "/" + denominator);
-    }
-
-    this.numerator = new FInteger(numerator);
-    this.denominator = new FInteger(denominator);
-
-    FInteger gcd = FInteger.gcd(this.numerator, this.denominator);
-    this.numerator = FInteger.div(this.numerator, gcd);
-    this.denominator = FInteger.div(this.denominator, gcd);
+    this(new FInteger(numerator), new FInteger(denominator));
   }
 
   public FRational(String s) {
@@ -79,9 +52,7 @@ public class FRational implements MathObject, Comparable<FRational> {
     if (numbers.size() == 1) {
       numbers.add("1");
     }
-    FRational num = new FRational(new BigInteger(numbers.get(0)), new BigInteger(numbers.get(1)));
-    this.numerator = num.getNum();
-    this.denominator = num.getDen();
+    this(new BigInteger(numbers.get(0)), new BigInteger(numbers.get(1)));
   }
 
   @Override

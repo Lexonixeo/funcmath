@@ -12,21 +12,31 @@ public class LoadingPanel extends GPanel {
 
   JLabel wait;
 
-  private LoadingPanel() {
-    initComponents();
+  @Override
+  protected void initBeforeComponents() {}
 
-    this.setLayout(new BorderLayout());
+  @Override
+  protected void initComponents() {
+    wait = new JLabel();
+    wait.setText("Пожалуйста, подождите...");
+    wait.setFont(Fonts.COMIC_SANS_MS_50);
+    wait.setForeground(Color.white);
+    wait.setHorizontalAlignment(SwingConstants.CENTER);
+  }
+
+  @Override
+  protected void initBeforeConstruct() {}
+
+  @Override
+  protected void constructPanel() {
     this.setBackground(Color.black);
+    this.setLayout(new BorderLayout());
 
     this.add(wait, BorderLayout.CENTER);
-
-    this.validate();
-    this.repaint();
   }
 
-  public static LoadingPanel getInstance() {
-    return instance;
-  }
+  @Override
+  protected void initAfterConstruct() {}
 
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {
@@ -54,12 +64,7 @@ public class LoadingPanel extends GPanel {
   @Override
   public void mouseMoved(MouseEvent e) {}
 
-  @Override
-  protected void initComponents() {
-    wait = new JLabel();
-    wait.setText("Пожалуйста, подождите...");
-    wait.setFont(Fonts.COMIC_SANS_MS_50);
-    wait.setForeground(Color.white);
-    wait.setHorizontalAlignment(SwingConstants.CENTER);
+  public static LoadingPanel getInstance() {
+    return instance;
   }
 }

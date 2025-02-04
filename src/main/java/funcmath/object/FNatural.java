@@ -17,14 +17,11 @@ public class FNatural implements MathObject, Comparable<FNatural> {
   protected BigInteger number;
 
   public FNatural() {
-    this.number = ZERO.get();
+    this(0);
   }
 
   public FNatural(long number) {
-    if (number < 0) {
-      throw new MathException("Не существует натуральных чисел, меньших нуля: " + number);
-    }
-    this.number = BigInteger.valueOf(number);
+    this(BigInteger.valueOf(number));
   }
 
   public FNatural(BigInteger number) {
@@ -36,10 +33,7 @@ public class FNatural implements MathObject, Comparable<FNatural> {
 
   public FNatural(String s) {
     BigInteger number = new BigInteger(s);
-    if (number.compareTo(BigInteger.ZERO) < 0) {
-      throw new MathException("Не существует натуральных чисел, меньших нуля: " + number);
-    }
-    this.number = number;
+    this(number);
   }
 
   @Override

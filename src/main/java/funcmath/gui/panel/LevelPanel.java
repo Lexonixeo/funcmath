@@ -1,10 +1,15 @@
 package funcmath.gui.panel;
 
 import funcmath.game.FMPrintStream;
+import funcmath.game.Level;
+import funcmath.game.LevelList;
+import funcmath.game.LevelPlayFlag;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +19,7 @@ import javax.swing.border.EmptyBorder;
 public class LevelPanel extends GBackgroundPanel {
   GInputStream in;
   GOutputStream outputStream;
-  final FMPrintStream out;
+  FMPrintStream out;
 
   JLabel nameLabel;
   JButton returnButton;
@@ -23,8 +28,13 @@ public class LevelPanel extends GBackgroundPanel {
   JLabel enterLabel;
   JTextField inputField;
   JScrollPane inputScrollPane;
+  JButton nextLevel;
+  GOpaquePanel southPanel;
 
-  public LevelPanel() {
+  boolean turnedOnUpdateThread;
+
+  @Override
+  protected void initBeforeComponents() {
     in = new GInputStream();
     outputStream = new GOutputStream();
     out =
@@ -34,54 +44,6 @@ public class LevelPanel extends GBackgroundPanel {
             outputStream.clear();
           }
         };
-    outputStream.addOutputStreamAction(
-        new OutputStreamAction() {
-          @Override
-          public void afterWrite() {
-            synchronized (out) {
-              SwingUtilities.invokeLater(
-                      () -> {
-                        outputField.setText("");
-                        for (String a : outputStream.getText()) {
-                          outputField.append(a);
-                        }
-                      });
-            }
-          }
-        });
-
-    initComponents();
-
-    this.setLayout(new BorderLayout(30, 30));
-    this.setBorder(new EmptyBorder(30, 30, 30, 30));
-    this.setBackground(Color.black);
-
-    GOpaquePanel topPanel = new GOpaquePanel();
-    topPanel.setLayout(new BorderLayout());
-    this.add(topPanel, BorderLayout.NORTH);
-    topPanel.add(nameLabel, BorderLayout.WEST);
-    topPanel.add(returnButton, BorderLayout.EAST);
-
-    this.add(outputScrollPane, BorderLayout.CENTER);
-
-    GOpaquePanel southPanel = new GOpaquePanel();
-    southPanel.setLayout(new BorderLayout(30, 30));
-    this.add(southPanel, BorderLayout.SOUTH);
-    southPanel.add(enterLabel, BorderLayout.WEST);
-    southPanel.add(inputScrollPane);
-
-    this.validate();
-    this.repaint();
-
-    // Создание потока - поток игры - обязательно должен идти параллельно с графическим интерфейсом
-      // Этот метод будет выполняться в побочном потоке
-      Thread gameThread =
-        new Thread(
-                () -> {
-              GameFrame.getInstance().getCurrentLevel().consoleRun(in, out);
-              inputField.setEnabled(false);
-            });
-    gameThread.start(); // Запуск потока
   }
 
   @Override
@@ -93,12 +55,13 @@ public class LevelPanel extends GBackgroundPanel {
 
     returnButton = new JButton();
     returnButton.addActionListener(
-            new ButtonAction() {
-              @Override
-              public void onClick() {
-                GameFrame.getInstance().changePanel("menu");
-              }
-            });
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            in.stop();
+            GameFrame.getInstance().changePanel("menu");
+          }
+        });
     returnButton.setFont(Fonts.COMIC_SANS_MS_30);
     returnButton.setForeground(Color.white);
     returnButton.setBackground(new Color(56, 109, 80));
@@ -126,8 +89,10 @@ public class LevelPanel extends GBackgroundPanel {
         new TextFieldAction() {
           @Override
           public void onEnterPress() {
-            in.send(inputField.getText());
-            out.println(inputField.getText());
+            String text = inputField.getText();
+            text += (char) 10;
+            in.send(text);
+            out.print(text);
             inputField.setText("");
           }
 
@@ -147,6 +112,131 @@ public class LevelPanel extends GBackgroundPanel {
             JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     inputScrollPane.setBackground(new Color(56, 109, 80));
     inputScrollPane.setForeground(Color.white);
+
+    nextLevel = new JButton();
+    nextLevel.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            GameFrame.getInstance()
+                .setCurrentLevel(
+                    Level.getLevelInstance(
+                        LevelList.getNextLevel(
+                            GameFrame.getInstance().getLastLevel().getLevel(),
+                            LevelPlayFlag.DEFAULT),
+                        LevelPlayFlag.DEFAULT));
+            reset();
+          }
+        });
+    nextLevel.setFont(Fonts.COMIC_SANS_MS_30);
+    nextLevel.setForeground(Color.white);
+    nextLevel.setBackground(new Color(56, 109, 80));
+    nextLevel.setText("Следующий уровень");
+  }
+
+  @Override
+  protected void initBeforeConstruct() {}
+
+  @Override
+  protected void constructPanel() {
+    this.setLayout(new BorderLayout(30, 30));
+    this.setBorder(new EmptyBorder(30, 30, 30, 30));
+
+    GOpaquePanel topPanel = new GOpaquePanel();
+    topPanel.setLayout(new BorderLayout());
+    this.add(topPanel, BorderLayout.NORTH);
+    topPanel.add(nameLabel, BorderLayout.WEST);
+    topPanel.add(returnButton, BorderLayout.EAST);
+
+    this.add(outputScrollPane, BorderLayout.CENTER);
+
+    southPanel = new GOpaquePanel();
+    southPanel.setLayout(new BorderLayout(30, 30));
+    this.add(southPanel, BorderLayout.SOUTH);
+    southPanel.add(enterLabel, BorderLayout.WEST);
+    southPanel.add(inputScrollPane, BorderLayout.CENTER);
+  }
+
+  @Override
+  protected void initAfterConstruct() {
+    Thread updateThread = getUpdateThread();
+    updateThread.start(); // Запуск потока
+
+    Thread gameThread = getGameThread();
+    gameThread.start(); // Запуск потока
+  }
+
+  private Thread getUpdateThread() {
+    turnedOnUpdateThread = true;
+    // Создание потока - поток игры - обязательно должен идти параллельно с графическим интерфейсом
+    // Этот метод будет выполняться в побочном потоке
+    Thread updateThread =
+        new Thread(
+            new Runnable() {
+              @Override
+              public void run() {
+                while (turnedOnUpdateThread) {
+                  // wait 10 ms
+                  try {
+                    Thread.sleep(10);
+                  } catch (InterruptedException ignored) {
+                  }
+                  if (System.currentTimeMillis() - outputStream.getTimer() > 10
+                      && !outputStream.isChecked()) {
+                    SwingUtilities.invokeLater(
+                        new Runnable() {
+                          @Override
+                          public void run() {
+                            final FMPrintStream out2 = out;
+                            synchronized (out2) {
+                              outputField.setText("");
+                              for (String a : outputStream.getText()) {
+                                outputField.append(a);
+                              }
+                            }
+                          }
+                        });
+                  }
+                }
+              }
+            });
+    updateThread.setName("FM Text update");
+    updateThread.setDaemon(true);
+    return updateThread;
+  }
+
+  private Thread getGameThread() {
+    // Создание потока - поток игры - обязательно должен идти параллельно с графическим интерфейсом
+    // Этот метод будет выполняться в побочном потоке
+    Thread gameThread =
+        new Thread(
+            new Runnable() {
+              @Override
+              public void run() {
+                int[] gameData = new int[] {0, 0, 10000, 10000};
+                try {
+                  gameData = GameFrame.getInstance().getCurrentLevel().consoleRun(in, out);
+                } catch (Exception e) {
+                  out.println(e.getMessage());
+                }
+                inputField.setEnabled(false);
+                if (GameFrame.getInstance().getCurrentLevel().isCompleted()) {
+                  southPanel.add(nextLevel, BorderLayout.EAST);
+                  repaint();
+                  validate();
+                }
+                try {
+                  Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                  throw new RuntimeException(e);
+                }
+                turnedOnUpdateThread = false;
+                GameFrame.getInstance().exitCurrentLevel(gameData);
+              }
+            });
+    gameThread.setName("FM Level");
+    gameThread.setDaemon(true);
+    return gameThread;
   }
 
   @Override

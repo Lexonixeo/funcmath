@@ -6,7 +6,19 @@ import java.awt.event.MouseEvent;
 
 public class LevelMakerTutorial extends GBackgroundPanel {
   @Override
+  protected void initBeforeComponents() {}
+
+  @Override
   protected void initComponents() {}
+
+  @Override
+  protected void initBeforeConstruct() {}
+
+  @Override
+  protected void constructPanel() {}
+
+  @Override
+  protected void initAfterConstruct() {}
 
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {

@@ -18,12 +18,17 @@ public class DefaultLevel implements Level {
   Stack<DLevelState> history;
   ArrayList<String> fNames;
 
+  LevelPlayFlag playFlag;
+
+  long timer;
+
   boolean isCompleted = false;
 
   public DefaultLevel() {}
 
   public DefaultLevel(Integer level, LevelPlayFlag playFlag) {
     levelInfo = new DLevelInfo(level, playFlag);
+    this.playFlag = playFlag;
     currentLevelState = levelInfo.getLevelState();
     fNames = levelInfo.getFunctionNames();
     history = new Stack<>();
@@ -223,6 +228,16 @@ public class DefaultLevel implements Level {
   }
 
   @Override
+  public LevelPlayFlag getLevelFlag() {
+    return null;
+  }
+
+  @Override
+  public boolean isCompleted() {
+    return isCompleted;
+  }
+
+  @Override
   public int[] consoleRun(InputStream in, FMPrintStream out) {
     DLevelConsole console = new DLevelConsole(in, out, this);
     return console.game();
@@ -231,6 +246,34 @@ public class DefaultLevel implements Level {
   @Override
   public int[] guiRun(GBackgroundPanel panel) {
     return null;
+  }
+
+  @Override
+  public String getStats() {
+    int fuses = 0;
+    for (Function f : this.getLevelInfo().getOriginalFunctions().values()) {
+      fuses += f.getUses();
+    }
+
+    int newFuses = 0;
+    for (Function f : this.getCurrentLevelState().getFunctions().values()) {
+      newFuses += f.getUses();
+    }
+    int dFuses = fuses - newFuses;
+
+    int time = Math.toIntExact(System.currentTimeMillis() / 1000 - timer);
+
+    return "FuncUses: " + dFuses + " Время: " + time + " с";
+  }
+
+  @Override
+  public void startTimer() {
+    this.timer = System.currentTimeMillis() / 1000;
+  }
+
+  @Override
+  public long getTimer() {
+    return timer;
   }
 
   @Override

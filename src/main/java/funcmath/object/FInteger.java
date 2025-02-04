@@ -19,11 +19,11 @@ public class FInteger implements MathObject, Comparable<FInteger> {
   protected BigInteger number;
 
   public FInteger() {
-    this.number = ZERO.get();
+    this(0);
   }
 
   public FInteger(long number) {
-    this.number = BigInteger.valueOf(number);
+    this(BigInteger.valueOf(number));
   }
 
   public FInteger(BigInteger number) {
@@ -31,7 +31,7 @@ public class FInteger implements MathObject, Comparable<FInteger> {
   }
 
   public FInteger(String s) {
-    this.number = new BigInteger(s);
+    this(new BigInteger(s));
   }
 
   @Override

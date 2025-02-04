@@ -169,7 +169,7 @@ public class Game {
   }
 
   private void list(int page) {
-    ArrayList<Integer> levels = Level.getLevelList(Helper.getFileNames("data\\levels\\"));
+    ArrayList<Integer> levels = LevelList.getLevelList(LevelPlayFlag.DEFAULT);
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
       Log.getInstance().write("A player tried to invoke a list with a non-existent page");
       systemOut.println("Не бывает такой страницы!");
@@ -183,7 +183,7 @@ public class Game {
   }
 
   private void clist(int page) {
-    ArrayList<Integer> levels = Level.getLevelList(Helper.getFileNames("data\\customLevels\\"));
+    ArrayList<Integer> levels = LevelList.getLevelList(LevelPlayFlag.DEFAULT);
     if (page <= 0 || levels.size() < 20 * page - 20 + 1) {
       Log.getInstance().write("A player tried to invoke a clist with a non-existent page");
       systemOut.println("Не бывает такой страницы!");

@@ -1,5 +1,6 @@
 package funcmath.game.defaultlevel;
 
+import funcmath.exceptions.JavaException;
 import funcmath.function.Function;
 import funcmath.game.FMPrintStream;
 import funcmath.object.MathObject;
@@ -184,11 +185,17 @@ public class DLevelConsole {
       out.print("[Level] Введите выражение: ");
     }
     Scanner scanner = new Scanner(in, StandardCharsets.UTF_8);
-    String cmd = scanner.nextLine();
+    String cmd = "";
+    try {
+      cmd = scanner.nextLine();
+    } catch (JavaException e) {
+      return -1;
+    } catch (Exception ignored) {
+    }
     synchronized (out) {
       ArrayList<String> command = Helper.wordsFromString(cmd);
       Log.getInstance().write("An expression is introduced: " + cmd);
-      String first_command = command.get(0);
+      String first_command = command.getFirst();
       switch (first_command) {
         case "exit", "menu", "stop" -> {
           return -1;
@@ -213,13 +220,13 @@ public class DLevelConsole {
     if (!this.level.getCutscene().getText().isEmpty()) {
       playCutscene();
     }
-    long startTime = System.currentTimeMillis() / 1000;
+    this.level.startTimer();
     start();
     while (!level.isCompleted) {
       int check = turn();
       if (check == -1) break;
     }
-    int time = Math.toIntExact(System.currentTimeMillis() / 1000 - startTime);
+    int time = Math.toIntExact(System.currentTimeMillis() / 1000 - this.level.getTimer());
 
     int fuses = 0;
     for (Function f : this.level.getLevelInfo().getOriginalFunctions().values()) {

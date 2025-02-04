@@ -13,8 +13,9 @@ public class Player {
   HashSet<Integer> completedLevels;
   HashMap<Integer, Integer> minFunctionUsesInLevel;
   HashMap<Integer, Integer> minTimeInLevel;
-  HashMap<Integer, DLevelState> savings;
+  // HashMap<Integer, DLevelState> savings;
   int lastLevel;
+  HashMap<Integer, String> stats;
 
   public Player(String name, boolean registered) {
     Log.getInstance()
@@ -29,6 +30,7 @@ public class Player {
       this.minFunctionUsesInLevel = new HashMap<>();
       this.minTimeInLevel = new HashMap<>();
       this.lastLevel = 0;
+      this.stats = new HashMap<>();
 
       writePlayerInfo();
     }
@@ -43,6 +45,7 @@ public class Player {
     playerInfo.add(this.minFunctionUsesInLevel);
     playerInfo.add(this.minTimeInLevel);
     playerInfo.add(lastLevel);
+    playerInfo.add(stats);
 
     Helper.write(playerInfo, "data/players/" + ID + ".dat");
     Log.getInstance().write("The data is saved!");
@@ -57,6 +60,7 @@ public class Player {
       this.minFunctionUsesInLevel = Helper.cast(playerInfo.get(1), new HashMap<>());
       this.minTimeInLevel = Helper.cast(playerInfo.get(2), new HashMap<>());
       this.lastLevel = (int) playerInfo.get(3);
+      this.stats = Helper.cast(playerInfo.get(4), new HashMap<>());
     } catch (Exception e) {
       try {
         this.completedLevels =
@@ -66,6 +70,7 @@ public class Player {
       }
       minFunctionUsesInLevel = new HashMap<>();
       minTimeInLevel = new HashMap<>();
+      stats = new HashMap<>();
 
       try {
         this.lastLevel = (Integer) Helper.read("data\\players\\" + ID + "s.dat");
@@ -86,16 +91,43 @@ public class Player {
         minFunctionUsesInLevel.put(
             level, Math.min(minFunctionUsesInLevel.get(level), functionUses));
         minTimeInLevel.put(level, Math.min(minTimeInLevel.get(level), time));
+        stats.put(level, "FuncUses: " + Math.min(minFunctionUsesInLevel.get(level), functionUses) + " Время: " + Math.min(minTimeInLevel.get(level), time) + " с");
       } else {
         completedLevels.add(level);
         minFunctionUsesInLevel.put(level, functionUses);
         minTimeInLevel.put(level, time);
+        stats.put(level, "FuncUses: " + functionUses + " Время: " + time + " с");
       }
     }
     lastLevel = level;
 
     writePlayerInfo();
     Log.getInstance().write("The player has added the results for the level to the statistics");
+  }
+
+  public void addLevel(Level level, int functionUses, int time) {
+    if (level.isCompleted()) {
+      if (completedLevels.contains(level.getLevel())
+              && minFunctionUsesInLevel.get(level.getLevel()) != null
+              && minTimeInLevel.get(level.getLevel()) != null) {
+        minFunctionUsesInLevel.put(
+                level.getLevel(), Math.min(minFunctionUsesInLevel.get(level.getLevel()), functionUses));
+        minTimeInLevel.put(level.getLevel(), Math.min(minTimeInLevel.get(level.getLevel()), time));
+      } else {
+        completedLevels.add(level.getLevel());
+        minFunctionUsesInLevel.put(level.getLevel(), functionUses);
+        minTimeInLevel.put(level.getLevel(), time);
+      }
+      stats.put(level.getLevel(), level.getStats());
+    }
+    lastLevel = level.getLevel();
+
+    writePlayerInfo();
+    Log.getInstance().write("The player has added the results for the level to the statistics");
+  }
+
+  public HashMap<Integer, String> getStats() {
+    return stats;
   }
 
   public String getName() {

@@ -3,7 +3,6 @@ package funcmath.gui;
 import funcmath.game.Level;
 import funcmath.game.LevelPlayFlag;
 import funcmath.game.Player;
-import funcmath.game.defaultlevel.DefaultLevel;
 import funcmath.gui.panel.*;
 import funcmath.gui.panel.Menu;
 import funcmath.gui.swing.GPanel;
@@ -14,7 +13,8 @@ public class GameFrame extends JFrame {
   private static final GameFrame instance = new GameFrame(); // singleton
 
   GPanel currentPanel;
-  Level currentLevel = new DefaultLevel(1, LevelPlayFlag.DEFAULT);
+  Level currentLevel;
+  Level lastLevel;
   KeyboardFocusManager manager;
   Player player;
 
@@ -73,6 +73,8 @@ public class GameFrame extends JFrame {
           case "level maker tutorial" -> new LevelMakerTutorial();
           case "function maker" -> new FunctionMakerPanel();
           case "function maker tutorial" -> new FunctionMakerTutorial();
+          case "level list" -> new LevelListPanel(1, LevelPlayFlag.DEFAULT);
+          case "custom level list" -> new LevelListPanel(1, LevelPlayFlag.CUSTOM);
           case "loading" -> LoadingPanel.getInstance();
           default -> throw new IllegalStateException("Unexpected value: " + panelKey);
         };
@@ -101,6 +103,23 @@ public class GameFrame extends JFrame {
 
   public void setCurrentLevel(Level currentLevel) {
     this.currentLevel = currentLevel;
+    this.lastLevel = currentLevel;
+  }
+
+  public void exitCurrentLevel(int[] gameData) {
+    player.addLevel(currentLevel.isCompleted(), currentLevel.getLevel(), gameData[2], gameData[3]);
+    this.currentLevel = null;
+  }
+
+  public Level getLastLevel() {
+      Level a = null;
+      try {
+          a = Level.getLevelInstance(
+                  player.getLastLevel(),
+                  (player.getLastLevel() < 0 ? LevelPlayFlag.CUSTOM : LevelPlayFlag.DEFAULT));
+      } catch (Exception ignored) {
+      }
+    return a;
   }
 
   public static GameFrame getInstance() {

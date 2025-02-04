@@ -7,6 +7,8 @@ import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
@@ -26,52 +28,8 @@ public class Register extends GBackgroundPanel {
   JButton trySignUpButton;
   JButton showPassword;
 
-  public Register() {
-    initComponents();
-
-    this.setLayout(new GridLayout(3, 3, 30, 30));
-    this.setBorder(new EmptyBorder(50, 50, 30, 30));
-    this.setBackground(Color.black);
-
-    this.add(new GOpaquePanel());
-    GOpaquePanel upperPanel = new GOpaquePanel();
-    upperPanel.setLayout(new GridLayout(2, 1, 30, 30));
-    this.add(upperPanel);
-    upperPanel.add(nameLabel);
-    GOpaquePanel upperBottomPanel = new GOpaquePanel();
-    upperBottomPanel.setLayout(new GridLayout(1, 2, 30, 30));
-    upperPanel.add(upperBottomPanel);
-    upperBottomPanel.add(logInButton);
-    upperBottomPanel.add(signUpButton);
-    this.add(new GOpaquePanel());
-
-    this.add(warnLabel);
-    GOpaquePanel centerPanel = new GOpaquePanel();
-    centerPanel.setLayout(new GridLayout(3, 1, 30, 30));
-    this.add(centerPanel);
-    centerPanel.add(nameField);
-    GOpaquePanel passPanel = new GOpaquePanel();
-    passPanel.setLayout(new BoxLayout(passPanel, BoxLayout.X_AXIS));
-    passPanel.add(passField);
-    passPanel.add(Box.createHorizontalStrut(30));
-    passPanel.add(showPassword);
-    centerPanel.add(passPanel);
-    centerPanel.add(pass2Field);
-    this.add(new GOpaquePanel());
-
-    // нижние три клетки
-    this.add(new GOpaquePanel());
-    GOpaquePanel bottommPanel = new GOpaquePanel();
-    bottommPanel.setLayout(new GridLayout(3, 1, 30, 30));
-    this.add(bottommPanel);
-    bottommPanel.add(trySignUpButton);
-    bottommPanel.add(errorInfo);
-    bottommPanel.add(new GOpaquePanel());
-    this.add(new GOpaquePanel());
-
-    this.validate();
-    this.repaint();
-  }
+  @Override
+  protected void initBeforeComponents() {}
 
   @Override
   protected void initComponents() {
@@ -86,9 +44,9 @@ public class Register extends GBackgroundPanel {
 
     logInButton = new JButton();
     logInButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {
+          public void actionPerformed(ActionEvent e) {
             GameFrame.getInstance().changePanel("login");
           }
         });
@@ -176,9 +134,9 @@ public class Register extends GBackgroundPanel {
 
     trySignUpButton = new JButton();
     trySignUpButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {
+          public void actionPerformed(ActionEvent e) {
             String username = nameField.getText();
             String password = String.valueOf(passField.getPassword());
             String password2 = String.valueOf(pass2Field.getPassword());
@@ -190,8 +148,8 @@ public class Register extends GBackgroundPanel {
               Player p = Authorization.register(username, password);
               GameFrame.getInstance().setPlayer(p);
               GameFrame.getInstance().changePanel("menu");
-            } catch (AuthorizationException e) {
-              errorInfo.setText(e.getMessage());
+            } catch (AuthorizationException ex) {
+              errorInfo.setText(ex.getMessage());
             }
             validate();
             repaint();
@@ -204,9 +162,9 @@ public class Register extends GBackgroundPanel {
 
     showPassword = new JButton();
     showPassword.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {
+          public void actionPerformed(ActionEvent e) {
             passShow = !passShow;
             passField.setShow(passShow);
           }
@@ -219,6 +177,54 @@ public class Register extends GBackgroundPanel {
     showPassword.setForeground(Color.white);
     showPassword.setFocusable(false);
   }
+
+  @Override
+  protected void initBeforeConstruct() {}
+
+  @Override
+  protected void constructPanel() {
+    this.setLayout(new GridLayout(3, 3, 30, 30));
+    this.setBorder(new EmptyBorder(50, 50, 30, 30));
+
+    this.add(new GOpaquePanel());
+    GOpaquePanel upperPanel = new GOpaquePanel();
+    upperPanel.setLayout(new GridLayout(2, 1, 30, 30));
+    this.add(upperPanel);
+    upperPanel.add(nameLabel);
+    GOpaquePanel upperBottomPanel = new GOpaquePanel();
+    upperBottomPanel.setLayout(new GridLayout(1, 2, 30, 30));
+    upperPanel.add(upperBottomPanel);
+    upperBottomPanel.add(logInButton);
+    upperBottomPanel.add(signUpButton);
+    this.add(new GOpaquePanel());
+
+    this.add(warnLabel);
+    GOpaquePanel centerPanel = new GOpaquePanel();
+    centerPanel.setLayout(new GridLayout(3, 1, 30, 30));
+    this.add(centerPanel);
+    centerPanel.add(nameField);
+    GOpaquePanel passPanel = new GOpaquePanel();
+    passPanel.setLayout(new BoxLayout(passPanel, BoxLayout.X_AXIS));
+    passPanel.add(passField);
+    passPanel.add(Box.createHorizontalStrut(30));
+    passPanel.add(showPassword);
+    centerPanel.add(passPanel);
+    centerPanel.add(pass2Field);
+    this.add(new GOpaquePanel());
+
+    // нижние три клетки
+    this.add(new GOpaquePanel());
+    GOpaquePanel bottommPanel = new GOpaquePanel();
+    bottommPanel.setLayout(new GridLayout(3, 1, 30, 30));
+    this.add(bottommPanel);
+    bottommPanel.add(trySignUpButton);
+    bottommPanel.add(errorInfo);
+    bottommPanel.add(new GOpaquePanel());
+    this.add(new GOpaquePanel());
+  }
+
+  @Override
+  protected void initAfterConstruct() {}
 
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {

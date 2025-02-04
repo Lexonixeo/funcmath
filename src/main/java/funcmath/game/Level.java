@@ -22,18 +22,19 @@ public interface Level extends Serializable {
 
   Cutscene getCutscene();
 
+  LevelPlayFlag getLevelFlag();
+
+  boolean isCompleted();
+
   int[] consoleRun(InputStream in, FMPrintStream out);
 
   int[] guiRun(GBackgroundPanel panel);
 
-  static ArrayList<Integer> getLevelList(ArrayList<String> fileNames) {
-    ArrayList<Integer> answer = new ArrayList<>();
-    for (String fileName : fileNames) {
-      answer.add(Integer.parseInt(fileName.substring(5, fileName.length() - 4)));
-    }
-    answer.sort(Comparator.naturalOrder());
-    return answer;
-  }
+  String getStats();
+
+  void startTimer();
+
+  long getTimer();
 
   static void loadLevelType(Level x) {
     String type = x.getType();

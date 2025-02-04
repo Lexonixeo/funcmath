@@ -1,11 +1,14 @@
 package funcmath.gui.panel;
 
+import funcmath.game.Level;
+import funcmath.game.LevelPlayFlag;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
-import funcmath.gui.swing.ButtonAction;
 import funcmath.gui.swing.GBackgroundPanel;
 import funcmath.gui.swing.GOpaquePanel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
@@ -17,6 +20,7 @@ public class Menu extends GBackgroundPanel {
   JLabel prototypeLabel;
   JLabel whyLabel;
   JLabel menuLabel;
+  JLabel errorLabel;
   JButton playButton;
   JButton levelListButton;
   JButton customLevelListButton;
@@ -25,43 +29,11 @@ public class Menu extends GBackgroundPanel {
   JButton guideButton;
   JButton functionMakerButton;
   JButton levelMakerButton;
-  JButton button1;
-  JButton button2;
+  JButton companyButton;
+  JButton exitButton;
 
-  public Menu() {
-    initComponents();
-
-    this.setLayout(new GridLayout(3, 1, 50, 50));
-    this.setBorder(new EmptyBorder(50, 50, 50, 50));
-    this.setBackground(Color.black);
-
-    this.add(nameLabel);
-
-    GOpaquePanel centerPanel = new GOpaquePanel();
-    centerPanel.setLayout(new GridLayout(4, 1));
-    this.add(centerPanel);
-    centerPanel.add(welcomeLabel);
-    centerPanel.add(prototypeLabel);
-    centerPanel.add(whyLabel);
-    centerPanel.add(menuLabel);
-
-    GOpaquePanel bottomPanel = new GOpaquePanel();
-    bottomPanel.setLayout(new GridLayout(2, 5, 50, 50));
-    this.add(bottomPanel);
-    bottomPanel.add(playButton);
-    bottomPanel.add(levelListButton);
-    bottomPanel.add(customLevelListButton);
-    bottomPanel.add(statsButton);
-    bottomPanel.add(settingsButton);
-    bottomPanel.add(guideButton);
-    bottomPanel.add(functionMakerButton);
-    bottomPanel.add(levelMakerButton);
-    bottomPanel.add(button1);
-    bottomPanel.add(button2);
-
-    this.validate();
-    this.repaint();
-  }
+  @Override
+  protected void initBeforeComponents() {}
 
   @Override
   protected void initComponents() {
@@ -92,24 +64,50 @@ public class Menu extends GBackgroundPanel {
     menuLabel.setFont(Fonts.COMIC_SANS_MS_30);
     menuLabel.setForeground(Color.white);
 
+    errorLabel = new JLabel();
+    errorLabel.setText("");
+    errorLabel.setFont(Fonts.COMIC_SANS_MS_30);
+    errorLabel.setForeground(Color.white);
+
     playButton = new JButton();
     playButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {
-            GameFrame.getInstance().changePanel("level");
+          public void actionPerformed(ActionEvent e) {
+            if (GameFrame.getInstance().getLastLevel() == null
+                || GameFrame.getInstance().getLastLevel().isCompleted()) {
+              errorLabel.setText("Вы не можете вернуться к предыдущему уровню.");
+              validate();
+              repaint();
+            } else {
+              GameFrame.getInstance()
+                  .setCurrentLevel(
+                      Level.getLevelInstance(
+                          GameFrame.getInstance().getPlayer().getLastLevel(),
+                          (GameFrame.getInstance().getPlayer().getLastLevel() < 0
+                              ? LevelPlayFlag.CUSTOM
+                              : LevelPlayFlag.DEFAULT)));
+              GameFrame.getInstance().changePanel("level");
+            }
           }
         });
     playButton.setFont(Fonts.COMIC_SANS_MS_30);
-    playButton.setText("Играть!");
+    if (GameFrame.getInstance().getLastLevel() == null
+        || GameFrame.getInstance().getLastLevel().isCompleted()) {
+      playButton.setText("Играть!");
+    } else {
+      playButton.setText("Продолжить!");
+    }
     playButton.setForeground(Color.white);
     playButton.setBackground(new Color(56, 109, 80));
 
     levelListButton = new JButton();
     levelListButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {}
+          public void actionPerformed(ActionEvent e) {
+            GameFrame.getInstance().changePanel("level list");
+          }
         });
     levelListButton.setFont(Fonts.COMIC_SANS_MS_30);
     levelListButton.setText("Уровни");
@@ -118,9 +116,11 @@ public class Menu extends GBackgroundPanel {
 
     customLevelListButton = new JButton();
     customLevelListButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {}
+          public void actionPerformed(ActionEvent e) {
+            GameFrame.getInstance().changePanel("custom level list");
+          }
         });
     customLevelListButton.setFont(Fonts.COMIC_SANS_MS_30);
     customLevelListButton.setText("Пользовательские уровни");
@@ -129,9 +129,9 @@ public class Menu extends GBackgroundPanel {
 
     statsButton = new JButton();
     statsButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {}
+          public void actionPerformed(ActionEvent e) {}
         });
     statsButton.setFont(Fonts.COMIC_SANS_MS_30);
     statsButton.setText("Статистика");
@@ -140,9 +140,9 @@ public class Menu extends GBackgroundPanel {
 
     settingsButton = new JButton();
     settingsButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {}
+          public void actionPerformed(ActionEvent e) {}
         });
     settingsButton.setFont(Fonts.COMIC_SANS_MS_30);
     settingsButton.setText("Настройки");
@@ -151,9 +151,9 @@ public class Menu extends GBackgroundPanel {
 
     guideButton = new JButton();
     guideButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {}
+          public void actionPerformed(ActionEvent e) {}
         });
     guideButton.setFont(Fonts.COMIC_SANS_MS_30);
     guideButton.setText("Туториал");
@@ -162,9 +162,9 @@ public class Menu extends GBackgroundPanel {
 
     functionMakerButton = new JButton();
     functionMakerButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {}
+          public void actionPerformed(ActionEvent e) {}
         });
     functionMakerButton.setFont(Fonts.COMIC_SANS_MS_30);
     functionMakerButton.setText("Создать функцию");
@@ -173,39 +173,81 @@ public class Menu extends GBackgroundPanel {
 
     levelMakerButton = new JButton();
     levelMakerButton.addActionListener(
-        new ButtonAction() {
+        new ActionListener() {
           @Override
-          public void onClick() {}
+          public void actionPerformed(ActionEvent e) {}
         });
     levelMakerButton.setFont(Fonts.COMIC_SANS_MS_30);
     levelMakerButton.setText("Создать уровень");
     levelMakerButton.setForeground(Color.white);
     levelMakerButton.setBackground(new Color(56, 109, 80));
 
-    button1 = new JButton();
-    button1.addActionListener(
-        new ButtonAction() {
+    companyButton = new JButton();
+    companyButton.addActionListener(
+        new ActionListener() {
           @Override
-          public void onClick() {}
+          public void actionPerformed(ActionEvent e) {}
         });
-    button1.setFont(Fonts.COMIC_SANS_MS_30);
-    button1.setText("");
-    button1.setEnabled(false);
-    button1.setForeground(Color.white);
-    button1.setBackground(new Color(56, 109, 80));
+    companyButton.setFont(Fonts.COMIC_SANS_MS_30);
+    companyButton.setText("Кампания");
+    companyButton.setForeground(Color.white);
+    companyButton.setBackground(new Color(56, 109, 80));
 
-    button2 = new JButton();
-    button2.addActionListener(
-        new ButtonAction() {
+    exitButton = new JButton();
+    exitButton.addActionListener(
+        new ActionListener() {
           @Override
-          public void onClick() {}
+          public void actionPerformed(ActionEvent e) {
+            GameFrame.getInstance().dispose();
+          }
         });
-    button2.setFont(Fonts.COMIC_SANS_MS_30);
-    button2.setText("");
-    button2.setEnabled(false);
-    button2.setForeground(Color.white);
-    button2.setBackground(new Color(56, 109, 80));
+    exitButton.setFont(Fonts.COMIC_SANS_MS_30);
+    exitButton.setText("Выйти");
+    exitButton.setForeground(Color.white);
+    exitButton.setBackground(new Color(56, 109, 80));
   }
+
+  @Override
+  protected void initBeforeConstruct() {}
+
+  @Override
+  protected void constructPanel() {
+    this.setLayout(new BorderLayout());
+    this.setBorder(new EmptyBorder(50, 50, 50, 50));
+
+    this.add(nameLabel, BorderLayout.NORTH);
+
+    GOpaquePanel centerPanel = new GOpaquePanel();
+    centerPanel.setLayout(new GridLayout(10, 1));
+    this.add(centerPanel, BorderLayout.CENTER);
+    centerPanel.add(welcomeLabel);
+    centerPanel.add(prototypeLabel);
+    centerPanel.add(whyLabel);
+    centerPanel.add(new GOpaquePanel());
+    centerPanel.add(menuLabel);
+    centerPanel.add(new GOpaquePanel());
+    centerPanel.add(new GOpaquePanel());
+    centerPanel.add(errorLabel);
+    centerPanel.add(new GOpaquePanel());
+    centerPanel.add(new GOpaquePanel());
+
+    GOpaquePanel bottomPanel = new GOpaquePanel();
+    bottomPanel.setLayout(new GridLayout(2, 5, 50, 50));
+    this.add(bottomPanel, BorderLayout.SOUTH);
+    bottomPanel.add(playButton);
+    bottomPanel.add(companyButton);
+    bottomPanel.add(levelListButton);
+    bottomPanel.add(customLevelListButton);
+    bottomPanel.add(statsButton);
+    bottomPanel.add(settingsButton);
+    bottomPanel.add(guideButton);
+    bottomPanel.add(functionMakerButton);
+    bottomPanel.add(levelMakerButton);
+    bottomPanel.add(exitButton);
+  }
+
+  @Override
+  protected void initAfterConstruct() {}
 
   @Override
   public boolean dispatchKeyEvent(KeyEvent e) {

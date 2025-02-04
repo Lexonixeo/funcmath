@@ -21,28 +21,23 @@ public class FComplex implements MathObject {
   protected FReal real, imaginary;
 
   public FComplex() {
-    this.real = FReal.ZERO;
-    this.imaginary = FReal.ZERO;
+    this(0, 0);
   }
 
   public FComplex(double real, double imaginary) {
-    this.real = new FReal(real);
-    this.imaginary = new FReal(imaginary);
+    this(new FReal(real), new FReal(imaginary));
   }
 
   public FComplex(BigInteger real, BigInteger imaginary) {
-    this.real = new FReal(real);
-    this.imaginary = new FReal(imaginary);
+    this(new FReal(real), new FReal(imaginary));
   }
 
   public FComplex(BigDecimal real, BigDecimal imaginary) {
-    this.real = new FReal(real);
-    this.imaginary = new FReal(imaginary);
+    this(new FReal(real), new FReal(imaginary));
   }
 
   public FComplex(BigComplex complex) {
-    this.real = new FReal(complex.re);
-    this.imaginary = new FReal(complex.im);
+    this(complex.re, complex.im);
   }
 
   public FComplex(FReal real, FReal imaginary) {
@@ -53,8 +48,7 @@ public class FComplex implements MathObject {
   public FComplex(String s) {
     ArrayList<String> snumbers =
         Helper.wordsFromString(s.replace('i', ' ').replace('+', ' ').replaceAll("-", " -"));
-    this.real = new FReal(snumbers.get(0));
-    this.imaginary = new FReal(snumbers.get(1));
+    this(new FReal(snumbers.get(0)), new FReal(snumbers.get(1)));
   }
 
   @Override

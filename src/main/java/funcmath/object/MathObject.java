@@ -14,7 +14,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public interface MathObject extends Serializable {
+public interface  MathObject extends Serializable {
   MathContext DEFAULT_MATHCONTEXT = new MathContext(10, RoundingMode.HALF_UP);
   HashMap<String, MathObject> MATH_OBJECT_HASH_MAP = new HashMap<>();
 
@@ -25,6 +25,8 @@ public interface MathObject extends Serializable {
   String getTypeForLevel(); // вроде "натуральных", "целых"...
 
   String getName(); // название числа (типа A, B, ...), null если само число не требует названия
+
+  // String getId();
 
   static MathObject[] ignore(MathObject ignoredA) {
     return new MathObject[] {};
@@ -107,7 +109,7 @@ public interface MathObject extends Serializable {
     MathObject.loadMathObject(new FRational());
     MathObject.loadMathObject(new FReal());
     MathObject.loadMathObject(new FComplex());
-    MathObject.loadMathObject(new FUnknown());
+    // MathObject.loadMathObject(new FUnknown());
     Log.getInstance().write("MathObjects has loaded!");
   }
 

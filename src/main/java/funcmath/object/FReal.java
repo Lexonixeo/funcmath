@@ -21,15 +21,15 @@ public class FReal implements MathObject, Comparable<FReal> {
   protected BigDecimal number;
 
   public FReal() {
-    this.number = ZERO.get();
+    this(0);
   }
 
   public FReal(double number) {
-    this.number = BigDecimal.valueOf(number);
+    this(BigDecimal.valueOf(number));
   }
 
   public FReal(BigInteger number) {
-    this.number = new BigDecimal(number, DEFAULT_MATHCONTEXT);
+    this(new BigDecimal(number, DEFAULT_MATHCONTEXT));
   }
 
   public FReal(BigDecimal number) {

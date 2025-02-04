@@ -9,12 +9,14 @@ import java.util.ArrayList;
 
 public class GOutputStream extends OutputStream {
   private final ArrayList<ArrayList<Byte>> textList;
-  private final ArrayList<OutputStreamAction> actions;
+
+  private long timer;
+  private boolean checked = false;
 
   public GOutputStream() {
     this.textList = new ArrayList<>();
     this.textList.add(new ArrayList<>());
-    actions = new ArrayList<>();
+    timer = System.currentTimeMillis();
   }
 
   public void clear() {
@@ -27,17 +29,16 @@ public class GOutputStream extends OutputStream {
     for (ArrayList<Byte> a : textList) {
       text.add(new String(Helper.toByteArray(a), StandardCharsets.UTF_8));
     }
+    this.checked = true;
     return text;
   }
 
-  public void addOutputStreamAction(OutputStreamAction action) {
-    this.actions.add(action);
+  public long getTimer() {
+    return timer;
   }
 
-  private void afterWrite() {
-    for (OutputStreamAction a : actions) {
-      a.afterWrite(); // BEDA: VLOZHENYY SYNC
-    }
+  public boolean isChecked() {
+    return checked;
   }
 
   @Override
@@ -60,6 +61,8 @@ public class GOutputStream extends OutputStream {
 
   @Override
   public void write(int b) throws IOException {
+    timer = System.currentTimeMillis();
+    checked = false;
     if ((byte) b == '\r') {
       return;
     } else if ((byte) b == '\n') {
@@ -68,6 +71,5 @@ public class GOutputStream extends OutputStream {
     } else {
       textList.get(textList.size() - 1).add((byte) b);
     }
-    this.afterWrite();
   }
 }

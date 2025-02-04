@@ -10,16 +10,20 @@ public class GInputStream extends InputStream {
   boolean check = false;
   int pointer = 0;
 
-  public GInputStream() {}
+  boolean stopper = false;
 
   public void send(String text) {
     contents = text.getBytes(StandardCharsets.UTF_8);
     pointer = 0;
   }
 
+  public void stop() {
+    this.stopper = true;
+  }
+
   @Override
   public int read() throws IOException {
-    while (contents == null && !check) {
+    while (contents == null && !stopper) {
       // wait, Thread.yield() throws NoSuchElementException
       try {
         Thread.sleep(100);
@@ -27,13 +31,11 @@ public class GInputStream extends InputStream {
         throw new JavaException(e);
       }
     }
-    if (check) {
-      check = false;
-      return -1;
+    if (stopper) {
+      throw new JavaException("Stopping at reading");
     }
     if (pointer >= contents.length) {
       contents = null;
-      check = true;
       return -1;
     }
     return this.contents[pointer++] & 0xFF;

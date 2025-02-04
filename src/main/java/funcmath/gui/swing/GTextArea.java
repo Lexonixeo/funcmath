@@ -12,12 +12,12 @@ public class GTextArea extends JTextArea {
   public void textUpdate() {
     if (outputStream != null) {
       SwingUtilities.invokeLater(
-              () -> {
-                setText("");
-                for (String a : outputStream.getText()) {
-                  append(a);
-                }
-              });
+          () -> {
+            setText("");
+            for (String a : outputStream.getText()) {
+              append(a);
+            }
+          });
     }
   }
 }
