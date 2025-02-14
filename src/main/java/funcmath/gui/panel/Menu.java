@@ -1,11 +1,10 @@
 package funcmath.gui.panel;
 
-import funcmath.game.Level;
-import funcmath.game.LevelPlayFlag;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.GBackgroundPanel;
 import funcmath.gui.swing.GOpaquePanel;
+import funcmath.level.LevelRegister;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -82,11 +81,7 @@ public class Menu extends GBackgroundPanel {
             } else {
               GameFrame.getInstance()
                   .setCurrentLevel(
-                      Level.getLevelInstance(
-                          GameFrame.getInstance().getPlayer().getLastLevel(),
-                          (GameFrame.getInstance().getPlayer().getLastLevel() < 0
-                              ? LevelPlayFlag.CUSTOM
-                              : LevelPlayFlag.DEFAULT)));
+                      LevelRegister.getLevel(GameFrame.getInstance().getPlayer().getLastLevel()));
               GameFrame.getInstance().changePanel("level");
             }
           }

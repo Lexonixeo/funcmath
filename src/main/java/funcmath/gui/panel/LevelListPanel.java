@@ -1,13 +1,12 @@
 package funcmath.gui.panel;
 
-import funcmath.game.Level;
-import funcmath.game.LevelList;
-import funcmath.game.LevelPlayFlag;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.GBackgroundPanel;
 import funcmath.gui.swing.GLevelNamePanel;
 import funcmath.gui.swing.GOpaquePanel;
+import funcmath.level.LevelRegister;
+import funcmath.level.PlayFlag;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +17,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class LevelListPanel extends GBackgroundPanel {
-  ArrayList<Integer> levels;
+  ArrayList<Long> levels;
 
   JLabel nameLabel;
   JButton returnButton;
@@ -26,10 +25,10 @@ public class LevelListPanel extends GBackgroundPanel {
   JButton nextButton;
 
   int page;
-  LevelPlayFlag flag;
+  PlayFlag flag;
   int levelsPerPage;
 
-  public LevelListPanel(int page, LevelPlayFlag flag) {
+  public LevelListPanel(int page, PlayFlag flag) {
     this.page = page;
     this.flag = flag;
     super();
@@ -38,7 +37,12 @@ public class LevelListPanel extends GBackgroundPanel {
   @Override
   protected void initBeforeComponents() {
     this.levelsPerPage = 7;
-    this.levels = LevelList.getLevelList(flag);
+    this.levels =
+        switch (flag) {
+          case DEFAULT -> LevelRegister.getDefaultLevelList();
+          case CUSTOM -> LevelRegister.getCustomLevelList();
+          case PRELEVELS -> LevelRegister.getPreLevelList();
+        };
   }
 
   @Override
@@ -131,7 +135,10 @@ public class LevelListPanel extends GBackgroundPanel {
     for (int i = levelsPerPage * (page - 1);
         i < Math.min(levelsPerPage * page, levels.size());
         i++) {
-      this.add(new GLevelNamePanel(Level.getLevelInstance(levels.get(i), flag)));
+      this.add(
+          new GLevelNamePanel(
+              LevelRegister.getLevel(LevelRegister.getLevelInfo(levels.get(i), flag)), flag));
+      // this.add(new GLevelNamePanel(Level.getLevelInstance(levels.get(i), flag)));
     }
   }
 

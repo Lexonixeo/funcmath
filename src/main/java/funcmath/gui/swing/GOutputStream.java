@@ -1,6 +1,5 @@
 package funcmath.gui.swing;
 
-import funcmath.exceptions.JavaException;
 import funcmath.utility.Helper;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -42,34 +41,16 @@ public class GOutputStream extends OutputStream {
   }
 
   @Override
-  public void flush() {
-    try {
-      super.flush();
-    } catch (IOException e) {
-      throw new JavaException(e);
-    }
-  }
-
-  @Override
-  public void close() {
-    try {
-      super.close();
-    } catch (IOException e) {
-      throw new JavaException(e);
-    }
-  }
-
-  @Override
   public void write(int b) throws IOException {
     timer = System.currentTimeMillis();
     checked = false;
     if ((byte) b == '\r') {
       return;
     } else if ((byte) b == '\n') {
-      textList.get(textList.size() - 1).add((byte) b);
+      textList.getLast().add((byte) b);
       textList.add(new ArrayList<>());
     } else {
-      textList.get(textList.size() - 1).add((byte) b);
+      textList.getLast().add((byte) b);
     }
   }
 }

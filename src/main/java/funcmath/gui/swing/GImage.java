@@ -1,8 +1,8 @@
 package funcmath.gui.swing;
 
-import funcmath.exceptions.GuiException;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -11,8 +11,8 @@ public class GImage extends JLabel {
     try {
       Image img = ImageIO.read(new File(imagePath));
       this.setIcon(new ImageIcon(img));
-    } catch (Exception ex) {
-      throw new GuiException(ex);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 }

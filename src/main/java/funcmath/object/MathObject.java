@@ -1,146 +1,31 @@
 package funcmath.object;
 
-import funcmath.exceptions.JavaException;
-import funcmath.exceptions.LevelException;
-import funcmath.exceptions.MathObjectException;
-import funcmath.game.defaultlevel.DLevelState;
-import funcmath.utility.Helper;
-import funcmath.utility.Log;
-import java.io.File;
+import funcmath.utility.Hash;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
 
-public interface  MathObject extends Serializable {
+public interface MathObject extends Serializable {
   MathContext DEFAULT_MATHCONTEXT = new MathContext(10, RoundingMode.HALF_UP);
-  HashMap<String, MathObject> MATH_OBJECT_HASH_MAP = new HashMap<>();
 
-  Object get();
+  // если произошла ошибка в математике, вызывайте, пожалуйста, MathException
+  // пожалуйста, в каждом MathObject генерируйте serialVersionUID!
 
-  String getType(); // вроде "natural", "integer"...
+  // const для каждого вида MathObject
+  String getType();
 
-  String getTypeForLevel(); // вроде "натуральных", "целых"...
+  String getShowableType();
 
-  String getName(); // название числа (типа A, B, ...), null если само число не требует названия
+  // хочется, чтобы можно было сделать общий класс FModulo, и сделать общий тип modulo{x}, и modulo7
+  // дает FModulo(7, s) и т.д.
 
-  // String getId();
+  // для каждого объекта MathObject
+  // void setName(); - заменяем через generateName
+  String getName(); // ставьте какое-нибудь имя по умолчанию,
 
-  static MathObject[] ignore(MathObject ignoredA) {
-    return new MathObject[] {};
-  }
+  // будем вызывать generateName если будут коллизии при !equals
+  void generateName(ArrayList<String> usedNames);
 
-  static boolean checkResultClassName(String resultClassName) {
-    return MATH_OBJECT_HASH_MAP.containsKey(resultClassName);
-  }
-
-  static MathObject getMathObjectFromLevel(String name) {
-    DLevelState state = Helper.cast(Helper.read("data/currentLevel.dat"), new DLevelState());
-    for (MathObject n : state.getNumbers()) {
-      if (n.getName().equals(name)) {
-        return n;
-      }
-    }
-    throw new LevelException("Число " + name + " не обнаружено!");
-  }
-
-  static String makeMathObjectName() {
-    DLevelState state = Helper.cast(Helper.read("data/currentLevel.dat"), new DLevelState());
-    HashSet<String> usingNames = state.getUsingNames();
-    String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    String newName = "";
-    for (int i = 1; i <= usingNames.size(); i++) {
-      StringBuilder name = new StringBuilder();
-      int j = i;
-      while (j != 0) {
-        j--;
-        name.append(alphabet.charAt(j % alphabet.length()));
-        j++;
-        j /= alphabet.length();
-      }
-      if (!usingNames.contains(name.toString())) {
-        newName = name.toString();
-        break;
-      }
-    }
-    usingNames.add(newName);
-    Helper.write(state, "data/currentLevel.dat");
-    return newName;
-  }
-
-  static void loadMathObject(MathObject x) {
-    String type = x.getType();
-    MathObject typeInstance;
-    try {
-      typeInstance = x.getClass().getConstructor(new Class[] {}).newInstance();
-    } catch (NoSuchMethodException e) {
-      throw new MathObjectException(e);
-    } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new JavaException(e);
-    }
-    MATH_OBJECT_HASH_MAP.put(type, typeInstance);
-    new File("data/functions/" + type).mkdirs();
-  }
-
-  static MathObject getMathObject(String type) {
-    return MATH_OBJECT_HASH_MAP.get(type);
-  }
-
-  static MathObject parseMathObject(String s, String type) {
-    try {
-      return MATH_OBJECT_HASH_MAP
-          .get(type)
-          .getClass()
-          .getConstructor(new Class[] {String.class})
-          .newInstance(s);
-    } catch (NoSuchMethodException e) {
-      throw new MathObjectException(e);
-    } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new JavaException(e);
-    }
-  }
-
-  static void loadMathObjects() {
-    Log.getInstance().write("MathObjects are being loaded...");
-    MathObject.loadMathObject(new FNatural());
-    MathObject.loadMathObject(new FInteger());
-    MathObject.loadMathObject(new FRational());
-    MathObject.loadMathObject(new FReal());
-    MathObject.loadMathObject(new FComplex());
-    // MathObject.loadMathObject(new FUnknown());
-    Log.getInstance().write("MathObjects has loaded!");
-  }
-
-  /*
-  В будущем добавить:
-  FUnknownInteger (мы не видим число, но оно есть) - в процессе
-  FBinaryInteger (с другой системой счисления)
-  FFibonacciInteger (с фибоначчиевой системой счисления)
-  FErrorInteger (число с погрешностью)
-  FModuloInteger (по какому-то модулю, Полная система вычетов)
-  (Приведенная система вычетов)
-  FGauss
-  FVector
-  FMatrix
-  FTensor
-  FContinuedFraction (число в виде цепной дроби)
-  FGroup
-  FTriangle и т.д.
-  FString
-  FColor
-  FPicture
-  FFile
-  FMoney (деньги с разными валютами - курсы валют меняются с каждым ходом)
-  FMeasure (физическая величина с размерностью)
-  FAtom (или нейтроны, электроны и т.д. - частицы)
-  FMolecule
-  FErrorMeasure
-  FMinecraftItem
-  FWord (это то, из-за чего я придумал эту игру)
-  FNumeral (число в виде слова)
-  FMonomial
-  FPolynomial
-   */
+  Hash getHash();
 }

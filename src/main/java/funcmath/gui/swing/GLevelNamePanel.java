@@ -1,8 +1,9 @@
 package funcmath.gui.swing;
 
-import funcmath.game.Level;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
+import funcmath.level.Level;
+import funcmath.level.PlayFlag;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,10 +15,13 @@ public class GLevelNamePanel extends GConstructorPanel {
   JLabel nameLabel;
   JLabel aboutLabel;
   JButton playButton;
+  JButton continueButton;
+  PlayFlag playFlag;
 
-  public GLevelNamePanel(Level level) {
+  public GLevelNamePanel(Level level, PlayFlag playFlag) {
     this.level = level;
-    super();
+    this.playFlag = playFlag;
+    super(); // TODO: как-то исправить preview-функцию
   }
 
   protected void initBeforeComponents() {}
@@ -31,7 +35,21 @@ public class GLevelNamePanel extends GConstructorPanel {
     aboutLabel = new JLabel();
     aboutLabel.setFont(Fonts.COMIC_SANS_MS_30);
     aboutLabel.setForeground(Color.white);
-    aboutLabel.setText(GameFrame.getInstance().getPlayer().getStats().get(this.level.getLevel()));
+    if (playFlag == PlayFlag.DEFAULT) {
+      aboutLabel.setText(
+          GameFrame.getInstance()
+              .getPlayer()
+              .getDefaultLevelStats()
+              .get(this.level.getLevelInfo().getID())
+              .toString());
+    } else if (playFlag == PlayFlag.CUSTOM) {
+      aboutLabel.setText(
+          GameFrame.getInstance()
+              .getPlayer()
+              .getCustomLevelStats()
+              .get(this.level.getLevelInfo().getID())
+              .toString());
+    }
     aboutLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
     playButton = new JButton();

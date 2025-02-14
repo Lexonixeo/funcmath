@@ -1,11 +1,12 @@
 package funcmath.gui;
 
-import funcmath.game.Level;
-import funcmath.game.LevelPlayFlag;
-import funcmath.game.Player;
+import funcmath.auth.Player;
 import funcmath.gui.panel.*;
 import funcmath.gui.panel.Menu;
 import funcmath.gui.swing.GPanel;
+import funcmath.level.Level;
+import funcmath.level.LevelRegister;
+import funcmath.level.PlayFlag;
 import java.awt.*;
 import javax.swing.*;
 
@@ -68,13 +69,13 @@ public class GameFrame extends JFrame {
           case "stats" -> new Statistics();
           case "settings" -> new Settings();
           case "tutorial" -> new Tutorial();
-          case "level" -> new LevelPanel();
+          // case "level" -> new LevelPanel();
           case "level maker" -> new LevelMakerPanel();
           case "level maker tutorial" -> new LevelMakerTutorial();
           case "function maker" -> new FunctionMakerPanel();
           case "function maker tutorial" -> new FunctionMakerTutorial();
-          case "level list" -> new LevelListPanel(1, LevelPlayFlag.DEFAULT);
-          case "custom level list" -> new LevelListPanel(1, LevelPlayFlag.CUSTOM);
+          case "level list" -> new LevelListPanel(1, PlayFlag.DEFAULT);
+          case "custom level list" -> new LevelListPanel(1, PlayFlag.CUSTOM);
           case "loading" -> LoadingPanel.getInstance();
           default -> throw new IllegalStateException("Unexpected value: " + panelKey);
         };
@@ -106,20 +107,20 @@ public class GameFrame extends JFrame {
     this.lastLevel = currentLevel;
   }
 
-  public void exitCurrentLevel(int[] gameData) {
-    player.addLevel(currentLevel.isCompleted(), currentLevel.getLevel(), gameData[2], gameData[3]);
+  public void exitCurrentLevel() {
+    switch (this.currentLevel.getLevelInfo().getPlayFlag()) {
+      case DEFAULT ->
+          player.addDefaultLevel(
+              this.currentLevel.getCurrentLevelState(), this.currentLevel.getStatistics());
+      case CUSTOM ->
+          player.addCustomLevel(
+              this.currentLevel.getCurrentLevelState(), this.currentLevel.getStatistics());
+    }
     this.currentLevel = null;
   }
 
   public Level getLastLevel() {
-      Level a = null;
-      try {
-          a = Level.getLevelInstance(
-                  player.getLastLevel(),
-                  (player.getLastLevel() < 0 ? LevelPlayFlag.CUSTOM : LevelPlayFlag.DEFAULT));
-      } catch (Exception ignored) {
-      }
-    return a;
+    return LevelRegister.getLevel(player.getLastLevel());
   }
 
   public static GameFrame getInstance() {

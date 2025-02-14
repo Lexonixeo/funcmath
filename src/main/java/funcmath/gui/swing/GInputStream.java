@@ -1,6 +1,6 @@
 package funcmath.gui.swing;
 
-import funcmath.exceptions.JavaException;
+import funcmath.exceptions.GameException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -28,11 +28,11 @@ public class GInputStream extends InputStream {
       try {
         Thread.sleep(100);
       } catch (InterruptedException e) {
-        throw new JavaException(e);
+        throw new RuntimeException("Поток, который читает GInputStream, почему-то закрывается");
       }
     }
     if (stopper) {
-      throw new JavaException("Stopping at reading");
+      throw new GameException("Прекращение чтения, вызов ошибки для прекращения работы читателя");
     }
     if (pointer >= contents.length) {
       contents = null;
