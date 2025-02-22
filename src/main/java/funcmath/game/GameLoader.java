@@ -3,7 +3,6 @@ package funcmath.game;
 import funcmath.defaultpack.DefaultPack;
 import funcmath.gui.GameFrame;
 import funcmath.level.LevelRegister;
-
 import java.io.File;
 
 public class GameLoader {

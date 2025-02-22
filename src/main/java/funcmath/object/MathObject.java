@@ -4,7 +4,7 @@ import funcmath.utility.Hash;
 import java.io.Serializable;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public interface MathObject extends Serializable {
   MathContext DEFAULT_MATHCONTEXT = new MathContext(10, RoundingMode.HALF_UP);
@@ -25,7 +25,7 @@ public interface MathObject extends Serializable {
   String getName(); // ставьте какое-нибудь имя по умолчанию,
 
   // будем вызывать generateName если будут коллизии при !equals
-  void generateName(ArrayList<String> usedNames);
+  void generateName(HashSet<String> usedNames);
 
   Hash getHash();
 }

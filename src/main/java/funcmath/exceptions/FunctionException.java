@@ -1,6 +1,5 @@
 package funcmath.exceptions;
 
-
 public class FunctionException extends GameException {
   public FunctionException(String message) {
     super(message);

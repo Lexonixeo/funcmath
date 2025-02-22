@@ -16,7 +16,8 @@ public abstract class Mod {
 
   public abstract void init();
 
-  public abstract GPanel getModPanel(); // внутри него делайте свою систему изменения панели, независимо от GameFrame
+  public abstract GPanel
+      getModPanel(); // внутри него делайте свою систему изменения панели, независимо от GameFrame
 
   public abstract String getName();
 

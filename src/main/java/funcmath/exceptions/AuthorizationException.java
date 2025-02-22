@@ -1,6 +1,5 @@
 package funcmath.exceptions;
 
-
 public class AuthorizationException extends GameException {
   public AuthorizationException(String message) {
     super(message);

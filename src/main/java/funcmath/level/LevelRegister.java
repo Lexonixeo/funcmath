@@ -129,6 +129,8 @@ public class LevelRegister {
     return CUSTOM_LEVEL_LIST;
   }
 
+  // TODO: getNextLevel
+
   // TO DO: добавить получение уровня через LevelState, там как раз появился LevelInfo.
   // может сохранять уровни в виде levelState, а не levelInfo?
 }

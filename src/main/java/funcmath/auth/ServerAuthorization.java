@@ -1,3 +1,5 @@
 package funcmath.auth;
 
-public class ServerAuthorization {}
+public class ServerAuthorization {
+    // TODO
+}

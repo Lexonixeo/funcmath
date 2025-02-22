@@ -6,20 +6,19 @@ import funcmath.gui.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import javax.swing.*;
 
 public abstract class GConsoleLevelPanel extends GConsolePanel {
   JButton nextLevel;
 
-    @Override
-    protected void initOtherComponents() {
-        nextLevel = new JButton();
-        nextLevel.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+  @Override
+  protected void initOtherComponents() {
+    nextLevel = new JButton();
+    nextLevel.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            // TODO
             /*
             GameFrame.getInstance()
                     .setCurrentLevel(
@@ -30,13 +29,13 @@ public abstract class GConsoleLevelPanel extends GConsolePanel {
                                     LevelPlayFlag.DEFAULT));
             reset();
              */
-                    }
-                });
-        nextLevel.setFont(Fonts.COMIC_SANS_MS_30);
-        nextLevel.setForeground(Color.white);
-        nextLevel.setBackground(new Color(56, 109, 80));
-        nextLevel.setText("Следующий уровень");
-    }
+          }
+        });
+    nextLevel.setFont(Fonts.COMIC_SANS_MS_30);
+    nextLevel.setForeground(Color.white);
+    nextLevel.setBackground(new Color(56, 109, 80));
+    nextLevel.setText("Следующий уровень");
+  }
 
   protected abstract void game();
 

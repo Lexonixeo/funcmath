@@ -1,5 +1,5 @@
 package funcmath.server;
 
 public record Message() {
-    // TODO: поддержка RSA
+  // TODO: поддержка RSA
 }

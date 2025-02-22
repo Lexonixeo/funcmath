@@ -25,7 +25,11 @@ public class GLevelNamePanel extends GConstructorPanel {
     this.level = level;
     this.playFlag = playFlag;
     if (playFlag == PlayFlag.DEFAULT) {
-      levelState = GameFrame.getInstance().getPlayer().getDefaultLevelStates().get(level.getLevelInfo().getID());
+      levelState =
+          GameFrame.getInstance()
+              .getPlayer()
+              .getDefaultLevelStates()
+              .get(level.getLevelInfo().getID());
     } else if (playFlag == PlayFlag.CUSTOM) {
       levelState =
           GameFrame.getInstance()
@@ -72,14 +76,14 @@ public class GLevelNamePanel extends GConstructorPanel {
 
     continueButton = new JButton();
     continueButton.addActionListener(
-            new ActionListener() {
-              @Override
-              public void actionPerformed(ActionEvent e) {
-                level.setLevelState(levelState);
-                GameFrame.getInstance().setCurrentLevel(level);
-                GameFrame.getInstance().changePanel("level");
-              }
-            });
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            level.setLevelState(levelState);
+            GameFrame.getInstance().setCurrentLevel(level);
+            GameFrame.getInstance().changePanel("level");
+          }
+        });
     continueButton.setFont(Fonts.COMIC_SANS_MS_30);
     continueButton.setText("Продолжить!");
     continueButton.setForeground(Color.white);

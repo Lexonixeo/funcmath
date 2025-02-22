@@ -110,7 +110,7 @@ public class Function implements Serializable {
       }
     }
     return true; // сейчас сделана проверка не на все конверты, а лишь на самые первые в плане
-                 // исполнения
+    // исполнения
   }
 
   private void validate() {

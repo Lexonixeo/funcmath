@@ -8,7 +8,6 @@ import funcmath.level.Level;
 import funcmath.level.LevelRegister;
 import funcmath.level.PlayFlag;
 import java.awt.*;
-import java.util.HashMap;
 import javax.swing.*;
 
 public class GameFrame extends JFrame {
@@ -55,10 +54,9 @@ public class GameFrame extends JFrame {
   }
    */
 
-    public void registerPanel(String panelKey, GPanel panel) {
+  public void registerPanel(String panelKey, GPanel panel) {}
 
-    }
-// // public static ArrayList<Pair<String, Foo>> mods;
+  // // public static ArrayList<Pair<String, Foo>> mods;
   public void changePanel(String panelKey) {
     this.removeMouseListener(currentPanel);
     this.removeMouseMotionListener(currentPanel);
@@ -80,14 +78,14 @@ public class GameFrame extends JFrame {
           case "custom level list" -> new LevelListPanel(1, PlayFlag.CUSTOM);
           case "loading" -> LoadingPanel.getInstance();
           default -> {
-              /* /*
-              for (int i = 0 ...) {
-                  if (mods.get(i).first == panelKey) {
-                      ..second.exec();
-                  }
-              }
-              // */
-              throw new IllegalStateException("Unexpected value: " + panelKey);
+            /* /*
+            for (int i = 0 ...) {
+                if (mods.get(i).first == panelKey) {
+                    ..second.exec();
+                }
+            }
+            // */
+            throw new IllegalStateException("Unexpected value: " + panelKey);
           }
         };
     currentPanel.reset();
