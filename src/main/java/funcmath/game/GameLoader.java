@@ -1,5 +1,9 @@
 package funcmath.game;
 
+import funcmath.defaultpack.DefaultPack;
+import funcmath.gui.GameFrame;
+import funcmath.level.LevelRegister;
+
 import java.io.File;
 
 public class GameLoader {
@@ -18,6 +22,10 @@ public class GameLoader {
   }
 
   public static void main(String[] args) {
-    generateDirectories();
+    GameFrame.getInstance().changePanel("loading");
+    GameLoader.generateDirectories();
+    new DefaultPack().init();
+    LevelRegister.updateLevels();
+    GameFrame.getInstance().changePanel("login");
   }
 }

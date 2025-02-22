@@ -3,6 +3,7 @@ package funcmath.utility;
 import funcmath.game.Logger;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Helper {
   public static Object read(String pathname) {
@@ -91,5 +92,15 @@ public class Helper {
       ans[i] = al.get(i).byteValue();
     }
     return ans;
+  }
+
+  public static <T> String collectionToString(Collection<T> list) {
+    StringBuilder sb = new StringBuilder();
+    for (T num : list) {
+      sb.append(num);
+      sb.append(" ");
+    }
+    sb.deleteCharAt(sb.lastIndexOf(" "));
+    return sb.toString();
   }
 }

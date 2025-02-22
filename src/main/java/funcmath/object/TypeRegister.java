@@ -52,6 +52,7 @@ public class TypeRegister {
     }
   }
 
+  // natural=45
   public static MathObject parseMathObject(String s) {
     int i = 0;
     StringBuilder sb = new StringBuilder();

@@ -1,5 +1,6 @@
 package funcmath.level;
 
+import funcmath.gui.swing.GPanel;
 import funcmath.utility.Hash;
 import javax.swing.*;
 
@@ -8,14 +9,15 @@ import javax.swing.*;
 public interface Level {
   // в каждом Level должен быть пустой конструктор и конструктор, который принимает в качестве
   // параметра LevelInfo;
-  // при вызове конструктора с LevelInfo мы делаем setLevelState(LevelInfo.getDefaultLevelState())
+  // при вызове конструктора с LevelInfo мы на всякий случай делаем
+  // setLevelState(LevelInfo.getDefaultLevelState())
   String getType();
 
   LevelInfo getLevelInfo();
 
-  LevelState
-      getCurrentLevelState(); // мы можем и будем хранить последний LevelState, а вот историю
-                              // LevelState в уровне делаете вы сами
+  LevelState getCurrentLevelState(); // мы можем и будем хранить последний LevelState, а вот историю
+
+  // LevelState в уровне делаете вы сами
 
   LevelStatistics getStatistics();
 
@@ -23,7 +25,7 @@ public interface Level {
 
   String getName();
 
-  JPanel getLevelPanel();
+  GPanel getLevelPanel(); // можете коннектиться к GConsoleLevelPanel;
 
   // getLevelMakerPanel?
 

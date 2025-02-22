@@ -4,7 +4,7 @@ import funcmath.gui.swing.GBackgroundPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class LevelMakerTutorial extends GBackgroundPanel {
+public class ModListPanel extends GBackgroundPanel {
   @Override
   protected void initBeforeComponents() {}
 

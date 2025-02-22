@@ -66,23 +66,26 @@ public class LevelRegister {
   }
 
   public static void updateLevels() {
+    DEFAULT_LEVEL_LIST.clear();
     for (String fileName : Helper.getFileNames("data\\levels\\")) {
       DEFAULT_LEVEL_LIST.add(Long.parseLong(fileName.substring(5, fileName.length() - 4)));
     }
     DEFAULT_LEVEL_LIST.sort(Comparator.naturalOrder());
 
+    CUSTOM_LEVEL_LIST.clear();
     for (String fileName : Helper.getFileNames("data\\customLevels\\")) {
       CUSTOM_LEVEL_LIST.add(Long.parseLong(fileName.substring(5, fileName.length() - 4)));
     }
     CUSTOM_LEVEL_LIST.sort(Comparator.naturalOrder());
 
+    PRE_LEVEL_LIST.clear();
     for (String fileName : Helper.getFileNames("data\\preLevels\\")) {
       PRE_LEVEL_LIST.add(Long.parseLong(fileName.substring(5, fileName.length() - 4)));
     }
     PRE_LEVEL_LIST.sort(Comparator.naturalOrder());
   }
 
-  public static void writeLevel(LevelInfo li, PlayFlag pf) {
+  private static void writeLevelInfo(LevelInfo li, PlayFlag pf) {
     String levelSwitch =
         switch (pf) {
           case DEFAULT -> "levels";
@@ -105,12 +108,12 @@ public class LevelRegister {
       addLevelInfo(
           li, pf,
           false); // рекурсия когда-нибудь закончится, если уровней не столько же, сколько чисел в
-                  // Long
+      // Long
     } else {
       if (!list.contains(li.getID())) {
         list.add(li.getID());
       }
-      writeLevel(li, pf);
+      writeLevelInfo(li, pf);
     }
   }
 

@@ -8,13 +8,17 @@ import funcmath.utility.Pair;
 import java.util.HashMap;
 
 public class LocalAuthorization {
+  // регистрируем локально только тех, кто регистрировался на этом пк и кто входил на этом пк (и при этом на какой-то период)
+  // TODO: можно сделать историю игрока в виде блокчейна!
   public static Player login(String name, String password) {
     Logger.write("Попытка локальной авторизации...");
     HashMap<String, Pair<String, Player>> players;
+    // TODO: кажется, хотелось бы, чтобы каждый игрок хранился в своем файле
     if (Helper.isNotFileExists("data\\players\\players.dat")) {
       players = new HashMap<>();
     } else {
-      players = (HashMap<String, Pair<String, Player>>) Helper.read("data\\players\\players.dat");
+      players =
+              (HashMap<String, Pair<String, Player>>) Helper.read("data\\players\\players.dat");
     }
 
     if (!players.containsKey(name)) {

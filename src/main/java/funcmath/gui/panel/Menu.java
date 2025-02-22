@@ -25,7 +25,7 @@ public class Menu extends GBackgroundPanel {
   JButton customLevelListButton;
   JButton statsButton;
   JButton settingsButton;
-  JButton guideButton;
+  JButton modListButton;
   JButton functionMakerButton;
   JButton levelMakerButton;
   JButton companyButton;
@@ -144,16 +144,16 @@ public class Menu extends GBackgroundPanel {
     settingsButton.setForeground(Color.white);
     settingsButton.setBackground(new Color(56, 109, 80));
 
-    guideButton = new JButton();
-    guideButton.addActionListener(
+    modListButton = new JButton();
+    modListButton.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {}
         });
-    guideButton.setFont(Fonts.COMIC_SANS_MS_30);
-    guideButton.setText("Туториал");
-    guideButton.setForeground(Color.white);
-    guideButton.setBackground(new Color(56, 109, 80));
+    modListButton.setFont(Fonts.COMIC_SANS_MS_30);
+    modListButton.setText("Моды");
+    modListButton.setForeground(Color.white);
+    modListButton.setBackground(new Color(56, 109, 80));
 
     functionMakerButton = new JButton();
     functionMakerButton.addActionListener(
@@ -235,7 +235,7 @@ public class Menu extends GBackgroundPanel {
     bottomPanel.add(customLevelListButton);
     bottomPanel.add(statsButton);
     bottomPanel.add(settingsButton);
-    bottomPanel.add(guideButton);
+    bottomPanel.add(modListButton);
     bottomPanel.add(functionMakerButton);
     bottomPanel.add(levelMakerButton);
     bottomPanel.add(exitButton);
