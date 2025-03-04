@@ -12,7 +12,9 @@ public abstract class GConsoleLevelPanel extends GConsolePanel {
   JButton nextLevel;
 
   @Override
-  protected void initOtherComponents() {
+  protected void initComponents() {
+    super.initComponents();
+
     nextLevel = new JButton();
     nextLevel.addActionListener(
         new ActionListener() {
@@ -41,12 +43,12 @@ public abstract class GConsoleLevelPanel extends GConsolePanel {
 
   @Override
   protected void run() {
+    nameLabel.setText(GameFrame.getInstance().getCurrentLevel().toString());
     try {
       GConsoleLevelPanel.this.game();
     } catch (RuntimeException e) {
       out.println(e.getMessage());
     }
-    inputField.setEnabled(false);
     if (GameFrame.getInstance().getCurrentLevel().isCompleted()) {
       southPanel.add(nextLevel, BorderLayout.EAST);
       repaint();

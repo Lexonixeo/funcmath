@@ -2,10 +2,10 @@ package funcmath.defaultpack.level;
 
 import funcmath.functions.Function;
 import funcmath.game.Logger;
-import funcmath.gui.swing.GInputStream;
-import funcmath.level.FMPrintStream;
 import funcmath.level.GConsoleLevelPanel;
 import funcmath.object.MathObject;
+import funcmath.utility.FMInputStream;
+import funcmath.utility.FMPrintStream;
 import funcmath.utility.Helper;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -13,11 +13,12 @@ import java.util.Scanner;
 
 public class DLConsoleEngine {
   private final DefaultLevel level;
-  private final GInputStream in;
+  private final FMInputStream in;
   private final FMPrintStream out;
 
   boolean tutorial = true;
   int hint;
+  boolean interrupted = false;
 
   protected DLConsoleEngine(DefaultLevel level, GConsoleLevelPanel panel) {
     this.in = panel.getIn();
@@ -178,8 +179,8 @@ public class DLConsoleEngine {
     } catch (Exception ignored) {
     }
     synchronized (out) {
-      ArrayList<String> command = wordsFromString(cmd);
-      Logger.write("An expression is introduced: " + cmd);
+      ArrayList<String> command = Helper.wordsFromString(cmd);
+      Logger.write("Ввели выражение: " + cmd);
       String first_command = command.getFirst();
       switch (first_command) {
         case "exit", "menu", "stop" -> {
@@ -206,50 +207,15 @@ public class DLConsoleEngine {
     out.clear();
   }
 
-  private static ArrayList<Character> stringProcessing(String str) {
-    char[] first_str = str.toCharArray();
-    ArrayList<Character> second_str = new ArrayList<>();
-    for (char i : first_str) {
-      if (i == ',' || i == '(' || i == ')') {
-        second_str.add(' ');
-      } else {
-        second_str.add(i);
-      }
-    }
-    ArrayList<Character> third_str = new ArrayList<>();
-    char last_char = ' ';
-    for (char i : second_str) {
-      if (!(i == ' ' && last_char == ' ')) {
-        third_str.add(i);
-        last_char = i;
-      }
-    }
-    if (!third_str.isEmpty() && third_str.getLast() == ' ') {
-      third_str.removeLast();
-    }
-    return third_str;
-  }
-
-  private static ArrayList<String> wordsFromString(String str) {
-    ArrayList<Character> our_str = stringProcessing(str);
-    StringBuilder builder = new StringBuilder();
-    ArrayList<String> words = new ArrayList<>();
-    for (char i : our_str) {
-      if (i != ' ') builder.append(i);
-      else {
-        words.add(builder.toString());
-        builder.delete(0, builder.length());
-      }
-    }
-    words.add(builder.toString());
-    return words;
+  public void interrupt() {
+    interrupted = true;
   }
 
   public void game() {
     DLStats stats = new DLStats(level);
     stats.startTime();
     start();
-    while (!level.isCompleted()) {
+    while (!level.isCompleted() && !interrupted) {
       int check = turn();
       if (check == -1) break;
     }

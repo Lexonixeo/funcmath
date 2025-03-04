@@ -27,7 +27,10 @@ public class Logger {
   public static void write(String s) {
     try {
       FileWriter writer = new FileWriter(pathname, true);
-      writer.write(s + "\n");
+      writer.write("["
+              + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+              .format(new Date(System.currentTimeMillis()))
+              + "]: " + s + "\n");
       writer.close();
     } catch (IOException e) {
       throw new RuntimeException(e);

@@ -1,18 +1,17 @@
-package funcmath.gui.swing;
+package funcmath.utility;
 
-import funcmath.utility.Helper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public class GOutputStream extends OutputStream {
+public class FMOutputStream extends OutputStream {
   private final ArrayList<ArrayList<Byte>> textList;
 
   private long timer;
   private boolean checked = false;
 
-  public GOutputStream() {
+  public FMOutputStream() {
     this.textList = new ArrayList<>();
     this.textList.add(new ArrayList<>());
     timer = System.currentTimeMillis();

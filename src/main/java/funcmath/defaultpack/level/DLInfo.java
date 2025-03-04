@@ -9,7 +9,7 @@ import funcmath.utility.Hash;
 import java.util.ArrayList;
 
 public class DLInfo implements LevelInfo {
-  private final DLState defaultLevelState;
+  private DLState defaultLevelState;
   private final DLRules rules;
   private final PlayFlag playFlag;
   private final String name;
@@ -20,7 +20,16 @@ public class DLInfo implements LevelInfo {
   private final ArrayList<MathObject> ans;
 
   public DLInfo() {
-    this(null, null, null, null, null, null, null, null, null);
+    this(
+        new DLState(),
+        new DLRules(true, true, false, false),
+        PlayFlag.PRELEVELS,
+        "",
+        null,
+        null,
+        0L,
+        new ArrayList<>(),
+        new ArrayList<>());
   }
 
   public DLInfo(
@@ -91,6 +100,10 @@ public class DLInfo implements LevelInfo {
   @Override
   public void setID(Long ID) {
     this.ID = ID;
+  }
+
+  public void setDefaultLevelState(DLState defaultLevelState) {
+    this.defaultLevelState = defaultLevelState;
   }
 
   public ArrayList<String> getHints() {

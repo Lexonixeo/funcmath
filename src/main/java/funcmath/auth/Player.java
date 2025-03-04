@@ -3,6 +3,7 @@ package funcmath.auth;
 import funcmath.level.LevelState;
 import funcmath.level.LevelStatistics;
 import funcmath.utility.Hash;
+import funcmath.utility.Helper;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -23,10 +24,12 @@ public class Player implements Serializable {
   HashMap<Long, LevelStatistics> customLevelStats;
   HashMap<Long, LevelState> customLevelStates;
 
+  Hash passHash;
   Hash salt;
 
   public Player(String name, String password) {
     this.name = name;
+    this.passHash = Hash.encode(password);
     this.salt = Hash.encode(password, System.currentTimeMillis());
     this.ID = this.getHash().toLong();
     this.lastLevel = null;
@@ -38,6 +41,8 @@ public class Player implements Serializable {
     this.completedCustomLevels = new HashSet<>();
     this.customLevelStats = new HashMap<>();
     this.customLevelStates = new HashMap<>();
+
+    this.save();
   }
 
   public void addDefaultLevel(LevelState state, LevelStatistics stats) {
@@ -58,6 +63,11 @@ public class Player implements Serializable {
       customLevelStates.put(stats.getLevelID(), state);
     }
     customLevelStats.put(stats.getLevelID(), stats);
+  }
+
+  public void save() {
+    // TODO: можно сделать историю игрока в виде блокчейна!
+    Helper.write(this, "data/players/" + getHash() + ".dat");
   }
 
   public String getName() {

@@ -110,6 +110,6 @@ public class SimpleFunction {
 
   @Override
   public String toString() {
-    return this.name;
+    return this.name + "(" + String.join(", ", types) + ")";
   }
 }

@@ -4,8 +4,8 @@ public abstract class Initializer {
   public Initializer() {}
 
   public void init() throws NoSuchMethodException {
-    initSimpleFunctions();
     initTypeAndConverts();
+    initSimpleFunctions();
   }
 
   protected abstract void initSimpleFunctions() throws NoSuchMethodException;

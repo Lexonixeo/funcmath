@@ -15,7 +15,7 @@ public interface MathObject extends Serializable {
   // const для каждого вида MathObject
   String getType();
 
-  String getShowableType();
+  // String getShowableType();
 
   // хочется, чтобы можно было сделать общий класс FModulo, и сделать общий тип modulo{x}, и modulo7
   // дает FModulo(7, s) и т.д.
@@ -25,6 +25,7 @@ public interface MathObject extends Serializable {
   String getName(); // ставьте какое-нибудь имя по умолчанию,
 
   // будем вызывать generateName если будут коллизии при !equals
+  // мы потом добавляем в usedNames сгенерированное имя
   void generateName(HashSet<String> usedNames);
 
   Hash getHash();

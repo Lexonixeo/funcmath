@@ -32,7 +32,9 @@ public class Menu extends GBackgroundPanel {
   JButton exitButton;
 
   @Override
-  protected void initBeforeComponents() {}
+  protected void initBeforeComponents() {
+    GameFrame.getInstance().getPlayer().save();
+  }
 
   @Override
   protected void initComponents() {
@@ -159,7 +161,9 @@ public class Menu extends GBackgroundPanel {
     functionMakerButton.addActionListener(
         new ActionListener() {
           @Override
-          public void actionPerformed(ActionEvent e) {}
+          public void actionPerformed(ActionEvent e) {
+            GameFrame.getInstance().changePanel("function maker");
+          }
         });
     functionMakerButton.setFont(Fonts.COMIC_SANS_MS_30);
     functionMakerButton.setText("Создать функцию");

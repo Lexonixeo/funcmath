@@ -18,6 +18,8 @@ public class FInteger implements MathObject, Comparable<FInteger> {
 
   protected BigInteger number;
 
+  private String name;
+
   public FInteger() {
     this(0);
   }
@@ -28,6 +30,7 @@ public class FInteger implements MathObject, Comparable<FInteger> {
 
   public FInteger(BigInteger number) {
     this.number = number;
+    this.name = number.toString();
   }
 
   public FInteger(String s) {
@@ -277,7 +280,7 @@ public class FInteger implements MathObject, Comparable<FInteger> {
 
   @Override
   public String toString() {
-    return this.get().toString();
+    return getName();
   }
 
   @Override
@@ -286,18 +289,19 @@ public class FInteger implements MathObject, Comparable<FInteger> {
   }
 
   @Override
-  public String getShowableType() {
-    return "целые числа";
-  }
-
-  @Override
   public String getName() {
-    return number.toString();
+    return name;
   }
 
   @Override
   public void generateName(HashSet<String> usedNames) {
-    // TODO
+    String newName = number.toString() + "(int)";
+    int i = 0;
+    while (!usedNames.contains(newName)) {
+      i++;
+      newName = number.toString() + "(int" + i + ")";
+    }
+    this.name = newName;
   }
 
   @Override

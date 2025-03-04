@@ -1,45 +1,46 @@
 package funcmath.defaultpack.functions;
 
 import funcmath.defaultpack.objects.FInteger;
-import funcmath.defaultpack.objects.FNatural;
+import funcmath.defaultpack.objects.FRational;
+import funcmath.defaultpack.objects.FReal;
 import funcmath.functions.SimpleFunction;
 import funcmath.functions.SimpleFunctionRegister;
 import funcmath.object.TypeRegister;
 
-public class FIntegerInitializer extends Initializer {
+public class FRealInitializer extends Initializer {
   @Override
   protected void initSimpleFunctions() throws NoSuchMethodException {
     initSimpleFunction2("sum");
     initSimpleFunction2("sub");
     initSimpleFunction2("mul");
     initSimpleFunction2("div");
-    initSimpleFunction2("mod");
     initSimpleFunction2("pow");
     initSimpleFunction2("root");
     initSimpleFunction2("log");
-    initSimpleFunction2("gcd");
-    initSimpleFunction2("lcm");
     initSimpleFunction1("fact");
-    initSimpleFunction2("concat");
     initSimpleFunction2("rand");
-    initSimpleFunction2("and");
-    initSimpleFunction2("or");
-    initSimpleFunction2("xor");
     initSimpleFunction2("min");
     initSimpleFunction2("max");
     initSimpleFunction1("sign");
-    initSimpleFunction1("primes");
     initSimpleFunction1("abs");
-    initSimpleFunction1("not");
+    initSimpleFunction1("sin");
+    initSimpleFunction1("cos");
+    initSimpleFunction1("tan");
+    initSimpleFunction1("arcsin");
+    initSimpleFunction1("arccos");
+    initSimpleFunction1("arctan");
+    initSimpleFunction2("arctan2");
     initSimpleFunction1("conj");
     initSimpleFunction1("arg");
     initSimpleFunction1("norm");
+    initSimpleFunction1("floor");
+    initSimpleFunction1("ceil");
   }
 
   private void initSimpleFunction1(String name) {
     try {
       SimpleFunctionRegister.registerSimpleFunction(
-          new SimpleFunction(name, FInteger.class.getMethod(name, FInteger.class)));
+          new SimpleFunction(name, FReal.class.getMethod(name, FReal.class)));
     } catch (NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
@@ -48,7 +49,7 @@ public class FIntegerInitializer extends Initializer {
   private void initSimpleFunction2(String name) {
     try {
       SimpleFunctionRegister.registerSimpleFunction(
-          new SimpleFunction(name, FInteger.class.getMethod(name, FInteger.class, FInteger.class)));
+          new SimpleFunction(name, FReal.class.getMethod(name, FReal.class, FReal.class)));
     } catch (NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
@@ -56,22 +57,26 @@ public class FIntegerInitializer extends Initializer {
 
   @Override
   protected void initTypeAndConverts() throws NoSuchMethodException {
-    TypeRegister.registerType(new FInteger());
+    TypeRegister.registerType(new FReal());
     TypeRegister.registerConvert(
-        new FInteger(),
-        new FNatural(),
-        this.getClass().getMethod("convertFintFnat", FInteger.class));
+        new FInteger(), new FReal(), this.getClass().getMethod("convertFintFreal", FInteger.class));
     TypeRegister.registerConvert(
-        new FNatural(),
-        new FInteger(),
-        this.getClass().getMethod("convertFnatFint", FNatural.class));
+        new FReal(), new FInteger(), this.getClass().getMethod("convertFrealFint", FReal.class));
+    TypeRegister.registerConvert(
+        new FRational(),
+        new FReal(),
+        this.getClass().getMethod("convertFRatFreal", FRational.class));
   }
 
-  public static FNatural convertFintFnat(FInteger x) {
-    return new FNatural(x.get());
+  public static FReal convertFintFreal(FInteger x) {
+    return new FReal(x.get());
   }
 
-  public static FInteger convertFnatFint(FNatural x) {
-    return new FInteger(x.get());
+  public static FInteger convertFrealFint(FReal x) {
+    return FReal.floor(x);
+  }
+
+  public static FReal convertFRatFreal(FRational x) {
+    return FReal.div(convertFintFreal(x.getNum()), convertFintFreal(x.getDen()));
   }
 }

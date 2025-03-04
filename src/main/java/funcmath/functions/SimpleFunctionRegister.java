@@ -23,4 +23,8 @@ public class SimpleFunctionRegister {
   public static HashSet<String> getSfStringHashes() {
     return new HashSet<>(SF_HASH_MAP.keySet());
   }
+
+  public static HashMap<String, SimpleFunction> getSfHashMap() {
+    return SF_HASH_MAP;
+  }
 }

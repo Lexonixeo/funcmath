@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.bouncycastle.util.encoders.Hex;
 
 // мб сделать extends String?
@@ -15,22 +16,24 @@ public class Hash implements Serializable {
   private final String hash;
   private final byte[] digest;
 
-  private Hash(String hash, byte[] digest) {
-    this.hash = hash;
+  private Hash(byte[] digest) {
+    this.hash = Hex.toHexString(digest);
     this.digest = digest;
   }
 
   public static Hash encode(Object... o) {
     // https://stackoverflow.com/questions/30109958/calculating-sha-3-hash-in-java
+    // https://stackoverflow.com/questions/332079/in-java-how-do-i-convert-a-byte-array-to-a-string-of-hex-digits-while-keeping-l
+    // watch md5
 
-    SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest512();
     byte[] digest;
     try {
-      digest = digestSHA3.digest(Serializer.serialize(o));
-    } catch (IOException e) {
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      digest = md.digest(Serializer.serialize(o));
+    } catch (IOException | NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     }
-    return new Hash(Hex.toHexString(digest), digest);
+    return new Hash(digest);
   }
 
   @Override
@@ -43,11 +46,15 @@ public class Hash implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(hash);
+    return (new BigInteger(digest)).intValue();
   }
 
   public long toLong() {
     return (new BigInteger(digest)).longValue();
+  }
+
+  public BigInteger toBig() {
+    return new BigInteger(digest);
   }
 
   @Override

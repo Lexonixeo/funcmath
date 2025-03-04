@@ -1,4 +1,4 @@
-package funcmath.level;
+package funcmath.utility;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

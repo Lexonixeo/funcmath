@@ -1,31 +1,34 @@
 package funcmath.defaultpack.level;
 
 import funcmath.functions.Function;
-import funcmath.level.LevelInfo;
 import funcmath.level.LevelState;
+import funcmath.level.PlayFlag;
 import funcmath.object.MathObject;
+import funcmath.utility.Hash;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
 
 public final class DLState implements LevelState {
-  private final DLInfo info;
   private final Stack<DLState> history;
   private final ArrayList<MathObject> numbers;
   private final HashMap<String, Function> functions;
   private final HashSet<String> usingNames;
+  private final PlayFlag pf;
+  private final Long levelID;
 
   public DLState() {
-    this(null, null, null, null);
+    this(new Stack<>(), new ArrayList<>(), new HashMap<>(), PlayFlag.PRELEVELS, 0L);
   }
 
   public DLState(
-      DLInfo info,
       Stack<DLState> historyWithoutHim,
       ArrayList<MathObject> numbers,
-      HashMap<String, Function> functions) {
-    this.info = info;
+      HashMap<String, Function> functions, PlayFlag pf, Long levelID) {
+    this.pf = pf;
+    this.levelID = levelID;
     this.history = historyWithoutHim;
     this.numbers = numbers;
     this.functions = functions;
@@ -63,12 +66,17 @@ public final class DLState implements LevelState {
   }
 
   @Override
-  public String getType() {
-    return "default";
+  public Long getLevelID() {
+    return levelID;
   }
 
   @Override
-  public LevelInfo getLevelInfo() {
-    return this.info;
+  public PlayFlag getPlayFlag() {
+    return pf;
+  }
+
+  @Override
+  public String getType() {
+    return "default";
   }
 }

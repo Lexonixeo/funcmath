@@ -1,6 +1,7 @@
 package funcmath.gui;
 
 import funcmath.auth.Player;
+import funcmath.functions.FunctionMakerPanel;
 import funcmath.gui.panel.*;
 import funcmath.gui.panel.Menu;
 import funcmath.gui.swing.GPanel;
@@ -73,7 +74,6 @@ public class GameFrame extends JFrame {
           case "level" -> currentLevel.getLevelPanel();
           case "level maker" -> new LevelMakerPanel();
           case "function maker" -> new FunctionMakerPanel();
-          case "function maker tutorial" -> new FunctionMakerTutorial();
           case "level list" -> new LevelListPanel(1, PlayFlag.DEFAULT);
           case "custom level list" -> new LevelListPanel(1, PlayFlag.CUSTOM);
           case "loading" -> LoadingPanel.getInstance();
@@ -88,7 +88,6 @@ public class GameFrame extends JFrame {
             throw new IllegalStateException("Unexpected value: " + panelKey);
           }
         };
-    currentPanel.reset();
 
     setContentPane(currentPanel);
     addMouseListener(currentPanel);

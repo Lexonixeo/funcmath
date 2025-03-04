@@ -4,6 +4,7 @@ import funcmath.exceptions.FunctionException;
 import funcmath.object.MathObject;
 import funcmath.object.TypeRegister;
 import funcmath.utility.Hash;
+import funcmath.utility.Helper;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
@@ -29,6 +30,8 @@ public class Function implements Serializable {
   private final String[] definition;
   private int remainingUses;
 
+  private boolean validate = false;
+
   public Function(
       String name, String[] types, String[] definition, String description, int remainingUses) {
     this.name = name;
@@ -41,7 +44,7 @@ public class Function implements Serializable {
     // можно сделать типа integer=42
     // т.е. (type)=(string that going to constructor)
 
-    validate();
+    // при создании функции надо проводить validate()
   }
 
   public Function(SimpleFunction f) {
@@ -113,7 +116,7 @@ public class Function implements Serializable {
     // исполнения
   }
 
-  private void validate() {
+  public void validate() {
     // проверка корректности функции, а именно:
     // проверка на то, что в типах столько же аргументов, сколько и в аргументах внутри определения
     // проверка на то, что определение функции верно
@@ -130,6 +133,7 @@ public class Function implements Serializable {
       throw new FunctionException("Типы аргументов не конвертируются при выполнении простейших функций из определения.");
     }
      */
+    validate = true;
   }
 
   public int getArgsNumber() {
@@ -141,7 +145,9 @@ public class Function implements Serializable {
       throw new FunctionException("У функции " + name + " закончилось число использований.");
     }
     ArrayList<MathObject> ans = compute(x);
-    this.remainingUses--;
+    if (!isInfinityFunctions) {
+      this.remainingUses--;
+    }
     return ans;
   }
 
@@ -202,6 +208,15 @@ public class Function implements Serializable {
     return newArgs;
   }
 
+  public void save() {
+    if (!validate) {
+      throw new FunctionException("Нельзя сохранять непроверенную функцию!");
+    }
+    String functionHash = this.getHash().toString();
+    String functionFileName = name + "_" + functionHash + ".dat";
+    Helper.write(this, "data/functions/" + functionFileName);
+  }
+
   public void setName(String name) {
     // в зависимости от того, будут ли в уровне функции с одинаковыми именами, придется их
     // переименовывать
@@ -224,19 +239,39 @@ public class Function implements Serializable {
     return types;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public String[] getDefinition() {
+    return definition;
+  }
+
+  public boolean isValidate() {
+    return validate;
+  }
+
   public Hash getHash() {
     return Hash.encode(name, types, definition);
   }
 
   @Override
   public String toString() {
+    String[] values = {
+      "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
+      "t", "u", "v", "w", "x", "y", "z"
+    };
+    ArrayList<String> aValues = new ArrayList<>(List.of(values).subList(0, getArgsNumber()));
+    for (int i = 0; i < aValues.size(); i++) {
+      aValues.set(i, types[i] + " " + aValues.get(i));
+    }
     return "("
         + remainingUses
-        + ") $"
+        + ") "
         + name
         + "("
-        + " "
-        + ") =$ "
+        + String.join(", ", aValues)
+        + ") = "
         + description; // TODO: добавить аргументы
   }
 }

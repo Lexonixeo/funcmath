@@ -1,5 +1,6 @@
 package funcmath.utility;
 
+import funcmath.exceptions.GameException;
 import funcmath.game.Logger;
 import java.io.*;
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.Collection;
 
 public class Helper {
   public static Object read(String pathname) {
-    Logger.write("Reading file " + pathname);
+    Logger.write("Читается файл " + pathname);
     Object ans;
     try {
       FileInputStream fis = new FileInputStream(pathname.replace('\\', '/'));
@@ -21,7 +22,7 @@ public class Helper {
   }
 
   public static void write(Object obj, String pathname) {
-    Logger.write("Writing file " + pathname);
+    Logger.write("Записывается файл " + pathname);
     try {
       File ourFile = new File(pathname.replace('\\', '/'));
       FileOutputStream fos = new FileOutputStream(ourFile);
@@ -42,6 +43,21 @@ public class Helper {
     } catch (IOException | ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static String getLastGameExceptionMessage(Throwable e) {
+    Throwable ee = Helper.deepClone(e);
+    while (ee != null && !ee.getClass().getSuperclass().equals(GameException.class)) {
+      try {
+        ee = ee.getCause();
+      } catch (Exception ex) {
+        return e.toString();
+      }
+    }
+    if (ee == null) {
+      return getLastMessage(e);
+    }
+    return ee.getMessage();
   }
 
   public static String getLastMessage(Throwable e) {
@@ -102,5 +118,44 @@ public class Helper {
     }
     sb.deleteCharAt(sb.lastIndexOf(" "));
     return sb.toString();
+  }
+
+  private static ArrayList<Character> stringProcessing(String str) {
+    char[] first_str = str.toCharArray();
+    ArrayList<Character> second_str = new ArrayList<>();
+    for (char i : first_str) {
+      if (i == ',' || i == '(' || i == ')') {
+        second_str.add(' ');
+      } else {
+        second_str.add(i);
+      }
+    }
+    ArrayList<Character> third_str = new ArrayList<>();
+    char last_char = ' ';
+    for (char i : second_str) {
+      if (!(i == ' ' && last_char == ' ')) {
+        third_str.add(i);
+        last_char = i;
+      }
+    }
+    if (!third_str.isEmpty() && third_str.getLast() == ' ') {
+      third_str.removeLast();
+    }
+    return third_str;
+  }
+
+  public static ArrayList<String> wordsFromString(String str) {
+    ArrayList<Character> our_str = stringProcessing(str);
+    StringBuilder builder = new StringBuilder();
+    ArrayList<String> words = new ArrayList<>();
+    for (char i : our_str) {
+      if (i != ' ') builder.append(i);
+      else {
+        words.add(builder.toString());
+        builder.delete(0, builder.length());
+      }
+    }
+    words.add(builder.toString());
+    return words;
   }
 }

@@ -1,11 +1,11 @@
-package funcmath.gui.swing;
+package funcmath.utility;
 
 import funcmath.exceptions.GameException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class GInputStream extends InputStream {
+public class FMInputStream extends InputStream {
   byte[] contents;
   boolean check = false;
   int pointer = 0;
@@ -28,7 +28,7 @@ public class GInputStream extends InputStream {
       try {
         Thread.sleep(100);
       } catch (InterruptedException e) {
-        throw new RuntimeException("Поток, который читает GInputStream, почему-то закрывается");
+        throw new IOException("Поток, который читает GInputStream, почему-то закрывается");
       }
     }
     if (stopper) {

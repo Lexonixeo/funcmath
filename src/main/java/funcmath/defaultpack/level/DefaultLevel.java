@@ -23,7 +23,7 @@ public class DefaultLevel implements Level {
   private final Hash hash;
 
   public DefaultLevel() {
-    this(null);
+    this(new DLInfo());
   }
 
   public DefaultLevel(LevelInfo li) {
@@ -35,12 +35,18 @@ public class DefaultLevel implements Level {
     setLevelState(levelInfo.getDefaultLevelState());
     // history +
     this.hash = Hash.encode(levelInfo);
+    final DLConsoleEngine[] engine = new DLConsoleEngine[1];
     this.panel =
         new GConsoleLevelPanel() {
           @Override
+          protected void runInterrupt() {
+            engine[0].interrupt();
+          }
+
+          @Override
           protected void game() {
-            DLConsoleEngine engine = new DLConsoleEngine(DefaultLevel.this, panel);
-            engine.game();
+            engine[0] = new DLConsoleEngine(DefaultLevel.this, panel);
+            engine[0].game();
           }
         };
   }
@@ -133,10 +139,9 @@ public class DefaultLevel implements Level {
 
     currentLevelState =
         new DLState(
-            levelInfo,
             currentLevelState.getHistory(),
             add(newNumbers, generatedNumbers),
-            newFunctions);
+            newFunctions, levelInfo.getPlayFlag(), levelInfo.getID());
 
     isCompleted = numsCheck(levelInfo.getAns());
 
@@ -144,7 +149,11 @@ public class DefaultLevel implements Level {
   }
 
   private ArrayList<MathObject> add(ArrayList<MathObject> first, ArrayList<MathObject> second) {
-    HashSet<String> usingNames = currentLevelState.getUsingNames();
+    HashSet<String> usingNames = new HashSet<>(currentLevelState.getFunctions().keySet());
+    for (MathObject n : first) {
+      usingNames.add(n.getName());
+    }
+
     ArrayList<MathObject> ans = Helper.deepClone(first);
     for (MathObject n : second) {
       for (MathObject m : ans) {

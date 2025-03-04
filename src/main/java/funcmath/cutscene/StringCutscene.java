@@ -5,6 +5,7 @@ import javax.swing.*;
 
 public class StringCutscene extends JPanel implements Cutscene {
   private ArrayList<String> strings;
+
   // TODO
 
   @Override

@@ -1,51 +1,209 @@
-package funcmath.functions;
+package funcmath.defaultpack.level;
 
-import funcmath.exceptions.FunctionException;
-import funcmath.exceptions.MakerException;
-import funcmath.game.Logger;
+import funcmath.cutscene.Cutscene;
+import funcmath.functions.Function;
 import funcmath.gui.swing.GConsolePanel;
+import funcmath.level.PlayFlag;
 import funcmath.object.MathObject;
-import funcmath.object.TypeRegister;
 import funcmath.utility.Helper;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class FunctionMakerPanel extends GConsolePanel {
-  Function f;
+public class DLMakerPanel extends GConsolePanel {
+  DLInfo li;
+  DLState ls;
+  DefaultLevel level;
 
   boolean interrupted = false;
 
   @Override
   protected void initBeforeComponents() {
     super.initBeforeComponents();
-    f = new Function("", new String[0], new String[0], "", -1);
+    ls = new DLState();
+    li = new DLInfo();
+    li.setDefaultLevelState(ls);
+    level = new DefaultLevel(li);
   }
 
   @Override
   protected void initComponents() {
     super.initComponents();
 
-    nameLabel.setText("Создатель функций");
+    nameLabel.setText("Создатель уровней");
   }
 
   @Override
   protected void run() {
     int res = 0;
     out.clear();
-    out.println("Добро пожаловать в мастерскую создания функций!");
+    out.println("Добро пожаловать в мастерскую создания уровней!");
     do {
       if (res == 0) {
-        funcInfo();
+        // funcInfo();
       }
-      res = turn();
+      // res = turn();
     } while (res != -1 && !interrupted);
-
   }
 
   @Override
   protected void runInterrupt() {
     interrupted = true;
   }
+
+  private void updateLevelInfo(DLInfo li) {
+    this.li = li;
+    this.ls = new DLState(this.ls.getHistory(), this.ls.getNumbers(), this.ls.getFunctions(), li.getPlayFlag(), li.getID());
+    this.li.setDefaultLevelState(this.ls);
+    this.level = new DefaultLevel(li);
+  }
+
+  private void updateLevelState(DLState ls) {
+    this.ls = new DLState(ls.getHistory(), ls.getNumbers(), ls.getFunctions(), li.getPlayFlag(), li.getID());
+    this.li.setDefaultLevelState(this.ls);
+    this.level = new DefaultLevel(li);
+  }
+
+  private void setLNumbers(ArrayList<MathObject> numbers) {
+    updateLevelState(new DLState(ls.getHistory(), numbers, ls.getFunctions(), li.getPlayFlag(), li.getID()));
+  }
+
+  private void setLFunctions(HashMap<String, Function> functions) {
+    updateLevelState(new DLState(ls.getHistory(), ls.getNumbers(), functions, li.getPlayFlag(), li.getID()));
+  }
+
+  private void setLRules(DLRules rules) {
+    updateLevelInfo(
+        new DLInfo(
+            ls,
+            rules,
+            li.getPlayFlag(),
+            li.getName(),
+            li.getBeforeCutscene(),
+            li.getAfterCutscene(),
+            li.getID(),
+            li.getHints(),
+            li.getAns()));
+  }
+
+  private void setLPlayFlag(PlayFlag pf) {
+    updateLevelInfo(
+        new DLInfo(
+            ls,
+            li.getRules(),
+            pf,
+            li.getName(),
+            li.getBeforeCutscene(),
+            li.getAfterCutscene(),
+            li.getID(),
+            li.getHints(),
+            li.getAns()));
+  }
+
+  private void setLName(String name) {
+    updateLevelInfo(
+        new DLInfo(
+            ls,
+            li.getRules(),
+            li.getPlayFlag(),
+            name,
+            li.getBeforeCutscene(),
+            li.getAfterCutscene(),
+            li.getID(),
+            li.getHints(),
+            li.getAns()));
+  }
+
+  private void setLBeforeCutscene(Cutscene cutscene) {
+    updateLevelInfo(
+        new DLInfo(
+            ls,
+            li.getRules(),
+            li.getPlayFlag(),
+            li.getName(),
+            cutscene,
+            li.getAfterCutscene(),
+            li.getID(),
+            li.getHints(),
+            li.getAns()));
+  }
+
+  private void setLAfterCutscene(Cutscene cutscene) {
+    updateLevelInfo(
+        new DLInfo(
+            ls,
+            li.getRules(),
+            li.getPlayFlag(),
+            li.getName(),
+            li.getBeforeCutscene(),
+            cutscene,
+            li.getID(),
+            li.getHints(),
+            li.getAns()));
+  }
+
+  private void setLID(Long ID) {
+    updateLevelInfo(
+        new DLInfo(
+            ls,
+            li.getRules(),
+            li.getPlayFlag(),
+            li.getName(),
+            li.getBeforeCutscene(),
+            li.getAfterCutscene(),
+            ID,
+            li.getHints(),
+            li.getAns()));
+  }
+
+  private void setLHints(ArrayList<String> hints) {
+    updateLevelInfo(
+        new DLInfo(
+            ls,
+            li.getRules(),
+            li.getPlayFlag(),
+            li.getName(),
+            li.getBeforeCutscene(),
+            li.getAfterCutscene(),
+            li.getID(),
+            hints,
+            li.getAns()));
+  }
+
+  private void setLAnswer(ArrayList<MathObject> ans) {
+    updateLevelInfo(
+        new DLInfo(
+            ls,
+            li.getRules(),
+            li.getPlayFlag(),
+            li.getName(),
+            li.getBeforeCutscene(),
+            li.getAfterCutscene(),
+            li.getID(),
+            li.getHints(),
+            ans));
+  }
+
+  private void visibleLevelInfo() {
+    out.println(
+        "У вас есть "
+            + (((DLInfo) this.level.getLevelInfo()).getRules().infinityNumbers() ? "не" : "")
+            + "ограниченный набор чисел:");
+    for (MathObject number : ((DLState) this.level.getCurrentLevelState()).getNumbers()) {
+      out.print(number + " ");
+    }
+
+    out.println("\n\nУ вас есть функции:");
+    for (Function function :
+        ((DLState) this.level.getCurrentLevelState()).getFunctions().values()) {
+      out.println(function);
+    }
+
+    out.println(
+        "\nВам нужно из данных чисел, используя данные функции, получить число(а) "
+            + Helper.collectionToString(((DLInfo) this.level.getLevelInfo()).getAns())
+            + ".\n");
+  }
+
+  /*
 
   private int turn() {
     synchronized (out) {
@@ -122,6 +280,8 @@ public class FunctionMakerPanel extends GConsolePanel {
     return 0; // funcInfo надо
   }
 
+  */
+  /*
   private void sfList() {
     out.println("Список простейших функций: ");
     HashMap<String, SimpleFunction> SF_HASH_MAP = SimpleFunctionRegister.getSfHashMap();
@@ -131,7 +291,7 @@ public class FunctionMakerPanel extends GConsolePanel {
       // out.println(key + ": " + SF_HASH_MAP.get(key));
     }
     ArrayList<SimpleFunction> sfList = new ArrayList<>(HASH_SF_MAP.keySet());
-    sfList.sort(new Comparator<>() {
+    sfList.sort(new Comparator<SimpleFunction>() {
       @Override
       public int compare(SimpleFunction o1, SimpleFunction o2) {
         return o1.getName().compareTo(o2.getName());
@@ -143,10 +303,13 @@ public class FunctionMakerPanel extends GConsolePanel {
     out.println();
   }
 
+   */
+
   private void tutorial() {
     // TODO
   }
 
+  /*
   private void setFName(String name) {
     f =
         new Function(
@@ -248,15 +411,17 @@ public class FunctionMakerPanel extends GConsolePanel {
     sfList();
 
     out.println("Добро пожаловать в мастерскую создания функций!");
-    /*
-    if (tutorial) {
-      out.print("Хотите ли вы прочитать туториал? y/n ");
-      String input = scanner.nextLine();
-      if (input.equals("y") || input.equals("у")) {
-        tutorial();
-      }
+    */
+  /*
+  if (tutorial) {
+    out.print("Хотите ли вы прочитать туториал? y/n ");
+    String input = scanner.nextLine();
+    if (input.equals("y") || input.equals("у")) {
+      tutorial();
     }
-     */
+  }
+   */
+  /*
 
     out.print("Введите название функции: ");
     String name = scanner.nextLine();
@@ -297,4 +462,5 @@ public class FunctionMakerPanel extends GConsolePanel {
 
     out.println("Ваша функция теперь имеет ID: " + name + functionHash);
   }
+  */
 }

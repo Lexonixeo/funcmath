@@ -2,6 +2,7 @@ package funcmath.level;
 
 import funcmath.exceptions.LevelException;
 import funcmath.game.Logger;
+import funcmath.gui.swing.GPanel;
 import funcmath.utility.Helper;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class LevelRegister {
   private static final ArrayList<Long> DEFAULT_LEVEL_LIST = new ArrayList<>();
   private static final ArrayList<Long> CUSTOM_LEVEL_LIST = new ArrayList<>();
   private static final ArrayList<Long> PRE_LEVEL_LIST = new ArrayList<>();
+  private static final HashMap<String, GPanel> LEVEL_MAKER_HASH_MAP = new HashMap<>();
 
   public static void registerType(Level l) {
     Logger.write("Регистрация уровневого типа " + l.getType());
@@ -24,6 +26,19 @@ public class LevelRegister {
     } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static void registerLevelMaker(Level l, GPanel p) {
+    Logger.write("Регистрация создателя уровня типа " + l.getType());
+    LEVEL_MAKER_HASH_MAP.put(l.getType(), p);
+  }
+
+  public static GPanel getLevelMaker(String type) {
+    return LEVEL_MAKER_HASH_MAP.get(type);
+  }
+
+  public static GPanel getLevelMaker(Level l) {
+    return getLevelMaker(l.getType());
   }
 
   public static LevelInfo getLevelInfo(Long levelID, PlayFlag playFlag) {
@@ -59,7 +74,7 @@ public class LevelRegister {
 
   public static Level getLevel(LevelState ls) {
     if (ls == null) return null;
-    LevelInfo li = ls.getLevelInfo();
+    LevelInfo li = getLevelInfo(ls.getLevelID(), ls.getPlayFlag());
     Level l = getLevel(li);
     l.setLevelState(ls);
     return l;

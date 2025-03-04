@@ -17,7 +17,9 @@ public class FNatural implements MathObject, Comparable<FNatural> {
   public static final FNatural ONE = new FNatural(1);
   public static final FNatural TWO = new FNatural(2);
 
-  public BigInteger number;
+  protected BigInteger number;
+
+  private String name;
 
   public FNatural() {
     this(0);
@@ -32,6 +34,7 @@ public class FNatural implements MathObject, Comparable<FNatural> {
       throw new MathException("Не существует натуральных чисел, меньших нуля: " + number);
     }
     this.number = number;
+    this.name = number.toString();
   }
 
   public FNatural(String s) {
@@ -270,7 +273,7 @@ public class FNatural implements MathObject, Comparable<FNatural> {
 
   @Override
   public String toString() {
-    return this.get().toString();
+    return getName();
   }
 
   @Override
@@ -279,18 +282,19 @@ public class FNatural implements MathObject, Comparable<FNatural> {
   }
 
   @Override
-  public String getShowableType() {
-    return "натуральные числа";
-  }
-
-  @Override
   public String getName() {
-    return number.toString();
+    return name;
   }
 
   @Override
   public void generateName(HashSet<String> usedNames) {
-    // TODO
+    String newName = number.toString() + "(nat)";
+    int i = 0;
+    while (!usedNames.contains(newName)) {
+      i++;
+      newName = number.toString() + "(nat" + i + ")";
+    }
+    this.name = newName;
   }
 
   @Override
