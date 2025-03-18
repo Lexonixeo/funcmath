@@ -39,7 +39,6 @@ public class FunctionMakerPanel extends GConsolePanel {
       }
       res = turn();
     } while (res != -1 && !interrupted);
-
   }
 
   @Override
@@ -88,6 +87,10 @@ public class FunctionMakerPanel extends GConsolePanel {
               }
             }
           }
+          case "help" -> {
+            out.clear();
+            help();
+          }
           case "list" -> {
             out.clear();
             sfList();
@@ -122,6 +125,25 @@ public class FunctionMakerPanel extends GConsolePanel {
     return 0; // funcInfo надо
   }
 
+  private void help() {
+    out.println("Список команд:");
+    out.println("set name {name} - установить название функции");
+    out.println("set description {...} - установить описание функции");
+    out.println(
+        "set types {Type} {Type} {...} - установить типы аргументов функции (кол-во типов = кол-во аргументов)");
+    out.println("set definition {Type/Type=___} {...} - установить определение функции");
+    out.println("set uses {n} - установить кол-во использований функции");
+    out.println("help - открыть список команд");
+    out.println("list - открыть список простейших функций");
+    out.println("exit - выключить создатель функции");
+    out.println(
+        "use {name} {type=...} {type=...} {...} - использовать функцию для аргументов type=...");
+    out.println("validate - пройти автоматическую проверку");
+    out.println("save - сохранить функцию");
+    out.println("tutorial - открыть туториал");
+    out.println();
+  }
+
   private void sfList() {
     out.println("Список простейших функций: ");
     HashMap<String, SimpleFunction> SF_HASH_MAP = SimpleFunctionRegister.getSfHashMap();
@@ -131,14 +153,15 @@ public class FunctionMakerPanel extends GConsolePanel {
       // out.println(key + ": " + SF_HASH_MAP.get(key));
     }
     ArrayList<SimpleFunction> sfList = new ArrayList<>(HASH_SF_MAP.keySet());
-    sfList.sort(new Comparator<>() {
-      @Override
-      public int compare(SimpleFunction o1, SimpleFunction o2) {
-        return o1.getName().compareTo(o2.getName());
-      }
-    });
+    sfList.sort(
+        new Comparator<>() {
+          @Override
+          public int compare(SimpleFunction o1, SimpleFunction o2) {
+            return o1.getName().compareTo(o2.getName());
+          }
+        });
     for (SimpleFunction sf : sfList) {
-      out.println(HASH_SF_MAP.get(sf) + ": " + sf);
+      out.println(HASH_SF_MAP.get(sf));
     }
     out.println();
   }
@@ -201,7 +224,7 @@ public class FunctionMakerPanel extends GConsolePanel {
 
   private void fSave() {
     f.save();
-    String functionHash = f.getHash().toString();
+    String functionHash = String.valueOf(Long.valueOf(f.getHash().toLong()).byteValue());
     out.println("Ваша функция теперь имеет ID: " + f.getName() + "_" + functionHash);
   }
 

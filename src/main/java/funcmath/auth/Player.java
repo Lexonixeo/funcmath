@@ -1,7 +1,7 @@
 package funcmath.auth;
 
-import funcmath.level.LevelState;
-import funcmath.level.LevelStatistics;
+import funcmath.exceptions.LevelException;
+import funcmath.level.*;
 import funcmath.utility.Hash;
 import funcmath.utility.Helper;
 import java.io.Serial;
@@ -52,7 +52,8 @@ public class Player implements Serializable {
     } else {
       defaultLevelStates.put(stats.getLevelID(), state);
     }
-    defaultLevelStats.put(stats.getLevelID(), stats);
+    defaultLevelStats.put(stats.getLevelID(), stats.add(defaultLevelStats.get(stats.getLevelID())));
+    this.lastLevel = state;
   }
 
   public void addCustomLevel(LevelState state, LevelStatistics stats) {
@@ -62,7 +63,22 @@ public class Player implements Serializable {
     } else {
       customLevelStates.put(stats.getLevelID(), state);
     }
-    customLevelStats.put(stats.getLevelID(), stats);
+    customLevelStats.put(stats.getLevelID(), stats.add(customLevelStats.get(stats.getLevelID())));
+    this.lastLevel = state;
+  }
+
+  public LevelPrimaryKey getFirstUncompletedLevel() {
+    for (Long ID : LevelRegister.getDefaultLevelList()) {
+      if (!completedDefaultLevels.contains(ID)) {
+        return new LevelPrimaryKey(ID, PlayFlag.DEFAULT);
+      }
+    }
+    for (Long ID : LevelRegister.getCustomLevelList()) {
+      if (!completedCustomLevels.contains(ID)) {
+        return new LevelPrimaryKey(ID, PlayFlag.CUSTOM);
+      }
+    }
+    throw new LevelException("Все уровни пройдены!");
   }
 
   public void save() {

@@ -5,6 +5,7 @@ import funcmath.game.Logger;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Helper {
   public static Object read(String pathname) {
@@ -116,7 +117,9 @@ public class Helper {
       sb.append(num);
       sb.append(" ");
     }
-    sb.deleteCharAt(sb.lastIndexOf(" "));
+    if (!sb.isEmpty()) {
+      sb.deleteCharAt(sb.lastIndexOf(" "));
+    }
     return sb.toString();
   }
 
@@ -157,5 +160,9 @@ public class Helper {
     }
     words.add(builder.toString());
     return words;
+  }
+
+  public static ArrayList<String> wordsFromStringOnlySpaces(String str) {
+    return new ArrayList<>(List.of(str.split(" ")));
   }
 }

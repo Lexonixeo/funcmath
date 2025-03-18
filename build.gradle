@@ -21,8 +21,9 @@ tasks.withType(JavaExec).configureEach {
 }
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
-        attributes "Main-Class": "funcmath.gui.MainTest"
+        attributes "Main-Class": "funcmath.game.GameLoader"
     }
     archiveFileName.set("funcmath.jar")
     destinationDirectory.set(file("/"))
@@ -33,6 +34,8 @@ jar {
     from {
         configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
     }
+
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }
 
 tasks.register('uberJar', Jar) {
@@ -52,6 +55,11 @@ tasks.register('uberJar', Jar) {
     from {
         configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
     }
+
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }
 
 group = 'funcmath'

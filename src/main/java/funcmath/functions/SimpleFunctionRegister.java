@@ -13,14 +13,18 @@ public class SimpleFunctionRegister {
         throw new FunctionException("Коллизия простейших функций: " + f + " и " + SF_HASH_MAP.get(f.getInfo()));
     }
      */
-    SF_HASH_MAP.put(f.getHash().toString(), f);
+    SF_HASH_MAP.put(encodeSimpleFunction(f), f);
   }
 
-  public static SimpleFunction getSimpleFunction(String hash) {
-    return SF_HASH_MAP.get(hash);
+  public static String encodeSimpleFunction(SimpleFunction f) {
+    return "f:" + f.getName() + ":" + String.join(":", f.getTypes());
   }
 
-  public static HashSet<String> getSfStringHashes() {
+  public static SimpleFunction getSimpleFunction(String key) {
+    return SF_HASH_MAP.get(key);
+  }
+
+  public static HashSet<String> getSfStringKeys() {
     return new HashSet<>(SF_HASH_MAP.keySet());
   }
 

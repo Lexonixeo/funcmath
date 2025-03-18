@@ -53,6 +53,14 @@ public class LevelRegister {
     return li;
   }
 
+  public static LevelInfo getLevelInfo(LevelPrimaryKey key) {
+    return getLevelInfo(key.ID(), key.playFlag());
+  }
+
+  public static Level getLevel(LevelPrimaryKey key) {
+    return getLevel(getLevelInfo(key));
+  }
+
   public static Level getLevel(LevelInfo li) {
     Level l;
     try {
@@ -78,6 +86,24 @@ public class LevelRegister {
     Level l = getLevel(li);
     l.setLevelState(ls);
     return l;
+  }
+
+  public static Level getNextLevel(LevelPrimaryKey lk) throws IndexOutOfBoundsException {
+    switch (lk.playFlag()) {
+      case DEFAULT -> {
+        int i = DEFAULT_LEVEL_LIST.indexOf(lk.ID());
+        return getLevel(getLevelInfo(new LevelPrimaryKey(DEFAULT_LEVEL_LIST.get(i + 1), PlayFlag.DEFAULT)));
+      }
+      case CUSTOM -> {
+        int i = CUSTOM_LEVEL_LIST.indexOf(lk.ID());
+        return getLevel(getLevelInfo(new LevelPrimaryKey(CUSTOM_LEVEL_LIST.get(i + 1), PlayFlag.CUSTOM)));
+      }
+      case PRELEVELS -> {
+        int i = PRE_LEVEL_LIST.indexOf(lk.ID());
+        return getLevel(getLevelInfo(new LevelPrimaryKey(PRE_LEVEL_LIST.get(i + 1), PlayFlag.PRELEVELS)));
+      }
+    }
+      return null;
   }
 
   public static void updateLevels() {

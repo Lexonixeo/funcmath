@@ -13,6 +13,7 @@ public class Function implements Serializable {
   @Serial private static final long serialVersionUID = 1779220397367729803L;
 
   private String name;
+  private final String rawName;
   private final String[] types;
   // а зачем я добавил resultType если возвращается MathObject[]???
   // String resultType; - при чтении выражения будет тяжело угадывать необходимый тип, так что
@@ -35,6 +36,7 @@ public class Function implements Serializable {
   public Function(
       String name, String[] types, String[] definition, String description, int remainingUses) {
     this.name = name;
+    this.rawName = name;
     this.types = types;
     this.definition = definition;
     this.description = description;
@@ -49,6 +51,7 @@ public class Function implements Serializable {
 
   public Function(SimpleFunction f) {
     this.name = f.getName();
+    this.rawName = name;
     this.types = f.getTypes();
     this.definition = new String[1 + types.length];
     definition[0] = f.getHash().toString();
@@ -68,7 +71,7 @@ public class Function implements Serializable {
         maxArgNumber = Math.max(maxArgNumber, Integer.parseInt(word.substring(1)));
       }
     }
-    return maxArgNumber + 1 == getArgsNumber();
+    return maxArgNumber + 1 <= getArgsNumber();
   }
 
   private boolean validateDefinition() {
@@ -77,7 +80,7 @@ public class Function implements Serializable {
   }
 
   private boolean validateTypes() {
-    HashSet<String> sfNames = SimpleFunctionRegister.getSfStringHashes();
+    HashSet<String> sfNames = SimpleFunctionRegister.getSfStringKeys();
 
     Stack<SimpleFunction> sfStack = new Stack<>();
     Stack<ArrayList<String>> numsTypes = new Stack<>();
@@ -154,7 +157,7 @@ public class Function implements Serializable {
   public ArrayList<MathObject> compute(MathObject... xx) {
     MathObject[] x = retype(xx);
 
-    HashSet<String> sfNames = SimpleFunctionRegister.getSfStringHashes();
+    HashSet<String> sfNames = SimpleFunctionRegister.getSfStringKeys();
 
     Stack<SimpleFunction> sfStack = new Stack<>();
     Stack<ArrayList<MathObject>> nums = new Stack<>();
@@ -212,15 +215,17 @@ public class Function implements Serializable {
     if (!validate) {
       throw new FunctionException("Нельзя сохранять непроверенную функцию!");
     }
-    String functionHash = this.getHash().toString();
+    String functionHash = String.valueOf(Long.valueOf(this.getHash().toLong()).byteValue());
     String functionFileName = name + "_" + functionHash + ".dat";
     Helper.write(this, "data/functions/" + functionFileName);
   }
 
-  public void setName(String name) {
-    // в зависимости от того, будут ли в уровне функции с одинаковыми именами, придется их
-    // переименовывать
-    this.name = name;
+  public void generateName(HashSet<String> usingNames) {
+    int i = 0;
+    while (usingNames.contains(getName())) {
+      this.name = rawName + i;
+      i++;
+    }
   }
 
   public void setRemainingUses(int remainingUses) {
@@ -266,12 +271,12 @@ public class Function implements Serializable {
       aValues.set(i, types[i] + " " + aValues.get(i));
     }
     return "("
-        + remainingUses
+        + (remainingUses < 0 ? "inf" : remainingUses)
         + ") "
         + name
         + "("
         + String.join(", ", aValues)
         + ") = "
-        + description; // TODO: добавить аргументы
+        + description;
   }
 }

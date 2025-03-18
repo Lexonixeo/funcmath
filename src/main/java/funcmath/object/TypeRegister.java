@@ -76,7 +76,7 @@ public class TypeRegister {
     ArrayList<String> way = findShortestWay(input.getType(), outputType);
     if (way == null) {
       throw new MathObjectException(
-              "Не существует прямого способа конвертации " + input.getType() + " в " + outputType);
+          "Не существует прямого способа конвертации " + input.getType() + " в " + outputType);
     }
     ArrayList<String> ourWay = new ArrayList<>(way.subList(1, way.size()));
     for (String node : ourWay) {
@@ -91,7 +91,7 @@ public class TypeRegister {
     ArrayList<String> queue = new ArrayList<>();
     queue.add(start);
     HashMap<String, ArrayList<String>> ways = new HashMap<>();
-    ways.put(start, new ArrayList<>(List.of(new String[]{start})));
+    ways.put(start, new ArrayList<>(List.of(new String[] {start})));
     for (int i = 0; i < queue.size(); i++) {
       String node = queue.get(i);
       for (String neighbour : CONVERT_GRAPH.get(node)) {
@@ -119,7 +119,8 @@ public class TypeRegister {
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     } catch (InvocationTargetException e) {
-      throw new TypeRegisterException("Не получилось конвертировать " + input + " в " + outputType, e);
+      throw new TypeRegisterException(
+          "Не получилось конвертировать " + input + " в " + outputType, e);
     }
   }
 

@@ -23,4 +23,8 @@ public interface LevelInfo extends Serializable {
   Long getID(); // const для каждого уровня, зависит на порядок уровня в списке
 
   void setID(Long ID);
+
+  LevelPrimaryKey getPrimaryKey();
+
+  void setPrimaryKey(LevelPrimaryKey key);
 }

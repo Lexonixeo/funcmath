@@ -12,4 +12,8 @@ public interface LevelStatistics extends Serializable {
   Long getLevelID();
 
   Hash getLevelHash();
+
+  LevelPrimaryKey getPrimaryKey();
+
+  LevelStatistics add(LevelStatistics x);
 }

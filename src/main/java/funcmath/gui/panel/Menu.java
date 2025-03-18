@@ -1,5 +1,6 @@
 package funcmath.gui.panel;
 
+import funcmath.game.GameLoader;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.GBackgroundPanel;
@@ -75,11 +76,11 @@ public class Menu extends GBackgroundPanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            if (GameFrame.getInstance().getLastLevel() == null
-                || GameFrame.getInstance().getLastLevel().isCompleted()) {
-              errorLabel.setText("Вы не можете вернуться к предыдущему уровню.");
-              validate();
-              repaint();
+            if (GameFrame.getInstance().getLastLevel() == null || GameFrame.getInstance().getLastLevel().isCompleted()) {
+              GameFrame.getInstance()
+                      .setCurrentLevel(
+                              LevelRegister.getLevel(GameFrame.getInstance().getPlayer().getFirstUncompletedLevel()));
+              GameFrame.getInstance().changePanel("level");
             } else {
               GameFrame.getInstance()
                   .setCurrentLevel(
@@ -134,6 +135,7 @@ public class Menu extends GBackgroundPanel {
     statsButton.setText("Статистика");
     statsButton.setForeground(Color.white);
     statsButton.setBackground(new Color(56, 109, 80));
+    statsButton.setEnabled(false);
 
     settingsButton = new JButton();
     settingsButton.addActionListener(
@@ -145,6 +147,7 @@ public class Menu extends GBackgroundPanel {
     settingsButton.setText("Настройки");
     settingsButton.setForeground(Color.white);
     settingsButton.setBackground(new Color(56, 109, 80));
+    settingsButton.setEnabled(false);
 
     modListButton = new JButton();
     modListButton.addActionListener(
@@ -156,6 +159,7 @@ public class Menu extends GBackgroundPanel {
     modListButton.setText("Моды");
     modListButton.setForeground(Color.white);
     modListButton.setBackground(new Color(56, 109, 80));
+    modListButton.setEnabled(false);
 
     functionMakerButton = new JButton();
     functionMakerButton.addActionListener(
@@ -174,7 +178,9 @@ public class Menu extends GBackgroundPanel {
     levelMakerButton.addActionListener(
         new ActionListener() {
           @Override
-          public void actionPerformed(ActionEvent e) {}
+          public void actionPerformed(ActionEvent e) {
+            GameFrame.getInstance().changePanel("level maker");
+          }
         });
     levelMakerButton.setFont(Fonts.COMIC_SANS_MS_30);
     levelMakerButton.setText("Создать уровень");
@@ -191,12 +197,14 @@ public class Menu extends GBackgroundPanel {
     companyButton.setText("Кампания");
     companyButton.setForeground(Color.white);
     companyButton.setBackground(new Color(56, 109, 80));
+    companyButton.setEnabled(false);
 
     exitButton = new JButton();
     exitButton.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
+            GameLoader.interruptLevelUpdater();
             GameFrame.getInstance().dispose();
           }
         });

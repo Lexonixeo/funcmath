@@ -2,7 +2,6 @@ package funcmath.level;
 
 import funcmath.gui.swing.GPanel;
 import funcmath.utility.Hash;
-import javax.swing.*;
 
 // играние в уровень
 // Самое главное: чтобы структура интерфейсов Level не зависела от MathObject/Function и т.д.
@@ -23,9 +22,13 @@ public interface Level {
 
   PlayFlag getPlayFlag();
 
+  LevelPrimaryKey getPrimaryKey();
+
   String getName();
 
   GPanel getLevelPanel(); // можете коннектиться к GConsoleLevelPanel;
+
+  // при выходе из уровня (своей Level Panel) вызывайте GameFrame.getInstance().exitCurrentLevel();
 
   // getLevelMakerPanel?
 

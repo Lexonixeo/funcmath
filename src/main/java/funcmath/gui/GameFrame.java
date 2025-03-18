@@ -8,6 +8,7 @@ import funcmath.gui.swing.GPanel;
 import funcmath.level.Level;
 import funcmath.level.LevelRegister;
 import funcmath.level.PlayFlag;
+import funcmath.packs.defaultpack.level.DLMakerPanel;
 import java.awt.*;
 import javax.swing.*;
 
@@ -58,6 +59,23 @@ public class GameFrame extends JFrame {
   public void registerPanel(String panelKey, GPanel panel) {}
 
   // // public static ArrayList<Pair<String, Foo>> mods;
+  public void changePanel(GPanel panel) {
+    this.removeMouseListener(currentPanel);
+    this.removeMouseMotionListener(currentPanel);
+    manager.removeKeyEventDispatcher(currentPanel);
+
+    currentPanel = panel;
+
+    setContentPane(currentPanel);
+    addMouseListener(currentPanel);
+    addMouseMotionListener(currentPanel);
+    manager.addKeyEventDispatcher(currentPanel);
+
+    invalidate();
+    validate();
+    repaint();
+  }
+
   public void changePanel(String panelKey) {
     this.removeMouseListener(currentPanel);
     this.removeMouseMotionListener(currentPanel);
@@ -72,21 +90,18 @@ public class GameFrame extends JFrame {
           case "settings" -> new Settings();
           case "mod list" -> new ModListPanel();
           case "level" -> currentLevel.getLevelPanel();
-          case "level maker" -> new LevelMakerPanel();
+          case "level maker" -> new DLMakerPanel();
           case "function maker" -> new FunctionMakerPanel();
           case "level list" -> new LevelListPanel(1, PlayFlag.DEFAULT);
           case "custom level list" -> new LevelListPanel(1, PlayFlag.CUSTOM);
           case "loading" -> LoadingPanel.getInstance();
-          default -> {
-            /* /*
+          default -> /*
             for (int i = 0 ...) {
                 if (mods.get(i).first == panelKey) {
                     ..second.exec();
                 }
             }
-            // */
-            throw new IllegalStateException("Unexpected value: " + panelKey);
-          }
+            */ throw new IllegalStateException("Unexpected value: " + panelKey);
         };
 
     setContentPane(currentPanel);
@@ -126,6 +141,10 @@ public class GameFrame extends JFrame {
               this.currentLevel.getCurrentLevelState(), this.currentLevel.getStatistics());
     }
     this.currentLevel = null;
+  }
+
+  public GPanel getCurrentPanel() {
+    return currentPanel;
   }
 
   public Level getLastLevel() {

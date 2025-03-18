@@ -24,6 +24,8 @@ public interface MathObject extends Serializable {
   // void setName(); - заменяем через generateName
   String getName(); // ставьте какое-нибудь имя по умолчанию,
 
+  String getRawName();
+
   // будем вызывать generateName если будут коллизии при !equals
   // мы потом добавляем в usedNames сгенерированное имя
   void generateName(HashSet<String> usedNames);

@@ -4,6 +4,7 @@ import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.level.Level;
 import funcmath.level.LevelState;
+import funcmath.level.LevelStatistics;
 import funcmath.level.PlayFlag;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -51,26 +52,30 @@ public class GLevelNamePanel extends GConstructorPanel {
     aboutLabel = new JLabel();
     aboutLabel.setFont(Fonts.COMIC_SANS_MS_30);
     aboutLabel.setForeground(Color.white);
-    aboutLabel.setText(level.getName());
+    aboutLabel.setText("Уровень №" + level.getLevelInfo().getID() + ": " + level.getName());
     aboutLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
     statsLabel = new JLabel();
     statsLabel.setFont(Fonts.COMIC_SANS_MS_30);
     statsLabel.setForeground(Color.white);
     if (playFlag == PlayFlag.DEFAULT) {
-      statsLabel.setText(
+      LevelStatistics stats =
           GameFrame.getInstance()
               .getPlayer()
               .getDefaultLevelStats()
-              .get(this.level.getLevelInfo().getID())
-              .toString());
+              .get(this.level.getLevelInfo().getID());
+      if (stats != null) {
+        statsLabel.setText(stats.toString());
+      }
     } else if (playFlag == PlayFlag.CUSTOM) {
-      statsLabel.setText(
+      LevelStatistics stats =
           GameFrame.getInstance()
               .getPlayer()
               .getCustomLevelStats()
-              .get(this.level.getLevelInfo().getID())
-              .toString());
+              .get(this.level.getLevelInfo().getID());
+      if (stats != null) {
+        statsLabel.setText(stats.toString());
+      }
     }
     statsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 

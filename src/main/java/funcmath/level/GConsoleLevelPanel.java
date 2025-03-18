@@ -20,7 +20,10 @@ public abstract class GConsoleLevelPanel extends GConsolePanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TODO
+            GameFrame.getInstance()
+                    .setCurrentLevel(
+                            LevelRegister.getNextLevel(GameFrame.getInstance().getPlayer().getLastLevel().getPrimaryKey()));
+            GameFrame.getInstance().changePanel("level");
             /*
             GameFrame.getInstance()
                     .setCurrentLevel(
@@ -41,18 +44,30 @@ public abstract class GConsoleLevelPanel extends GConsolePanel {
 
   protected abstract void game();
 
-  @Override
-  protected void run() {
-    nameLabel.setText(GameFrame.getInstance().getCurrentLevel().toString());
-    try {
-      GConsoleLevelPanel.this.game();
-    } catch (RuntimeException e) {
-      out.println(e.getMessage());
-    }
+  protected void afterGame() {
     if (GameFrame.getInstance().getCurrentLevel().isCompleted()) {
       southPanel.add(nextLevel, BorderLayout.EAST);
       repaint();
       validate();
+    }
+  }
+
+  protected void setNameLabelText() {
+    Level level = GameFrame.getInstance().getCurrentLevel();
+    nameLabel.setText("Уровень №" + level.getLevelInfo().getID() + ": " + level.getName());
+    repaint();
+    validate();
+  }
+
+  @Override
+  protected void run() {
+    setNameLabelText();
+    try {
+      GConsoleLevelPanel.this.game();
+      GConsoleLevelPanel.this.afterGame();
+      GameFrame.getInstance().exitCurrentLevel();
+    } catch (RuntimeException e) {
+      out.println(e.getMessage());
     }
   }
 }

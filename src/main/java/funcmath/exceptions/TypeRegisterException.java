@@ -9,5 +9,7 @@ public class TypeRegisterException extends GameException {
     super(e);
   }
 
-  public TypeRegisterException(String message, Exception e) {super(message, e);}
+  public TypeRegisterException(String message, Exception e) {
+    super(message, e);
+  }
 }
