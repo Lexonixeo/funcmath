@@ -83,7 +83,9 @@ public class SimpleFunction {
     Object res;
     try {
       res = function.invoke(null, (Object[]) newArgs);
-    } catch (InvocationTargetException | IllegalAccessException e) {
+    } catch (InvocationTargetException e) {
+      throw new RuntimeException(e.getTargetException());
+    } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
     try {
