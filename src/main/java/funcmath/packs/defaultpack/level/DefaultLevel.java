@@ -2,7 +2,6 @@ package funcmath.packs.defaultpack.level;
 
 import funcmath.exceptions.LevelException;
 import funcmath.functions.Function;
-import funcmath.gui.swing.GPanel;
 import funcmath.level.*;
 import funcmath.object.MathObject;
 import funcmath.object.TypeRegister;
@@ -54,6 +53,9 @@ public class DefaultLevel implements Level {
     }
     return true;
   }
+
+  // TODO: добавить проверку на то, чтобы если в уровне есть два различных типа, то все числа должны
+  // быть с именами этих типов (типа 1(nat) 5(int) и т.д.)
 
   public void restart() {
     setLevelState(levelInfo.getDefaultLevelState());
@@ -271,13 +273,14 @@ public class DefaultLevel implements Level {
   }
 
   @Override
+  public LevelEngine getLevelEngine() {
+    return new DLConsoleEngine(this);
+  }
+
+  /*
   public GPanel getLevelPanel() {
     final DLConsoleEngine[] engine = new DLConsoleEngine[1];
     return new GConsoleLevelPanel() {
-      @Override
-      protected void runInterrupt() {
-        engine[0].interrupt();
-      }
 
       @Override
       protected void setNameLabelText() {
@@ -293,7 +296,7 @@ public class DefaultLevel implements Level {
       @Override
       protected void game() {
         engine[0] = new DLConsoleEngine(DefaultLevel.this, this);
-        engine[0].game();
+        engine[0].startGame();
       }
 
       @Override
@@ -306,6 +309,8 @@ public class DefaultLevel implements Level {
       }
     };
   }
+
+   */
 
   @Override
   public boolean isCompleted() {
@@ -325,5 +330,9 @@ public class DefaultLevel implements Level {
 
   void setLevelStats(DLStats stats) {
     this.levelStats = stats;
+  }
+
+  public AfterGameAction getAct() {
+    return act;
   }
 }

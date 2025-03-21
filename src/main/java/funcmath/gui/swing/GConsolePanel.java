@@ -15,9 +15,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public abstract class GConsolePanel extends GBackgroundPanel {
-  protected FMInputStream in;
-  private FMOutputStream outputStream;
-  protected FMPrintStream out;
+  protected final FMInputStream in;
+  private final FMOutputStream outputStream;
+  protected final FMPrintStream out;
 
   protected JLabel nameLabel;
   protected JButton returnButton;
@@ -28,21 +28,25 @@ public abstract class GConsolePanel extends GBackgroundPanel {
   protected JScrollPane inputScrollPane;
   protected GOpaquePanel southPanel;
 
-  private Thread updateThread;
-  private Thread gameThread;
+  private Thread textUpdateThread;
+  private Thread runThread;
 
-  @Override
-  protected void initBeforeComponents() {
+  public GConsolePanel() {
     in = new FMInputStream();
-    outputStream = new FMOutputStream();
+    FMOutputStream outputStream1 = new FMOutputStream();
+    outputStream = outputStream1;
     out =
-        new FMPrintStream(outputStream, true, StandardCharsets.UTF_8) {
+        new FMPrintStream(outputStream1, true, StandardCharsets.UTF_8) {
           @Override
           public void clear() {
-            outputStream.clear();
+            outputStream1.clear();
           }
         };
+    super();
   }
+
+  @Override
+  protected void initBeforeComponents() {}
 
   @Override
   protected void initComponents() {
@@ -55,7 +59,8 @@ public abstract class GConsolePanel extends GBackgroundPanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            in.stop();
+            runThread.interrupt();
+            textUpdateThread.interrupt();
             GameFrame.getInstance().changePanel("menu");
           }
         });
@@ -136,41 +141,43 @@ public abstract class GConsolePanel extends GBackgroundPanel {
 
   @Override
   protected void initAfterConstruct() {
-    setUpdateThread();
-    updateThread.start(); // Запуск потока
-
-    setRunThread();
-    gameThread.start(); // Запуск потока
+    resetTextUpdateThread();
+    resetRunThread();
   }
 
-  // TODO: проблема с reset, возникает у FunctionMakerPanel
+  @Override
+  public void start() {
+    textUpdateThread.start();
+    runThread.start();
+  }
+
   @Override
   public void reset() {
-    in.stop();
-    out.clear();
-    runInterrupt(); // gameThread.interrupt();
-    updateThread.interrupt();
+    runThread.interrupt();
+    textUpdateThread.interrupt();
     try {
       Thread.sleep(100);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
+    out.clear();
     super.reset(); // TODO: preview
   }
 
-  private void setUpdateThread() {
+  private void resetTextUpdateThread() {
     // Создание потока - поток игры - обязательно должен идти параллельно с графическим интерфейсом
     // Этот метод будет выполняться в побочном потоке
-    updateThread =
+    textUpdateThread =
         new Thread(
             new Runnable() {
               @Override
               public void run() {
-                while (!updateThread.isInterrupted()) {
+                while (!textUpdateThread.isInterrupted()) {
                   // wait 10 ms
                   try {
                     Thread.sleep(10);
-                  } catch (InterruptedException ignored) {
+                  } catch (InterruptedException e) {
+                    break;
                   }
                   if (System.currentTimeMillis() - outputStream.getTimer() > 10
                       && !outputStream.isChecked()) {
@@ -178,8 +185,7 @@ public abstract class GConsolePanel extends GBackgroundPanel {
                         new Runnable() {
                           @Override
                           public void run() {
-                            final FMPrintStream out2 = out;
-                            synchronized (out2) {
+                            synchronized (out) {
                               outputField.setText("");
                               for (String a : outputStream.getText()) {
                                 outputField.append(a);
@@ -191,18 +197,17 @@ public abstract class GConsolePanel extends GBackgroundPanel {
                 }
               }
             });
-    updateThread.setName("Console Panel Text update");
-    updateThread.setDaemon(true);
+    textUpdateThread.setName("FM-CP-Update");
+    textUpdateThread.setDaemon(true);
   }
 
+  // Проверять на Interrupt!!!
   protected abstract void run();
 
-  protected abstract void runInterrupt();
-
-  private void setRunThread() {
+  private void resetRunThread() {
     // Создание потока - поток игры - обязательно должен идти параллельно с графическим интерфейсом
     // Этот метод будет выполняться в побочном потоке
-    gameThread =
+    runThread =
         new Thread(
             new Runnable() {
               @Override
@@ -214,16 +219,16 @@ public abstract class GConsolePanel extends GBackgroundPanel {
                 }
                 inputField.setEnabled(false);
                 try {
-                  Thread.sleep(1000);
+                  Thread.sleep(100);
                 } catch (InterruptedException e) {
                   throw new RuntimeException(e);
                 }
-                updateThread.interrupt();
+                textUpdateThread.interrupt();
                 // GameFrame.getInstance().exitCurrentLevel(gameData);
               }
             });
-    gameThread.setName("Console Panel Game Thread");
-    gameThread.setDaemon(true);
+    runThread.setName("FM-CP-Run");
+    runThread.setDaemon(true);
   }
 
   public FMInputStream getIn() {

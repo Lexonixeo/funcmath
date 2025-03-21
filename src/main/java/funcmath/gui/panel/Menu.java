@@ -34,7 +34,7 @@ public class Menu extends GBackgroundPanel {
 
   @Override
   protected void initBeforeComponents() {
-    GameFrame.getInstance().getPlayer().save();
+    GameLoader.getPlayer().save();
   }
 
   @Override
@@ -46,8 +46,7 @@ public class Menu extends GBackgroundPanel {
     nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
     welcomeLabel = new JLabel();
-    welcomeLabel.setText(
-        "Добро пожаловать, " + GameFrame.getInstance().getPlayer().getName() + "!");
+    welcomeLabel.setText("Добро пожаловать, " + GameLoader.getPlayer().getName() + "!");
     welcomeLabel.setFont(Fonts.COMIC_SANS_MS_30);
     welcomeLabel.setForeground(Color.white);
 
@@ -76,22 +75,19 @@ public class Menu extends GBackgroundPanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            if (GameFrame.getInstance().getLastLevel() == null || GameFrame.getInstance().getLastLevel().isCompleted()) {
-              GameFrame.getInstance()
-                      .setCurrentLevel(
-                              LevelRegister.getLevel(GameFrame.getInstance().getPlayer().getFirstUncompletedLevel()));
+            if (GameLoader.getLastLevel() == null || GameLoader.getLastLevel().isCompleted()) {
+              GameLoader.setCurrentLevel(
+                  LevelRegister.getLevel(GameLoader.getPlayer().getFirstUncompletedLevel()));
               GameFrame.getInstance().changePanel("level");
             } else {
-              GameFrame.getInstance()
-                  .setCurrentLevel(
-                      LevelRegister.getLevel(GameFrame.getInstance().getPlayer().getLastLevel()));
+              GameLoader.setCurrentLevel(
+                  LevelRegister.getLevel(GameLoader.getPlayer().getLastLevel()));
               GameFrame.getInstance().changePanel("level");
             }
           }
         });
     playButton.setFont(Fonts.COMIC_SANS_MS_30);
-    if (GameFrame.getInstance().getLastLevel() == null
-        || GameFrame.getInstance().getLastLevel().isCompleted()) {
+    if (GameLoader.getLastLevel() == null || GameLoader.getLastLevel().isCompleted()) {
       playButton.setText("Играть!");
     } else {
       playButton.setText("Продолжить!");

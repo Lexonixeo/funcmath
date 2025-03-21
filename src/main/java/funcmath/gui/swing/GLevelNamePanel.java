@@ -1,5 +1,6 @@
 package funcmath.gui.swing;
 
+import funcmath.game.GameLoader;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.level.Level;
@@ -26,17 +27,9 @@ public class GLevelNamePanel extends GConstructorPanel {
     this.level = level;
     this.playFlag = playFlag;
     if (playFlag == PlayFlag.DEFAULT) {
-      levelState =
-          GameFrame.getInstance()
-              .getPlayer()
-              .getDefaultLevelStates()
-              .get(level.getLevelInfo().getID());
+      levelState = GameLoader.getPlayer().getDefaultLevelStates().get(level.getLevelInfo().getID());
     } else if (playFlag == PlayFlag.CUSTOM) {
-      levelState =
-          GameFrame.getInstance()
-              .getPlayer()
-              .getCustomLevelStates()
-              .get(level.getLevelInfo().getID());
+      levelState = GameLoader.getPlayer().getCustomLevelStates().get(level.getLevelInfo().getID());
     }
     super(); // TODO: как-то исправить preview-функцию
   }
@@ -60,19 +53,13 @@ public class GLevelNamePanel extends GConstructorPanel {
     statsLabel.setForeground(Color.white);
     if (playFlag == PlayFlag.DEFAULT) {
       LevelStatistics stats =
-          GameFrame.getInstance()
-              .getPlayer()
-              .getDefaultLevelStats()
-              .get(this.level.getLevelInfo().getID());
+          GameLoader.getPlayer().getDefaultLevelStats().get(this.level.getLevelInfo().getID());
       if (stats != null) {
         statsLabel.setText(stats.toString());
       }
     } else if (playFlag == PlayFlag.CUSTOM) {
       LevelStatistics stats =
-          GameFrame.getInstance()
-              .getPlayer()
-              .getCustomLevelStats()
-              .get(this.level.getLevelInfo().getID());
+          GameLoader.getPlayer().getCustomLevelStats().get(this.level.getLevelInfo().getID());
       if (stats != null) {
         statsLabel.setText(stats.toString());
       }
@@ -85,7 +72,7 @@ public class GLevelNamePanel extends GConstructorPanel {
           @Override
           public void actionPerformed(ActionEvent e) {
             level.setLevelState(levelState);
-            GameFrame.getInstance().setCurrentLevel(level);
+            GameLoader.setCurrentLevel(level);
             GameFrame.getInstance().changePanel("level");
           }
         });
@@ -99,7 +86,7 @@ public class GLevelNamePanel extends GConstructorPanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            GameFrame.getInstance().setCurrentLevel(level);
+            GameLoader.setCurrentLevel(level);
             GameFrame.getInstance().changePanel("level");
           }
         });

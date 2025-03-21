@@ -3,6 +3,7 @@ package funcmath.gui.panel;
 import funcmath.auth.LocalAuthorization;
 import funcmath.auth.Player;
 import funcmath.exceptions.AuthorizationException;
+import funcmath.game.GameLoader;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.*;
@@ -122,7 +123,7 @@ public class Login extends GBackgroundPanel {
             try {
               errorInfo.setText("");
               Player p = LocalAuthorization.login(username, password);
-              GameFrame.getInstance().setPlayer(p);
+              GameLoader.setPlayer(p);
               GameFrame.getInstance().changePanel("menu");
             } catch (AuthorizationException ex) {
               errorInfo.setText(ex.getMessage());

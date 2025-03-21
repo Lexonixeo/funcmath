@@ -1,5 +1,6 @@
 package funcmath.level;
 
+import funcmath.game.GameLoader;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.*;
@@ -20,9 +21,8 @@ public abstract class GConsoleLevelPanel extends GConsolePanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            GameFrame.getInstance()
-                    .setCurrentLevel(
-                            LevelRegister.getNextLevel(GameFrame.getInstance().getPlayer().getLastLevel().getPrimaryKey()));
+            GameLoader.setCurrentLevel(
+                LevelRegister.getNextLevel(GameLoader.getPlayer().getLastLevel().getPrimaryKey()));
             GameFrame.getInstance().changePanel("level");
             /*
             GameFrame.getInstance()
@@ -45,7 +45,7 @@ public abstract class GConsoleLevelPanel extends GConsolePanel {
   protected abstract void game();
 
   protected void afterGame() {
-    if (GameFrame.getInstance().getCurrentLevel().isCompleted()) {
+    if (GameLoader.getCurrentLevel().isCompleted()) {
       southPanel.add(nextLevel, BorderLayout.EAST);
       repaint();
       validate();
@@ -53,7 +53,7 @@ public abstract class GConsoleLevelPanel extends GConsolePanel {
   }
 
   protected void setNameLabelText() {
-    Level level = GameFrame.getInstance().getCurrentLevel();
+    Level level = GameLoader.getCurrentLevel();
     nameLabel.setText("Уровень №" + level.getLevelInfo().getID() + ": " + level.getName());
     repaint();
     validate();
@@ -65,7 +65,7 @@ public abstract class GConsoleLevelPanel extends GConsolePanel {
     try {
       GConsoleLevelPanel.this.game();
       GConsoleLevelPanel.this.afterGame();
-      GameFrame.getInstance().exitCurrentLevel();
+      GameLoader.exitCurrentLevel();
     } catch (RuntimeException e) {
       out.println(e.getMessage());
     }

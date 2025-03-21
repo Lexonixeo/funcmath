@@ -1,12 +1,17 @@
 package funcmath.game;
 
+import funcmath.auth.Player;
 import funcmath.gui.GameFrame;
+import funcmath.level.Level;
 import funcmath.level.LevelRegister;
 import funcmath.packs.defaultpack.DefaultPack;
 import java.io.File;
 
 public class GameLoader {
   private static Thread levelUpdater;
+
+  private static Level currentLevel;
+  private static Player player;
 
   public static void generateDirectories() {
     Logger.write("Генерируются директории...");
@@ -50,8 +55,38 @@ public class GameLoader {
                 }
               }
             });
-    levelUpdater.setName("Level list updater");
+    levelUpdater.setName("FM-LL-Update");
     levelUpdater.setDaemon(true);
     levelUpdater.start();
+  }
+
+  public static Level getCurrentLevel() {
+    return currentLevel;
+  }
+
+  public static void setCurrentLevel(Level currentLevel) {
+    GameLoader.currentLevel = currentLevel;
+  }
+
+  public static void exitCurrentLevel() {
+    switch (currentLevel.getLevelInfo().getPlayFlag()) {
+      case DEFAULT ->
+          player.addDefaultLevel(currentLevel.getCurrentLevelState(), currentLevel.getStatistics());
+      case CUSTOM ->
+          player.addCustomLevel(currentLevel.getCurrentLevelState(), currentLevel.getStatistics());
+    }
+    currentLevel = null;
+  }
+
+  public static Level getLastLevel() {
+    return LevelRegister.getLevel(player.getLastLevel());
+  }
+
+  public static void setPlayer(Player player) {
+    GameLoader.player = player;
+  }
+
+  public static Player getPlayer() {
+    return player;
   }
 }

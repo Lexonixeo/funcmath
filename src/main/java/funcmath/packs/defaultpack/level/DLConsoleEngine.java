@@ -2,7 +2,10 @@ package funcmath.packs.defaultpack.level;
 
 import funcmath.functions.Function;
 import funcmath.game.Logger;
+import funcmath.gui.swing.GPanel;
 import funcmath.level.GConsoleLevelPanel;
+import funcmath.level.LevelEngine;
+import funcmath.level.PlayFlag;
 import funcmath.object.MathObject;
 import funcmath.utility.FMInputStream;
 import funcmath.utility.FMPrintStream;
@@ -11,25 +14,42 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class DLConsoleEngine {
+public class DLConsoleEngine implements LevelEngine {
   private final DefaultLevel level;
+  private final GConsoleLevelPanel panel;
   private final FMInputStream in;
   private final FMPrintStream out;
 
   boolean tutorial = true;
   int hint;
-  boolean interrupted = false;
 
-  protected DLConsoleEngine(DefaultLevel level, GConsoleLevelPanel panel) {
-    this.in = panel.getIn();
-    this.out = panel.getOut();
+  protected DLConsoleEngine(DefaultLevel level) {
     this.level = level;
-  }
+    this.panel =
+        new GConsoleLevelPanel() {
+          @Override
+          protected void setNameLabelText() {
+            nameLabel.setText("Уровень №" + level.getLevelInfo().getID() + ": " + level.getName());
+            repaint();
+            validate();
+          }
 
-  protected DLConsoleEngine(DefaultLevel level, FMInputStream in, FMPrintStream out) {
-    this.in = in;
-    this.out = out;
-    this.level = level;
+          @Override
+          protected void game() {
+            DLConsoleEngine.this.startGame();
+          }
+
+          @Override
+          protected void afterGame() {
+            if (level.getPlayFlag() == PlayFlag.PRELEVELS) {
+              level.getAct().afterGame();
+            } else {
+              super.afterGame();
+            }
+          }
+        };
+    this.in = this.panel.getIn();
+    this.out = this.panel.getOut();
   }
 
   private void tutorial() {
@@ -177,12 +197,14 @@ public class DLConsoleEngine {
       out.print("[Level] Введите выражение: ");
     }
     Scanner scanner = new Scanner(in, StandardCharsets.UTF_8);
-    String cmd = "";
+    String cmd;
     try {
       cmd = scanner.nextLine();
     } catch (RuntimeException e) {
       return -1;
-    } catch (Exception ignored) {
+    } catch (Exception e) {
+      // Какая-то иная ошибка, возможно пустая строка и т.д.
+      cmd = "";
     }
     synchronized (out) {
       ArrayList<String> command = Helper.wordsFromString(cmd);
@@ -213,15 +235,11 @@ public class DLConsoleEngine {
     out.clear();
   }
 
-  public void interrupt() {
-    interrupted = true;
-  }
-
-  public void game() {
+  public void startGame() {
     DLStats stats = new DLStats(level);
     stats.startTime();
     start();
-    while (!level.isCompleted() && !interrupted) {
+    while (!level.isCompleted() && !Thread.currentThread().isInterrupted()) {
       int check = turn();
       if (check == -1) break;
     }
@@ -251,5 +269,10 @@ public class DLConsoleEngine {
       Logger.write("Уровень №" + level.getLevelInfo().getID() + " пройден!");
     }
     this.level.setLevelStats(stats);
+  }
+
+  @Override
+  public GPanel getLevelPanel() {
+    return panel;
   }
 }

@@ -2,6 +2,7 @@ package funcmath.packs.defaultpack.level;
 
 import funcmath.cutscene.Cutscene;
 import funcmath.functions.Function;
+import funcmath.game.GameLoader;
 import funcmath.game.Logger;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.GConsolePanel;
@@ -18,8 +19,6 @@ public class DLMakerPanel extends GConsolePanel {
   DefaultLevel level;
   PlayFlag futurePlayFlag = PlayFlag.PRELEVELS;
   boolean isValidatedCompleted = false;
-
-  boolean interrupted = false;
 
   @Override
   protected void initBeforeComponents() {
@@ -48,12 +47,7 @@ public class DLMakerPanel extends GConsolePanel {
         lvlInfo();
       }
       res = turn();
-    } while (res != -1 && !interrupted);
-  }
-
-  @Override
-  protected void runInterrupt() {
-    interrupted = true;
+    } while (res != -1 && !Thread.currentThread().isInterrupted());
   }
 
   private void updateLevelInfo(DLInfo li) {
@@ -485,8 +479,8 @@ public class DLMakerPanel extends GConsolePanel {
             sleep[0] = false;
           }
         });
-    GameFrame.getInstance().setCurrentLevel(this.level);
-    GameFrame.getInstance().changePanel(this.level.getLevelPanel());
+    GameLoader.setCurrentLevel(this.level);
+    GameFrame.getInstance().changePanel("level");
     out.clear();
     while (sleep[0]) {
       try {

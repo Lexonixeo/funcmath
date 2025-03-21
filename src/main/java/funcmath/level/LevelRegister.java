@@ -92,18 +92,21 @@ public class LevelRegister {
     switch (lk.playFlag()) {
       case DEFAULT -> {
         int i = DEFAULT_LEVEL_LIST.indexOf(lk.ID());
-        return getLevel(getLevelInfo(new LevelPrimaryKey(DEFAULT_LEVEL_LIST.get(i + 1), PlayFlag.DEFAULT)));
+        return getLevel(
+            getLevelInfo(new LevelPrimaryKey(DEFAULT_LEVEL_LIST.get(i + 1), PlayFlag.DEFAULT)));
       }
       case CUSTOM -> {
         int i = CUSTOM_LEVEL_LIST.indexOf(lk.ID());
-        return getLevel(getLevelInfo(new LevelPrimaryKey(CUSTOM_LEVEL_LIST.get(i + 1), PlayFlag.CUSTOM)));
+        return getLevel(
+            getLevelInfo(new LevelPrimaryKey(CUSTOM_LEVEL_LIST.get(i + 1), PlayFlag.CUSTOM)));
       }
       case PRELEVELS -> {
         int i = PRE_LEVEL_LIST.indexOf(lk.ID());
-        return getLevel(getLevelInfo(new LevelPrimaryKey(PRE_LEVEL_LIST.get(i + 1), PlayFlag.PRELEVELS)));
+        return getLevel(
+            getLevelInfo(new LevelPrimaryKey(PRE_LEVEL_LIST.get(i + 1), PlayFlag.PRELEVELS)));
       }
     }
-      return null;
+    return null;
   }
 
   public static void updateLevels() {
@@ -137,7 +140,7 @@ public class LevelRegister {
   }
 
   public static void addLevelInfo(LevelInfo li, PlayFlag pf, boolean rewrite) {
-    // TODO: ссылочное присваивание или нет?
+    // TODO: ссылочное присваивание или нет? - проверьте, мододелы
     ArrayList<Long> list =
         switch (pf) {
           case DEFAULT -> DEFAULT_LEVEL_LIST;
@@ -169,8 +172,6 @@ public class LevelRegister {
   public static ArrayList<Long> getCustomLevelList() {
     return CUSTOM_LEVEL_LIST;
   }
-
-  // TODO: getNextLevel
 
   // TO DO: добавить получение уровня через LevelState, там как раз появился LevelInfo.
   // может сохранять уровни в виде levelState, а не levelInfo?

@@ -13,8 +13,6 @@ import java.util.*;
 public class FunctionMakerPanel extends GConsolePanel {
   Function f;
 
-  boolean interrupted = false;
-
   @Override
   protected void initBeforeComponents() {
     super.initBeforeComponents();
@@ -38,12 +36,7 @@ public class FunctionMakerPanel extends GConsolePanel {
         funcInfo();
       }
       res = turn();
-    } while (res != -1 && !interrupted);
-  }
-
-  @Override
-  protected void runInterrupt() {
-    interrupted = true;
+    } while (res != -1 && !Thread.currentThread().isInterrupted());
   }
 
   private int turn() {
