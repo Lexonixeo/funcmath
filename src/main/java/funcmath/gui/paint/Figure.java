@@ -1,10 +1,10 @@
 package funcmath.gui.paint;
 
-import funcmath.exceptions.GuiException;
 import funcmath.utility.Helper;
 import java.awt.*;
 import java.awt.geom.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -51,8 +51,8 @@ public class Figure implements Shape {
         g.drawImage(img, (int) bounds.getX(), (int) bounds.getY(), null);
         // System.out.println(g.getClipBounds());
         // System.out.println((int) bounds.getWidth() + " " + (int) bounds.getHeight());
-      } catch (Exception ex) {
-        throw new GuiException(ex);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
     }
   }

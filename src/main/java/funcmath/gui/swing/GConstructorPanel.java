@@ -1,6 +1,5 @@
 package funcmath.gui.swing;
 
-import java.awt.*;
 import javax.swing.*;
 
 public abstract class GConstructorPanel extends JPanel {
@@ -34,4 +33,6 @@ public abstract class GConstructorPanel extends JPanel {
   protected abstract void constructPanel();
 
   protected abstract void initAfterConstruct();
+
+  public void start() {}
 }

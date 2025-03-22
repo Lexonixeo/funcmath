@@ -1,11 +1,11 @@
 package funcmath.gui.panel;
 
-import funcmath.game.Level;
-import funcmath.game.LevelPlayFlag;
+import funcmath.game.GameLoader;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.GBackgroundPanel;
 import funcmath.gui.swing.GOpaquePanel;
+import funcmath.level.LevelRegister;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,14 +26,16 @@ public class Menu extends GBackgroundPanel {
   JButton customLevelListButton;
   JButton statsButton;
   JButton settingsButton;
-  JButton guideButton;
+  JButton modListButton;
   JButton functionMakerButton;
   JButton levelMakerButton;
   JButton companyButton;
   JButton exitButton;
 
   @Override
-  protected void initBeforeComponents() {}
+  protected void initBeforeComponents() {
+    GameLoader.getPlayer().save();
+  }
 
   @Override
   protected void initComponents() {
@@ -44,8 +46,7 @@ public class Menu extends GBackgroundPanel {
     nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
     welcomeLabel = new JLabel();
-    welcomeLabel.setText(
-        "Добро пожаловать, " + GameFrame.getInstance().getPlayer().getName() + "!");
+    welcomeLabel.setText("Добро пожаловать, " + GameLoader.getPlayer().getName() + "!");
     welcomeLabel.setFont(Fonts.COMIC_SANS_MS_30);
     welcomeLabel.setForeground(Color.white);
 
@@ -74,26 +75,19 @@ public class Menu extends GBackgroundPanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            if (GameFrame.getInstance().getLastLevel() == null
-                || GameFrame.getInstance().getLastLevel().isCompleted()) {
-              errorLabel.setText("Вы не можете вернуться к предыдущему уровню.");
-              validate();
-              repaint();
+            if (GameLoader.getLastLevel() == null || GameLoader.getLastLevel().isCompleted()) {
+              GameLoader.setCurrentLevel(
+                  LevelRegister.getLevel(GameLoader.getPlayer().getFirstUncompletedLevel()));
+              GameFrame.getInstance().changePanel("level");
             } else {
-              GameFrame.getInstance()
-                  .setCurrentLevel(
-                      Level.getLevelInstance(
-                          GameFrame.getInstance().getPlayer().getLastLevel(),
-                          (GameFrame.getInstance().getPlayer().getLastLevel() < 0
-                              ? LevelPlayFlag.CUSTOM
-                              : LevelPlayFlag.DEFAULT)));
+              GameLoader.setCurrentLevel(
+                  LevelRegister.getLevel(GameLoader.getPlayer().getLastLevel()));
               GameFrame.getInstance().changePanel("level");
             }
           }
         });
     playButton.setFont(Fonts.COMIC_SANS_MS_30);
-    if (GameFrame.getInstance().getLastLevel() == null
-        || GameFrame.getInstance().getLastLevel().isCompleted()) {
+    if (GameLoader.getLastLevel() == null || GameLoader.getLastLevel().isCompleted()) {
       playButton.setText("Играть!");
     } else {
       playButton.setText("Продолжить!");
@@ -137,6 +131,7 @@ public class Menu extends GBackgroundPanel {
     statsButton.setText("Статистика");
     statsButton.setForeground(Color.white);
     statsButton.setBackground(new Color(56, 109, 80));
+    statsButton.setEnabled(false);
 
     settingsButton = new JButton();
     settingsButton.addActionListener(
@@ -148,23 +143,27 @@ public class Menu extends GBackgroundPanel {
     settingsButton.setText("Настройки");
     settingsButton.setForeground(Color.white);
     settingsButton.setBackground(new Color(56, 109, 80));
+    settingsButton.setEnabled(false);
 
-    guideButton = new JButton();
-    guideButton.addActionListener(
+    modListButton = new JButton();
+    modListButton.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {}
         });
-    guideButton.setFont(Fonts.COMIC_SANS_MS_30);
-    guideButton.setText("Туториал");
-    guideButton.setForeground(Color.white);
-    guideButton.setBackground(new Color(56, 109, 80));
+    modListButton.setFont(Fonts.COMIC_SANS_MS_30);
+    modListButton.setText("Моды");
+    modListButton.setForeground(Color.white);
+    modListButton.setBackground(new Color(56, 109, 80));
+    modListButton.setEnabled(false);
 
     functionMakerButton = new JButton();
     functionMakerButton.addActionListener(
         new ActionListener() {
           @Override
-          public void actionPerformed(ActionEvent e) {}
+          public void actionPerformed(ActionEvent e) {
+            GameFrame.getInstance().changePanel("function maker");
+          }
         });
     functionMakerButton.setFont(Fonts.COMIC_SANS_MS_30);
     functionMakerButton.setText("Создать функцию");
@@ -175,7 +174,9 @@ public class Menu extends GBackgroundPanel {
     levelMakerButton.addActionListener(
         new ActionListener() {
           @Override
-          public void actionPerformed(ActionEvent e) {}
+          public void actionPerformed(ActionEvent e) {
+            GameFrame.getInstance().changePanel("level maker");
+          }
         });
     levelMakerButton.setFont(Fonts.COMIC_SANS_MS_30);
     levelMakerButton.setText("Создать уровень");
@@ -192,13 +193,14 @@ public class Menu extends GBackgroundPanel {
     companyButton.setText("Кампания");
     companyButton.setForeground(Color.white);
     companyButton.setBackground(new Color(56, 109, 80));
+    companyButton.setEnabled(false);
 
     exitButton = new JButton();
     exitButton.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            GameFrame.getInstance().dispose();
+            GameLoader.stop();
           }
         });
     exitButton.setFont(Fonts.COMIC_SANS_MS_30);
@@ -240,7 +242,7 @@ public class Menu extends GBackgroundPanel {
     bottomPanel.add(customLevelListButton);
     bottomPanel.add(statsButton);
     bottomPanel.add(settingsButton);
-    bottomPanel.add(guideButton);
+    bottomPanel.add(modListButton);
     bottomPanel.add(functionMakerButton);
     bottomPanel.add(levelMakerButton);
     bottomPanel.add(exitButton);

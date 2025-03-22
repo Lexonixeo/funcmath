@@ -1,8 +1,9 @@
 package funcmath.gui.panel;
 
+import funcmath.auth.LocalAuthorization;
+import funcmath.auth.Player;
 import funcmath.exceptions.AuthorizationException;
-import funcmath.game.Authorization;
-import funcmath.game.Player;
+import funcmath.game.GameLoader;
 import funcmath.gui.Fonts;
 import funcmath.gui.GameFrame;
 import funcmath.gui.swing.*;
@@ -145,8 +146,8 @@ public class Register extends GBackgroundPanel {
               if (!password.equals(password2)) {
                 throw new AuthorizationException("Пароли не совпадают!");
               }
-              Player p = Authorization.register(username, password);
-              GameFrame.getInstance().setPlayer(p);
+              Player p = LocalAuthorization.register(username, password);
+              GameLoader.setPlayer(p);
               GameFrame.getInstance().changePanel("menu");
             } catch (AuthorizationException ex) {
               errorInfo.setText(ex.getMessage());

@@ -1,11 +1,12 @@
 package funcmath.gui;
 
-import funcmath.game.Level;
-import funcmath.game.LevelPlayFlag;
-import funcmath.game.Player;
+import funcmath.functions.FunctionMakerPanel;
+import funcmath.game.GameLoader;
 import funcmath.gui.panel.*;
 import funcmath.gui.panel.Menu;
 import funcmath.gui.swing.GPanel;
+import funcmath.level.LevelRegister;
+import funcmath.level.PlayFlag;
 import java.awt.*;
 import javax.swing.*;
 
@@ -13,10 +14,7 @@ public class GameFrame extends JFrame {
   private static final GameFrame instance = new GameFrame(); // singleton
 
   GPanel currentPanel;
-  Level currentLevel;
-  Level lastLevel;
   KeyboardFocusManager manager;
-  Player player;
 
   private GameFrame() {
     this.setTitle("func(math)");
@@ -30,8 +28,6 @@ public class GameFrame extends JFrame {
     manager =
         KeyboardFocusManager
             .getCurrentKeyboardFocusManager(); // менеджер по трудоустройству слушателей клавиатуры
-
-    changePanel("login");
   }
 
   /*
@@ -55,6 +51,28 @@ public class GameFrame extends JFrame {
   }
    */
 
+  public void registerPanel(String panelKey, GPanel panel) {}
+
+  // // public static ArrayList<Pair<String, Foo>> mods;
+    // это смена панели на определенную без ресета
+  public void changePanel(GPanel panel) {
+    this.removeMouseListener(currentPanel);
+    this.removeMouseMotionListener(currentPanel);
+    manager.removeKeyEventDispatcher(currentPanel);
+
+    currentPanel = panel;
+
+    setContentPane(currentPanel);
+    addMouseListener(currentPanel);
+    addMouseMotionListener(currentPanel);
+    manager.addKeyEventDispatcher(currentPanel);
+
+    invalidate();
+    validate();
+    repaint();
+  }
+
+  // это смена панели на заданную с ресетом
   public void changePanel(String panelKey) {
     this.removeMouseListener(currentPanel);
     this.removeMouseMotionListener(currentPanel);
@@ -67,17 +85,24 @@ public class GameFrame extends JFrame {
           case "menu" -> new Menu();
           case "stats" -> new Statistics();
           case "settings" -> new Settings();
-          case "tutorial" -> new Tutorial();
-          case "level" -> new LevelPanel();
-          case "level maker" -> new LevelMakerPanel();
-          case "level maker tutorial" -> new LevelMakerTutorial();
+          case "mod list" -> new ModListPanel();
+          case "level" -> GameLoader.getCurrentLevel().getLevelEngine().getLevelPanel();
+          case "level maker" -> LevelRegister.getLevelMaker("default");
           case "function maker" -> new FunctionMakerPanel();
-          case "function maker tutorial" -> new FunctionMakerTutorial();
-          case "level list" -> new LevelListPanel(1, LevelPlayFlag.DEFAULT);
-          case "custom level list" -> new LevelListPanel(1, LevelPlayFlag.CUSTOM);
+          case "level list" -> new LevelListPanel(1, PlayFlag.DEFAULT);
+          case "custom level list" -> new LevelListPanel(1, PlayFlag.CUSTOM);
           case "loading" -> LoadingPanel.getInstance();
-          default -> throw new IllegalStateException("Unexpected value: " + panelKey);
+          default -> /*
+                     for (int i = 0 ...) {
+                         if (mods.get(i).first == panelKey) {
+                             ..second.exec();
+                         }
+                     }
+                     */
+              throw new IllegalStateException("Unexpected value: " + panelKey);
         };
+    currentPanel.reset();
+    currentPanel.start();
 
     setContentPane(currentPanel);
     addMouseListener(currentPanel);
@@ -89,37 +114,8 @@ public class GameFrame extends JFrame {
     repaint();
   }
 
-  public void setPlayer(Player player) {
-    this.player = player;
-  }
-
-  public Player getPlayer() {
-    return player;
-  }
-
-  public Level getCurrentLevel() {
-    return currentLevel;
-  }
-
-  public void setCurrentLevel(Level currentLevel) {
-    this.currentLevel = currentLevel;
-    this.lastLevel = currentLevel;
-  }
-
-  public void exitCurrentLevel(int[] gameData) {
-    player.addLevel(currentLevel.isCompleted(), currentLevel.getLevel(), gameData[2], gameData[3]);
-    this.currentLevel = null;
-  }
-
-  public Level getLastLevel() {
-      Level a = null;
-      try {
-          a = Level.getLevelInstance(
-                  player.getLastLevel(),
-                  (player.getLastLevel() < 0 ? LevelPlayFlag.CUSTOM : LevelPlayFlag.DEFAULT));
-      } catch (Exception ignored) {
-      }
-    return a;
+  public GPanel getCurrentPanel() {
+    return currentPanel;
   }
 
   public static GameFrame getInstance() {
