@@ -161,7 +161,7 @@ public abstract class GConsolePanel extends GBackgroundPanel {
       throw new RuntimeException(e);
     }
     out.clear();
-    super.reset(); // TODO: preview
+    super.reset();
   }
 
   private void resetTextUpdateThread() {

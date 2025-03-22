@@ -22,7 +22,7 @@ public class GLevelNamePanel extends GConstructorPanel {
   public GLevelNamePanel(LevelPrimaryKey key) {
     this.levelKey = key;
     levelState = GameLoader.getPlayer().getLevelState(key);
-    super(); // TODO: как-то исправить preview-функцию
+    super();
   }
 
   protected void initBeforeComponents() {}
@@ -33,12 +33,14 @@ public class GLevelNamePanel extends GConstructorPanel {
     nameLabel.setFont(Fonts.COMIC_SANS_MS_30);
     nameLabel.setForeground(Color.white);
 
-    // TODO: а что тут вообще должно быть?
+    /*
+    // TO DO: а что тут вообще должно быть?
     aboutLabel = new JLabel();
     aboutLabel.setFont(Fonts.COMIC_SANS_MS_30);
     aboutLabel.setForeground(Color.white);
     aboutLabel.setText("Уровень №" + levelKey.ID() + ": " + LevelRegister.getName(levelKey));
     aboutLabel.setHorizontalAlignment(SwingConstants.CENTER);
+     */
 
     statsLabel = new JLabel();
     statsLabel.setFont(Fonts.COMIC_SANS_MS_30);
