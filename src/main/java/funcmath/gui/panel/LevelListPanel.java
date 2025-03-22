@@ -5,6 +5,7 @@ import funcmath.gui.GameFrame;
 import funcmath.gui.swing.GBackgroundPanel;
 import funcmath.gui.swing.GLevelNamePanel;
 import funcmath.gui.swing.GOpaquePanel;
+import funcmath.level.LevelPrimaryKey;
 import funcmath.level.LevelRegister;
 import funcmath.level.PlayFlag;
 import java.awt.*;
@@ -37,12 +38,7 @@ public class LevelListPanel extends GBackgroundPanel {
   @Override
   protected void initBeforeComponents() {
     this.levelsPerPage = 7;
-    this.levels =
-        switch (flag) {
-          case DEFAULT -> LevelRegister.getDefaultLevelList();
-          case CUSTOM -> LevelRegister.getCustomLevelList();
-          case PRELEVELS -> LevelRegister.getPreLevelList();
-        };
+    this.levels = LevelRegister.getLevelList(flag);
   }
 
   @Override
@@ -67,11 +63,7 @@ public class LevelListPanel extends GBackgroundPanel {
     returnButton.setFocusable(false);
 
     nextButton = new JButton();
-    if (page + 1 <= 0 || levels.size() < levelsPerPage * (page + 1) - levelsPerPage + 1) {
-      nextButton.setEnabled(false);
-    } else {
-      nextButton.setEnabled(true);
-    }
+    nextButton.setEnabled(!(page + 1 <= 0 || levels.size() < levelsPerPage * (page + 1) - levelsPerPage + 1));
     nextButton.addActionListener(
         new ActionListener() {
           @Override
@@ -90,11 +82,7 @@ public class LevelListPanel extends GBackgroundPanel {
     nextButton.setText("Вперед");
 
     backButton = new JButton();
-    if (page - 1 <= 0 || levels.size() < levelsPerPage * (page - 1) - levelsPerPage + 1) {
-      backButton.setEnabled(false);
-    } else {
-      backButton.setEnabled(true);
-    }
+    backButton.setEnabled(!(page - 1 <= 0 || levels.size() < levelsPerPage * (page - 1) - levelsPerPage + 1));
     backButton.addActionListener(
         new ActionListener() {
           @Override
@@ -136,8 +124,7 @@ public class LevelListPanel extends GBackgroundPanel {
         i < Math.min(levelsPerPage * page, levels.size());
         i++) {
       this.add(
-          new GLevelNamePanel(
-              LevelRegister.getLevel(LevelRegister.getLevelInfo(levels.get(i), flag)), flag));
+          new GLevelNamePanel(new LevelPrimaryKey(levels.get(i), flag)));
       // this.add(new GLevelNamePanel(Level.getLevelInstance(levels.get(i), flag)));
     }
   }

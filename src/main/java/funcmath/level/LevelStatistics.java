@@ -9,8 +9,6 @@ public interface LevelStatistics extends Serializable {
 
   boolean isCompleted();
 
-  Long getLevelID();
-
   Hash getLevelHash();
 
   LevelPrimaryKey getPrimaryKey();

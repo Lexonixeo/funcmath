@@ -5,9 +5,13 @@ import funcmath.gui.GameFrame;
 import funcmath.level.Level;
 import funcmath.level.LevelRegister;
 import funcmath.packs.defaultpack.DefaultPack;
+import funcmath.utility.Hash;
+
 import java.io.File;
 
 public class GameLoader {
+  public static final Hash GAME_VERSION = Hash.encode(0);
+
   private static Thread levelUpdater;
 
   private static Level currentLevel;
@@ -35,8 +39,9 @@ public class GameLoader {
     GameFrame.getInstance().changePanel("login");
   }
 
-  public static void interruptLevelUpdater() {
+  public static void stop() {
     levelUpdater.interrupt();
+    GameFrame.getInstance().dispose();
   }
 
   private static void startLevelUpdaterThread() {
@@ -69,12 +74,7 @@ public class GameLoader {
   }
 
   public static void exitCurrentLevel() {
-    switch (currentLevel.getLevelInfo().getPlayFlag()) {
-      case DEFAULT ->
-          player.addDefaultLevel(currentLevel.getCurrentLevelState(), currentLevel.getStatistics());
-      case CUSTOM ->
-          player.addCustomLevel(currentLevel.getCurrentLevelState(), currentLevel.getStatistics());
-    }
+    player.addLevel(currentLevel.getCurrentLevelState(), currentLevel.getStatistics());
     currentLevel = null;
   }
 

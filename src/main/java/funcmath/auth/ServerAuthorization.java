@@ -1,5 +1,5 @@
 package funcmath.auth;
 
 public class ServerAuthorization {
-  // TODO
+  // TODO: server
 }

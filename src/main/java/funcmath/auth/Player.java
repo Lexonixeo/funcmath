@@ -16,13 +16,9 @@ public class Player implements Serializable {
   Long ID;
   LevelState lastLevel;
 
-  HashSet<Long> completedDefaultLevels;
-  HashMap<Long, LevelStatistics> defaultLevelStats;
-  HashMap<Long, LevelState> defaultLevelStates;
-
-  HashSet<Long> completedCustomLevels;
-  HashMap<Long, LevelStatistics> customLevelStats;
-  HashMap<Long, LevelState> customLevelStates;
+  HashSet<LevelPrimaryKey> completedLevels;
+  HashMap<LevelPrimaryKey, LevelStatistics> levelStatistics;
+  HashMap<LevelPrimaryKey, LevelState> levelStates;
 
   Hash passHash;
   Hash salt;
@@ -34,48 +30,35 @@ public class Player implements Serializable {
     this.ID = this.getHash().toLong();
     this.lastLevel = null;
 
-    this.completedDefaultLevels = new HashSet<>();
-    this.defaultLevelStats = new HashMap<>();
-    this.defaultLevelStates = new HashMap<>();
-
-    this.completedCustomLevels = new HashSet<>();
-    this.customLevelStats = new HashMap<>();
-    this.customLevelStates = new HashMap<>();
+    this.completedLevels = new HashSet<>();
+    this.levelStatistics = new HashMap<>();
+    this.levelStates = new HashMap<>();
 
     this.save();
   }
 
-  public void addDefaultLevel(LevelState state, LevelStatistics stats) {
+  public void addLevel(LevelState state, LevelStatistics stats) {
     if (stats.isCompleted()) {
-      completedDefaultLevels.add(stats.getLevelID());
-      defaultLevelStates.remove(stats.getLevelID());
+      completedLevels.add(stats.getPrimaryKey());
+      levelStates.remove(stats.getPrimaryKey());
     } else {
-      defaultLevelStates.put(stats.getLevelID(), state);
+      levelStates.put(stats.getPrimaryKey(), state);
     }
-    defaultLevelStats.put(stats.getLevelID(), stats.add(defaultLevelStats.get(stats.getLevelID())));
-    this.lastLevel = state;
-  }
-
-  public void addCustomLevel(LevelState state, LevelStatistics stats) {
-    if (stats.isCompleted()) {
-      completedCustomLevels.add(stats.getLevelID());
-      customLevelStates.remove(stats.getLevelID());
-    } else {
-      customLevelStates.put(stats.getLevelID(), state);
-    }
-    customLevelStats.put(stats.getLevelID(), stats.add(customLevelStats.get(stats.getLevelID())));
+    levelStatistics.put(stats.getPrimaryKey(), stats.add(getLevelStatistics(stats.getPrimaryKey())));
     this.lastLevel = state;
   }
 
   public LevelPrimaryKey getFirstUncompletedLevel() {
-    for (Long ID : LevelRegister.getDefaultLevelList()) {
-      if (!completedDefaultLevels.contains(ID)) {
-        return new LevelPrimaryKey(ID, PlayFlag.DEFAULT);
+    for (Long ID : LevelRegister.getLevelList(PlayFlag.DEFAULT)) {
+      LevelPrimaryKey tempLevel = new LevelPrimaryKey(ID, PlayFlag.DEFAULT);
+      if (!completedLevels.contains(tempLevel)) {
+        return tempLevel;
       }
     }
-    for (Long ID : LevelRegister.getCustomLevelList()) {
-      if (!completedCustomLevels.contains(ID)) {
-        return new LevelPrimaryKey(ID, PlayFlag.CUSTOM);
+    for (Long ID : LevelRegister.getLevelList(PlayFlag.CUSTOM)) {
+      LevelPrimaryKey tempLevel = new LevelPrimaryKey(ID, PlayFlag.CUSTOM);
+      if (!completedLevels.contains(tempLevel)) {
+        return tempLevel;
       }
     }
     throw new LevelException("Все уровни пройдены!");
@@ -98,20 +81,12 @@ public class Player implements Serializable {
     return ID;
   }
 
-  public HashMap<Long, LevelStatistics> getDefaultLevelStats() {
-    return defaultLevelStats;
+  public LevelStatistics getLevelStatistics(LevelPrimaryKey key) {
+    return levelStatistics.get(key);
   }
 
-  public HashMap<Long, LevelStatistics> getCustomLevelStats() {
-    return customLevelStats;
-  }
-
-  public HashMap<Long, LevelState> getDefaultLevelStates() {
-    return defaultLevelStates;
-  }
-
-  public HashMap<Long, LevelState> getCustomLevelStates() {
-    return customLevelStates;
+  public LevelState getLevelState(LevelPrimaryKey key) {
+    return levelStates.get(key);
   }
 
   public Hash getHash() {

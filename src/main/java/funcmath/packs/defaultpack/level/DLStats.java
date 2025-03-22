@@ -15,8 +15,6 @@ public class DLStats implements LevelStatistics {
   private long endTime = Long.MAX_VALUE; // millis
   private long functionUses = Long.MAX_VALUE;
   private boolean completed = false;
-  private final long ID;
-  private final Hash levelHash;
   private final LevelInfo li;
 
   // private final DefaultLevel level;
@@ -27,8 +25,6 @@ public class DLStats implements LevelStatistics {
 
   DLStats(DefaultLevel level) {
     this.li = level.getLevelInfo();
-    this.ID = level.getLevelInfo().getID();
-    this.levelHash = level.getHash();
   }
 
   public void startTime() {
@@ -54,13 +50,8 @@ public class DLStats implements LevelStatistics {
   }
 
   @Override
-  public Long getLevelID() {
-    return ID;
-  }
-
-  @Override
   public Hash getLevelHash() {
-    return levelHash;
+    return li.getHash();
   }
 
   @Override
@@ -82,10 +73,6 @@ public class DLStats implements LevelStatistics {
 
   public long getEndTime() {
     return endTime;
-  }
-
-  public long getID() {
-    return ID;
   }
 
   public long getFunctionUses() {

@@ -39,4 +39,9 @@ public class DefaultPack extends Mod {
   public Hash getHash() {
     return Hash.encode("DefaultPack");
   }
+
+  @Override
+  public Hash getVersion() {
+    return Hash.encode(0);
+  }
 }

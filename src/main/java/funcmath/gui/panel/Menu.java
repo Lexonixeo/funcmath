@@ -200,8 +200,7 @@ public class Menu extends GBackgroundPanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            GameLoader.interruptLevelUpdater();
-            GameFrame.getInstance().dispose();
+            GameLoader.stop();
           }
         });
     exitButton.setFont(Fonts.COMIC_SANS_MS_30);

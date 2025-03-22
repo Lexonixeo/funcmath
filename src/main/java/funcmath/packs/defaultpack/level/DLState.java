@@ -70,16 +70,6 @@ public final class DLState implements LevelState {
   }
 
   @Override
-  public Long getLevelID() {
-    return levelID;
-  }
-
-  @Override
-  public PlayFlag getPlayFlag() {
-    return pf;
-  }
-
-  @Override
   public LevelPrimaryKey getPrimaryKey() {
     return new LevelPrimaryKey(this.levelID, pf);
   }

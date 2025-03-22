@@ -54,6 +54,7 @@ public class GameFrame extends JFrame {
   public void registerPanel(String panelKey, GPanel panel) {}
 
   // // public static ArrayList<Pair<String, Foo>> mods;
+    // это смена панели на определенную без ресета
   public void changePanel(GPanel panel) {
     this.removeMouseListener(currentPanel);
     this.removeMouseMotionListener(currentPanel);
@@ -71,6 +72,7 @@ public class GameFrame extends JFrame {
     repaint();
   }
 
+  // это смена панели на заданную с ресетом
   public void changePanel(String panelKey) {
     this.removeMouseListener(currentPanel);
     this.removeMouseMotionListener(currentPanel);

@@ -547,7 +547,7 @@ public class DLMakerPanel extends GConsolePanel {
    */
 
   private void tutorial() {
-    // TODO
+    // TODO: tutorial
   }
 
   private void lValidate() {

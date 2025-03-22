@@ -22,4 +22,6 @@ public abstract class Mod {
   public abstract String getName();
 
   public abstract Hash getHash();
+
+  public abstract Hash getVersion();
 }

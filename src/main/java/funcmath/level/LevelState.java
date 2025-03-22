@@ -12,9 +12,5 @@ public interface LevelState extends Serializable {
   // TO DO: может LevelState убрать в Level? - тут более согл... а история действий? хотя... историю
   // действий делает каждый тип уровня сам.
 
-  Long getLevelID();
-
-  PlayFlag getPlayFlag();
-
   LevelPrimaryKey getPrimaryKey();
 }

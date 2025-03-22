@@ -160,7 +160,7 @@ public class FunctionMakerPanel extends GConsolePanel {
   }
 
   private void tutorial() {
-    // TODO
+    // TODO: tutorial
   }
 
   private void setFName(String name) {

@@ -12,9 +12,13 @@ import java.util.HashMap;
 public class LevelRegister {
   private static final HashMap<String, Level> LEVEL_TYPE_HASH_MAP =
       new HashMap<>(); // <Type, Level>
+  private static ArrayList<String> DEFAULT_LEVEL_FILENAMES = new ArrayList<>();
   private static final ArrayList<Long> DEFAULT_LEVEL_LIST = new ArrayList<>();
+  private static ArrayList<String> CUSTOM_LEVEL_FILENAMES = new ArrayList<>();
   private static final ArrayList<Long> CUSTOM_LEVEL_LIST = new ArrayList<>();
+  private static ArrayList<String> PRE_LEVEL_FILENAMES = new ArrayList<>();
   private static final ArrayList<Long> PRE_LEVEL_LIST = new ArrayList<>();
+  private static final HashMap<LevelPrimaryKey, String> LEVEL_NAMES = new HashMap<>();
   private static final HashMap<String, GPanel> LEVEL_MAKER_HASH_MAP = new HashMap<>();
 
   public static void registerType(Level l) {
@@ -41,7 +45,7 @@ public class LevelRegister {
     return getLevelMaker(l.getType());
   }
 
-  public static LevelInfo getLevelInfo(Long levelID, PlayFlag playFlag) {
+  private static LevelInfo getLevelInfo(Long levelID, PlayFlag playFlag) {
     String levelSwitch =
         switch (playFlag) {
           case DEFAULT -> "levels";
@@ -82,8 +86,7 @@ public class LevelRegister {
 
   public static Level getLevel(LevelState ls) {
     if (ls == null) return null;
-    LevelInfo li = getLevelInfo(ls.getLevelID(), ls.getPlayFlag());
-    Level l = getLevel(li);
+    Level l = getLevel(ls.getPrimaryKey());
     l.setLevelState(ls);
     return l;
   }
@@ -93,43 +96,65 @@ public class LevelRegister {
       case DEFAULT -> {
         int i = DEFAULT_LEVEL_LIST.indexOf(lk.ID());
         return getLevel(
-            getLevelInfo(new LevelPrimaryKey(DEFAULT_LEVEL_LIST.get(i + 1), PlayFlag.DEFAULT)));
+            new LevelPrimaryKey(DEFAULT_LEVEL_LIST.get(i + 1), PlayFlag.DEFAULT));
       }
       case CUSTOM -> {
         int i = CUSTOM_LEVEL_LIST.indexOf(lk.ID());
         return getLevel(
-            getLevelInfo(new LevelPrimaryKey(CUSTOM_LEVEL_LIST.get(i + 1), PlayFlag.CUSTOM)));
+            new LevelPrimaryKey(CUSTOM_LEVEL_LIST.get(i + 1), PlayFlag.CUSTOM));
       }
       case PRELEVELS -> {
         int i = PRE_LEVEL_LIST.indexOf(lk.ID());
         return getLevel(
-            getLevelInfo(new LevelPrimaryKey(PRE_LEVEL_LIST.get(i + 1), PlayFlag.PRELEVELS)));
+            new LevelPrimaryKey(PRE_LEVEL_LIST.get(i + 1), PlayFlag.PRELEVELS));
       }
     }
     return null;
   }
 
   public static void updateLevels() {
-    DEFAULT_LEVEL_LIST.clear();
-    for (String fileName : Helper.getFileNames("data\\levels\\")) {
-      DEFAULT_LEVEL_LIST.add(Long.parseLong(fileName.substring(5, fileName.length() - 4)));
-    }
-    DEFAULT_LEVEL_LIST.sort(Comparator.naturalOrder());
+    if (!DEFAULT_LEVEL_FILENAMES.equals( Helper.getFileNames("data/levels/"))) {
+      DEFAULT_LEVEL_FILENAMES = Helper.getFileNames("data/levels/");
 
-    CUSTOM_LEVEL_LIST.clear();
-    for (String fileName : Helper.getFileNames("data\\customLevels\\")) {
-      CUSTOM_LEVEL_LIST.add(Long.parseLong(fileName.substring(5, fileName.length() - 4)));
+      DEFAULT_LEVEL_LIST.clear();
+      for (String fileName : DEFAULT_LEVEL_FILENAMES) {
+        Long ID = Long.parseLong(fileName.substring(5, fileName.length() - 4));
+        LevelPrimaryKey key = new LevelPrimaryKey(ID, PlayFlag.DEFAULT);
+        LEVEL_NAMES.put(key, LevelRegister.getLevelInfo(key).getName());
+        DEFAULT_LEVEL_LIST.add(ID);
+      }
+      DEFAULT_LEVEL_LIST.sort(Comparator.naturalOrder());
     }
-    CUSTOM_LEVEL_LIST.sort(Comparator.naturalOrder());
 
-    PRE_LEVEL_LIST.clear();
-    for (String fileName : Helper.getFileNames("data\\preLevels\\")) {
-      PRE_LEVEL_LIST.add(Long.parseLong(fileName.substring(5, fileName.length() - 4)));
+    if (!CUSTOM_LEVEL_FILENAMES.equals( Helper.getFileNames("data/customLevels/"))) {
+      CUSTOM_LEVEL_FILENAMES = Helper.getFileNames("data/customLevels/");
+
+      CUSTOM_LEVEL_LIST.clear();
+      for (String fileName : Helper.getFileNames("data\\customLevels\\")) {
+        Long ID = Long.parseLong(fileName.substring(5, fileName.length() - 4));
+        LevelPrimaryKey key = new LevelPrimaryKey(ID, PlayFlag.CUSTOM);
+        LEVEL_NAMES.put(key, LevelRegister.getLevelInfo(key).getName());
+        CUSTOM_LEVEL_LIST.add(ID);
+      }
+      CUSTOM_LEVEL_LIST.sort(Comparator.naturalOrder());
     }
-    PRE_LEVEL_LIST.sort(Comparator.naturalOrder());
+
+    if (!PRE_LEVEL_FILENAMES.equals(Helper.getFileNames("data/preLevels/"))) {
+      PRE_LEVEL_FILENAMES = Helper.getFileNames("data/preLevels/");
+
+      PRE_LEVEL_LIST.clear();
+      for (String fileName : Helper.getFileNames("data\\preLevels\\")) {
+        Long ID = Long.parseLong(fileName.substring(5, fileName.length() - 4));
+        LevelPrimaryKey key = new LevelPrimaryKey(ID, PlayFlag.PRELEVELS);
+        LEVEL_NAMES.put(key, LevelRegister.getLevelInfo(key).getName());
+        PRE_LEVEL_LIST.add(ID);
+      }
+      PRE_LEVEL_LIST.sort(Comparator.naturalOrder());
+    }
   }
 
-  private static void writeLevelInfo(LevelInfo li, PlayFlag pf) {
+  private static void writeLevelInfo(LevelInfo li) {
+    PlayFlag pf = li.getPlayFlag();
     String levelSwitch =
         switch (pf) {
           case DEFAULT -> "levels";
@@ -139,7 +164,9 @@ public class LevelRegister {
     Helper.write(li, "data\\" + levelSwitch + "\\level" + li.getID() + ".dat");
   }
 
-  public static void addLevelInfo(LevelInfo li, PlayFlag pf, boolean rewrite) {
+  public static void addLevelInfo(LevelInfo li, boolean rewrite) {
+    PlayFlag pf = li.getPlayFlag();
+
     // TODO: ссылочное присваивание или нет? - проверьте, мододелы
     ArrayList<Long> list =
         switch (pf) {
@@ -150,27 +177,27 @@ public class LevelRegister {
     if (list.contains(li.getID()) && !rewrite) {
       li.setID(li.getID() + 1);
       addLevelInfo(
-          li, pf,
+          li,
           false); // рекурсия когда-нибудь закончится, если уровней не столько же, сколько чисел в
       // Long
     } else {
       if (!list.contains(li.getID())) {
         list.add(li.getID());
       }
-      writeLevelInfo(li, pf);
+      writeLevelInfo(li);
     }
   }
 
-  public static ArrayList<Long> getDefaultLevelList() {
-    return DEFAULT_LEVEL_LIST;
+  public static ArrayList<Long> getLevelList(PlayFlag flag) {
+    return switch(flag) {
+      case DEFAULT -> DEFAULT_LEVEL_LIST;
+      case CUSTOM -> CUSTOM_LEVEL_LIST;
+      case PRELEVELS -> PRE_LEVEL_LIST;
+    };
   }
 
-  public static ArrayList<Long> getPreLevelList() {
-    return PRE_LEVEL_LIST;
-  }
-
-  public static ArrayList<Long> getCustomLevelList() {
-    return CUSTOM_LEVEL_LIST;
+  public static String getName(LevelPrimaryKey key) {
+    return LEVEL_NAMES.get(key);
   }
 
   // TO DO: добавить получение уровня через LevelState, там как раз появился LevelInfo.

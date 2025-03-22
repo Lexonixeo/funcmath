@@ -6,6 +6,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+// TODO: возможно ли пару сделать как Record?
 public class Pair<T1, T2> implements Serializable {
   @Serial private static final long serialVersionUID = -7181173857818165819L;
 
