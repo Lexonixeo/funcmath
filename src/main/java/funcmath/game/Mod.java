@@ -5,7 +5,7 @@ import funcmath.utility.Hash;
 
 public abstract class Mod {
   // LevelRegister.registerType(Level l); - регистрация уровневого типа
-  // LevelRegister.addLevelInfo(LevelInfo li, PlayFlag pf, boolean rewrite); - регистрация уровня
+  // LevelRegister.addLevelInfo(LevelInfo li, boolean rewrite); - регистрация уровня
   // для LevelMaker
 
   // SimpleFunctionRegister.registerSimpleFunction(SimpleFunction f); - регистрация простейшей

@@ -1,6 +1,7 @@
 package funcmath.auth;
 
 import funcmath.exceptions.AuthorizationException;
+import funcmath.game.GameLoader;
 import funcmath.game.Logger;
 import funcmath.utility.Hash;
 import funcmath.utility.Helper;
@@ -62,6 +63,9 @@ public class LocalAuthorization {
     if (!p.passHash.equals(Hash.encode(password))) {
       throw new AuthorizationException("Неверный пароль!");
     } else {
+      if (p.playerVersion != GameLoader.GAME_VERSION) {
+        return PlayerUpdater.update(p, GameLoader.GAME_VERSION);
+      }
       return p;
     }
   }

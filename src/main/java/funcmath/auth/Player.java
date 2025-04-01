@@ -4,6 +4,7 @@ import funcmath.exceptions.LevelException;
 import funcmath.level.*;
 import funcmath.utility.Hash;
 import funcmath.utility.Helper;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import java.util.HashSet;
 public class Player implements Serializable {
   @Serial private static final long serialVersionUID = -7778290545460356656L;
 
+  Hash playerVersion;
+
   String name;
   Long ID;
   LevelState lastLevel;
@@ -19,6 +22,14 @@ public class Player implements Serializable {
   HashSet<LevelPrimaryKey> completedLevels;
   HashMap<LevelPrimaryKey, LevelStatistics> levelStatistics;
   HashMap<LevelPrimaryKey, LevelState> levelStates;
+
+  HashSet<Long> completedDefaultLevels;
+  HashMap<Long, LevelStatistics> defaultLevelStats;
+  HashMap<Long, LevelState> defaultLevelStates;
+
+  HashSet<Long> completedCustomLevels;
+  HashMap<Long, LevelStatistics> customLevelStats;
+  HashMap<Long, LevelState> customLevelStates;
 
   Hash passHash;
   Hash salt;
@@ -33,6 +44,8 @@ public class Player implements Serializable {
     this.completedLevels = new HashSet<>();
     this.levelStatistics = new HashMap<>();
     this.levelStates = new HashMap<>();
+
+    this.playerVersion = Hash.encode(0);
 
     this.save();
   }
@@ -91,5 +104,9 @@ public class Player implements Serializable {
 
   public Hash getHash() {
     return Hash.encode(name, salt);
+  }
+
+  public Hash getPlayerVersion() {
+    return playerVersion;
   }
 }

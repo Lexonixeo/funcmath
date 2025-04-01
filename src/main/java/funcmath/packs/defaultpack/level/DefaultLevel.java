@@ -21,6 +21,8 @@ public class DefaultLevel implements Level {
 
   private AfterGameAction act;
 
+  private boolean otherTypes = false;
+
   public DefaultLevel() {
     this(new DLInfo());
   }
@@ -54,7 +56,32 @@ public class DefaultLevel implements Level {
     return true;
   }
 
-  // TODO: добавить проверку на то, чтобы если в уровне есть два различных типа, то все числа должны
+  public ArrayList<MathObject> checkOtherTypes(ArrayList<MathObject> nums) {
+    if (!otherTypes) {
+      String mainType = nums.getFirst().getType();
+      for (MathObject num : nums) {
+        if (!num.getType().equals(mainType)) {
+          otherTypes = true;
+        }
+      }
+    }
+    if (otherTypes) {
+      HashSet<String> usingNames = new HashSet<>(currentLevelState.getFunctions().keySet());
+
+      ArrayList<MathObject> ans = new ArrayList<>();
+      for (MathObject n : nums) {
+        n.generateName(usingNames);
+        usingNames.add(n.getName());
+        ans.add(n);
+      }
+
+      return ans;
+    }
+    return nums;
+  }
+
+  // TODO: добавить эту проверку для answers
+  // TO DO: добавить проверку на то, чтобы если в уровне есть два различных типа, то все числа должны
   // быть с именами этих типов (типа 1(nat) 5(int) и т.д.)
 
   public void restart() {
@@ -137,7 +164,7 @@ public class DefaultLevel implements Level {
     currentLevelState =
         new DLState(
             currentLevelState.getHistory(),
-            add(newNumbers, generatedNumbers),
+            checkOtherTypes(add(newNumbers, generatedNumbers)),
             newFunctions,
             levelInfo.getPlayFlag(),
             levelInfo.getID());

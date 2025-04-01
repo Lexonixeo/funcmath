@@ -1,6 +1,7 @@
 package funcmath.game;
 
 import funcmath.auth.Player;
+import funcmath.auth.PlayerUpdater;
 import funcmath.gui.GameFrame;
 import funcmath.level.Level;
 import funcmath.level.LevelRegister;
@@ -34,6 +35,7 @@ public class GameLoader {
   public static void main(String[] args) {
     GameFrame.getInstance().changePanel("loading");
     GameLoader.generateDirectories();
+    PlayerUpdater.init();
     new DefaultPack().init();
     startLevelUpdaterThread();
     GameFrame.getInstance().changePanel("login");

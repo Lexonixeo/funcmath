@@ -248,7 +248,7 @@ public class DLMakerPanel extends GConsolePanel {
     MathObject mnumber = TypeRegister.parseMathObject(number);
     ArrayList<MathObject> newNumbers =
         add(numbers, new ArrayList<>(List.of(new MathObject[] {mnumber})));
-    setLNumbers(newNumbers);
+    setLNumbers(level.checkOtherTypes(newNumbers));
   }
 
   private void resetNumbers() {
@@ -260,7 +260,7 @@ public class DLMakerPanel extends GConsolePanel {
     MathObject mnumber = TypeRegister.parseMathObject(number);
     ArrayList<MathObject> newAnsNumbers =
         add(ansNumbers, new ArrayList<>(List.of(new MathObject[] {mnumber})));
-    setLAnswer(newAnsNumbers);
+    setLAnswer(level.checkOtherTypes(newAnsNumbers));
   }
 
   private void resetAnswers() {
@@ -460,6 +460,7 @@ public class DLMakerPanel extends GConsolePanel {
   private void tryLevel() {
     PlayFlag last = this.level.getPlayFlag();
     setLPlayFlag(PlayFlag.PRELEVELS);
+    lSave();
     final boolean[] sleep = {true};
     this.level.setAfterGameAction(
         new AfterGameAction() {
@@ -547,7 +548,48 @@ public class DLMakerPanel extends GConsolePanel {
    */
 
   private void tutorial() {
-    // TODO: tutorial
+    out.clear();
+    out.println("Обучение создания уровня!");
+    out.println("Для создания уровня вам требуется совершить множество действий:");
+    out.println();
+    out.println("1. Придумать название уровня.");
+    out.println("Для этого вам нужно ввести команду \"set name {название}\" (без скобочек)");
+    out.println();
+    out.println("2. Ввести тип прохождения уровня");
+    out.println("Для этого есть команда \"set playflag {DEFAULT/CUSTOM}\"");
+    out.println();
+    out.println("3. Ввести номер уровня: \"set ID {число}\"");
+    out.println();
+    out.println("4. Добавить числа в уровень.");
+    out.println("Все числа в уровень добавляются последовательно.");
+    out.println("Числа задаются с помощью выражения \"{тип}={число}\"");
+    out.println("Для добавления одного числа есть команда \"add number {тип}={число}\".");
+    out.println("Пример использования: \"add number rational=5/9\" - добавит в числа рациональное 5/9");
+    out.println();
+    out.println("5. Добавить числа для ответа в уровень.");
+    out.println("Это происходит аналогично п.4, но командой \"add answer {тип}={число}\"");
+    out.println();
+    out.println("6. Добавить функции в уровень.");
+    out.println("Чтобы добавить функцию в уровень, вам нужно узнать название его файла в директории /data/functions/ (без .dat)");
+    out.println("Команда для добавления функции: \"add function {название файла}\"");
+    out.println("Пример использования: \"add function sum_53\" - добавит в уровень функцию из файла sum_53.dat");
+    out.println("Также вы можете сами создавать функции через создатель: откройте в меню \"Создать функцию\".");
+    out.println();
+    out.println("7. Добавить в уровень подсказки.");
+    out.println("Введите команду \"add hint {подсказка}\"");
+    out.println();
+    out.println("8. Если вы случайно добавили не то, вам придется почистить числа/ответы/функции/подсказки.");
+    out.println("Для этого есть команда \"reset {numbers/answers/functions/hints}\"");
+    out.println();
+    out.println("9. Теперь вам нужно пройти уровень, чтобы он сохранился.");
+    out.println("Введите команду \"try\" и пройдите уровень.");
+    out.println("Будьте осторожны: есть баг, что интерфейс зависнет. К сожалению, ваш созданный уровень в этом случае потерян :(");
+    out.println("Нужно будет перезапускать игру через диспетчер задач.");
+    out.println();
+    out.println("10. После прохождения уровня он был подтвержден, и вам осталось сохранить его командой \"save\".");
+    out.println();
+    out.println("Спасибо за чтение туториала!");
+    out.println();
   }
 
   private void lValidate() {

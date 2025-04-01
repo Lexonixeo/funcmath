@@ -6,6 +6,8 @@ import funcmath.gui.GameFrame;
 import funcmath.gui.swing.GBackgroundPanel;
 import funcmath.gui.swing.GOpaquePanel;
 import funcmath.level.LevelRegister;
+import funcmath.level.PlayFlag;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -75,7 +77,7 @@ public class Menu extends GBackgroundPanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            if (GameLoader.getLastLevel() == null || GameLoader.getLastLevel().isCompleted()) {
+            if (GameLoader.getLastLevel() == null || GameLoader.getPlayer().getLastLevel().getPrimaryKey().playFlag() == PlayFlag.PRELEVELS || GameLoader.getLastLevel().isCompleted()) {
               GameLoader.setCurrentLevel(
                   LevelRegister.getLevel(GameLoader.getPlayer().getFirstUncompletedLevel()));
               GameFrame.getInstance().changePanel("level");
@@ -87,7 +89,7 @@ public class Menu extends GBackgroundPanel {
           }
         });
     playButton.setFont(Fonts.COMIC_SANS_MS_30);
-    if (GameLoader.getLastLevel() == null || GameLoader.getLastLevel().isCompleted()) {
+    if (GameLoader.getLastLevel() == null || GameLoader.getPlayer().getLastLevel().getPrimaryKey().playFlag() == PlayFlag.PRELEVELS || GameLoader.getLastLevel().isCompleted()) {
       playButton.setText("Играть!");
     } else {
       playButton.setText("Продолжить!");
