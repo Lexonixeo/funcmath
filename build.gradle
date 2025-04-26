@@ -1,0 +1,81 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id('com.jaredsburrows.license') version '0.9.8'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += "--enable-preview"
+}
+tasks.withType(Test).configureEach {
+    jvmArgs += "--enable-preview"
+}
+tasks.withType(JavaExec).configureEach {
+    jvmArgs += '--enable-preview'
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes "Main-Class": "funcmath.game.GameLoader"
+    }
+    archiveFileName.set("funcmath.jar")
+    destinationDirectory.set(file("/"))
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+}
+
+tasks.register('uberJar', Jar) {
+    manifest {
+        attributes "Main-Class": "funcmath.console.ConsoleLaunch"
+    }
+
+    archiveClassifier = 'uber'
+
+    archiveFileName.set("funcmath.jar")
+
+    destinationDirectory.set(file("/"))
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+}
+
+group = 'funcmath'
+version = '1.4'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation('ch.obermuhlner:big-math:2.3.2')
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.56'
+}
+
+test {
+    useJUnitPlatform()
+}

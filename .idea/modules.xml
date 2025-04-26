@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/funcmath.iml" filepath="$PROJECT_DIR$/funcmath.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/funcmath.main.iml" filepath="$PROJECT_DIR$/.idea/modules/funcmath.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/funcmath.test.iml" filepath="$PROJECT_DIR$/.idea/modules/funcmath.test.iml" />
     </modules>
   </component>
 </project>

@@ -28,13 +28,10 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+### Gradle ###
+build/
+.gradle/
+
 ### game
 funcmath.jar
 launch.bat
-data/players/
-data/customLevels/
-data/preLevels/
-data/functions.dat
-data/functions/
-data/objects/
-/data/currentLevel.dat
