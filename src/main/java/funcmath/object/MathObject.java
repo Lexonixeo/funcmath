@@ -7,7 +7,7 @@ import java.math.RoundingMode;
 import java.util.HashSet;
 
 public interface MathObject extends Serializable {
-  MathContext DEFAULT_MATHCONTEXT = new MathContext(10, RoundingMode.HALF_UP);
+  MathContext DEFAULT_MATHCONTEXT = new MathContext(4, RoundingMode.HALF_UP);
 
   // если произошла ошибка в математике, вызывайте, пожалуйста, MathException
   // пожалуйста, в каждом MathObject генерируйте serialVersionUID!

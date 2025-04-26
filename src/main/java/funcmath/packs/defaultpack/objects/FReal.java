@@ -39,7 +39,7 @@ public class FReal implements MathObject, Comparable<FReal> {
   }
 
   public FReal(BigDecimal number) {
-    this.number = number;
+    this.number = new BigDecimal(String.valueOf(number), DEFAULT_MATHCONTEXT);
     this.rawName = number.toString();
     this.name = this.rawName; // без ссылки
   }
@@ -49,7 +49,7 @@ public class FReal implements MathObject, Comparable<FReal> {
         switch (s) {
           case "e", "E", "е", "Е" -> E.get();
           case "pi", "PI", "Pi", "pI", "π", "пи", "ПИ", "Пи", "пИ" -> PI.get();
-          default -> new BigDecimal(s);
+          default -> new BigDecimal(s, DEFAULT_MATHCONTEXT);
         };
     this.rawName = number.toString();
     this.name = this.rawName; // без ссылки
@@ -123,7 +123,7 @@ public class FReal implements MathObject, Comparable<FReal> {
     if (divisor.get().equals(BigDecimal.ZERO)) {
       throw new MathException("Деление на ноль не имеет смысла: " + dividend + "/" + divisor);
     }
-    return new FReal(dividend.get().divide(divisor.get(), RoundingMode.HALF_UP));
+    return new FReal(dividend.get().divide(divisor.get(), DEFAULT_MATHCONTEXT));
   }
 
   public static FReal pow(FReal base, FReal power) {
