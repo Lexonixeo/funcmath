@@ -18,7 +18,8 @@ public class DLMakerPanel extends GConsolePanel {
   DLState ls;
   DefaultLevel level;
   PlayFlag futurePlayFlag = PlayFlag.PRELEVELS;
-  boolean isValidatedCompleted = false;
+  // boolean isValidatedCompleted = false;
+  boolean isValidatedCompleted = true;
 
   @Override
   protected void initBeforeComponents() {
@@ -72,19 +73,19 @@ public class DLMakerPanel extends GConsolePanel {
   }
 
   private void setLNumbers(ArrayList<MathObject> numbers) {
-    isValidatedCompleted = false;
+    // isValidatedCompleted = false;
     updateLevelState(
         new DLState(ls.getHistory(), numbers, ls.getFunctions(), PlayFlag.PRELEVELS, li.getID()));
   }
 
   private void setLFunctions(HashMap<String, Function> functions) {
-    isValidatedCompleted = false;
+    // isValidatedCompleted = false;
     updateLevelState(
         new DLState(ls.getHistory(), ls.getNumbers(), functions, PlayFlag.PRELEVELS, li.getID()));
   }
 
   private void setLRules(DLRules rules) {
-    isValidatedCompleted = false;
+    // isValidatedCompleted = false;
     updateLevelInfo(
         new DLInfo(
             ls,
@@ -187,7 +188,7 @@ public class DLMakerPanel extends GConsolePanel {
   }
 
   private void setLAnswer(ArrayList<MathObject> ans) {
-    isValidatedCompleted = false;
+    // isValidatedCompleted = false;
     updateLevelInfo(
         new DLInfo(
             ls,

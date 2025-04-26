@@ -76,7 +76,7 @@ public class FInteger implements MathObject, Comparable<FInteger> {
     }
 
     if (power.equals(ZERO)) {
-      return ZERO;
+      return ONE;
     } else if (base.equals(ONE) || base.equals(NEGATIVE_ONE) && mod(power, TWO).equals(ZERO)) {
       return ONE;
     } else if (base.equals(NEGATIVE_ONE) && mod(power, TWO).equals(ONE)) {
